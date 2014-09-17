@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Nerve</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/css/jasny-bootstrap.min.css">
+  </head>
+  <body>
+    <div class="navmenu navmenu-default navmenu-fixed-left offcanvas-sm">
+      <a class="navmenu-brand visible-md visible-lg" href="#">Nerve</a>
+      <ul class="nav navmenu-nav">
+        <li class="active"><a href="/">{{ gettext('Dashboard') }}</a></li>
+        <li><a href="/customers">{{ gettext('Customers') }}</a></li>
+        <li><a href="../navmenu-reveal/">Reveal</a></li>
+        <li><a href="../navbar-offcanvas/">Off canvas navbar</a></li>
+      </ul>
+    </div>
+    <div class="navbar navbar-default navbar-fixed-top hidden-md hidden-lg">
+      <button type="button" class="pull-left navbar-toggle visible-sm visible-xs" style="margin-left: 20px" data-toggle="offcanvas" data-target=".navmenu">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Nerve</a>
+    </div> 
+  </body>
+</html>
