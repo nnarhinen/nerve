@@ -31,7 +31,15 @@ var MenuItem = React.createClass({
 
 
 var App = React.createClass({
+  onNavButtonClick: function() {
+    this.setState({menuVisible: !this.state.menuVisible});
+  },
+  getInitialState: function() {
+    return {};
+  },
   render: function() {
+            var menuClass = 'navmenu navmenu-default navmenu-fixed-left offcanvas-sm';
+            if (this.state.menuVisible) menuClass += ' show';
             return (
               <div>
                 <div className="horizontal-spacer hidden-sm hidden-xs">
@@ -45,7 +53,7 @@ var App = React.createClass({
                     <NotFound handler={Pages.NotFound} />
                   </Routes>
                 </div>
-                <div className="navmenu navmenu-default navmenu-fixed-left offcanvas-sm">
+                <div className={menuClass}>
                   <a className="navmenu-brand visible-md visible-lg" href="#">Nerve</a>
                   <ul className="nav navmenu-nav">
                     <MenuItem to="dashboard">{ i18n.gettext('Dashboard') }</MenuItem>
@@ -53,7 +61,7 @@ var App = React.createClass({
                   </ul>
                 </div>
                 <div className="navbar navbar-default navbar-fixed-top hidden-md hidden-lg">
-                  <button type="button" className="pull-left navbar-toggle visible-sm visible-xs" style={ {'margin-left': '20px'} } data-toggle="offcanvas" data-target=".navmenu">
+                  <button onClick={this.onNavButtonClick} type="button" className="pull-left navbar-toggle visible-sm visible-xs" style={ {'margin-left': '20px'} } data-toggle="offcanvas" data-target=".navmenu">
                     <span className="icon-bar"></span>
                     <span className="icon-bar"></span>
                     <span className="icon-bar"></span>
