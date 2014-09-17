@@ -1,7 +1,9 @@
 var express = require('express'),
     app = express(),
     nunjucks = require('nunjucks'),
-    i18n = require('i18n-abide');
+    i18n = require('i18n-abide'),
+    browserify = require('browserify-middleware'),
+    jedify = require('jedify');
 
 var languages = ['en', 'fi'];
 
@@ -16,6 +18,16 @@ app.use(i18n.abide({
   debug_lang: 'en',
   translation_directory: 'i18n'
 }));
+
+var jedifyWithLang = function(lang) {
+  return function(file) {
+    return jedify(file, { 'lang': lang });
+  };
+};
+
+languages.forEach(function(lang) {
+  app.get('/js/application.' + lang + '.js', browserify('./frontend/index.' + lang + '.js', {transform: ['reactify', jedifyWithLang(lang)], 'jedify-lang': lang}));
+});
 
 app.get('/', function(req, res) {
   res.render('index.html');
