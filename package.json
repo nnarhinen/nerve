@@ -17,7 +17,6 @@
     "i18n-abide": "0.0.22",
     "react-async": "~1.0.2",
     "react": "~0.11.2",
-    "react-router-component": "~0.20.1",
     "reactify": "~0.14.0",
     "browserify-middleware": "~3.0.1",
     "jedify": "0.0.1",
