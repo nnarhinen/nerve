@@ -18,8 +18,9 @@ nunjucks.configure('views', {
 app.use(i18n.abide({
   supported_languages: languages,
   default_lang: 'en',
-  debug_lang: 'en',
-  translation_directory: 'i18n'
+  debug_lang: 'it-CH',
+  translation_directory: 'i18n',
+  locale_on_url: true
 }));
 
 var jedifyWithLang = function(lang) {
