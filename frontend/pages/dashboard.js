@@ -2,12 +2,15 @@
  * @jsx React.DOM
  */
 
-var React = require('react');
+var React = require('react'),
+    i18n = requirePo('../../locale/%s/LC_MESSAGES/messages.po');
 
 module.exports = React.createClass({
   render: function() {
             return (
-              <div>Dashboard</div>
+              <div>
+                <h1>{ i18n.gettext('Dashboard') }</h1>
+              </div>
               );
           }
 });

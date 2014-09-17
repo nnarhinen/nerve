@@ -3,6 +3,9 @@ var express = require('express'),
     nunjucks = require('nunjucks'),
     i18n = require('i18n-abide'),
     browserify = require('browserify-middleware'),
+    stylus = require('stylus'),
+    nib = require('nib'),
+    path = require('path'),
     jedify = require('jedify');
 
 var languages = ['en', 'fi'];
@@ -25,9 +28,18 @@ var jedifyWithLang = function(lang) {
   };
 };
 
+var compileStylus = function(str, path) {
+  return stylus(str)
+    .set('filename', path)
+    .use(nib());
+};
+
 languages.forEach(function(lang) {
   app.get('/js/application.' + lang + '.js', browserify('./frontend/index.' + lang + '.js', {transform: ['reactify', jedifyWithLang(lang)], 'jedify-lang': lang}));
 });
+
+app.use(stylus.middleware({src: __dirname + '/public', compile: compileStylus}));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function(req, res) {
   res.render('index.html');
