@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "pot": "jsxgettext --join-existing=true -L jinja --output-dir=./locale/templates/LC_MESSAGES --from-code=utf-8 --output=messages.pot `find . -name '*.html' | grep -v node_modules | grep -v .git`",
     "po2json": "compile-json locale i18n",
-    "syncpo": "PATH=\"$PATH:/usr/local/opt/gettext/bin\" merge-po locale"
+    "syncpo": "PATH=\"$PATH:/usr/local/opt/gettext/bin\" merge-po locale",
+    "start": "node app.js",
+    "migrate": "knex migrate:latest",
+    "dev-server": "supervisor -e js,html app.js"
   },
   "author": "Niklas Närhinen <niklas@narhinen.net>",
   "license": "GPLv3",
@@ -26,10 +29,12 @@
     "jsonschema": "~1.0.0",
     "knex": "~0.6.22",
     "bookshelf": "~0.7.7",
-    "pg": "~3.4.3"
+    "pg": "~3.4.3",
+    "underscore": "~1.7.0"
   },
   "devDependencies": {
     "jsxgettext": "~0.4.10",
-    "sqlite3": "~2.2.7"
+    "sqlite3": "~2.2.7",
+    "supervisor": "~0.6.0"
   }
 }

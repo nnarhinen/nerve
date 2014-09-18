@@ -6,7 +6,8 @@ var express = require('express'),
     stylus = require('stylus'),
     nib = require('nib'),
     path = require('path'),
-    jedify = require('jedify');
+    jedify = require('jedify'),
+    bookshelf = require('./db/bookshelf');
 
 var languages = ['en', 'fi'];
 
@@ -14,6 +15,8 @@ nunjucks.configure('views', {
   autoescape: true,
   express: app
 });
+
+app.set('bookshelf', bookshelf);
 
 app.use(i18n.abide({
   supported_languages: languages,
