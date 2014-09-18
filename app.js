@@ -7,7 +7,15 @@ var express = require('express'),
     nib = require('nib'),
     path = require('path'),
     jedify = require('jedify'),
-    bookshelf = require('./db/bookshelf');
+    bookshelf = require('./db/bookshelf'),
+    env = require('node-env-file'),
+    fs = require('fs');
+
+
+var envFile = path.join(__dirname, 'development.env');
+if (fs.existsSync(envFile)) {
+  env(envFile);
+}
 
 var languages = ['en', 'fi'];
 
