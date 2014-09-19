@@ -61,6 +61,13 @@ app.get('/app/*', function(req, res) {
   res.render('app.html');
 });
 
+app.get('/api/*', function(req, res, next) {
+  if (req.session && req.session.isLoggedIn) return next();
+  res.status(400).send({error: 'Auth required'});
+});
+
+require('./routes/')(app);
+
 var server = app.listen(process.env.PORT || 3000, function() {
   console.log('Listening on port %d', server.address().port);
 });
