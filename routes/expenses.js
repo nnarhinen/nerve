@@ -1,6 +1,5 @@
 var moment = require('moment');
 
-
 module.exports = {
   pending: function(req,res,next) {
     var maventa = req.app.get('maventa');

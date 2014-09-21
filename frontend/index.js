@@ -10,6 +10,7 @@ var React = require('react'),
     Link = ReactRouter.Link,
     ActiveState = ReactRouter.ActiveState,
     Pages = require('./pages'),
+    axios = require('axios'),
     i18n = requirePo('../locale/%s/LC_MESSAGES/messages.po');
 
 var MenuItem = React.createClass({
@@ -73,4 +74,13 @@ var App = React.createClass({
           }
 });
 
-React.renderComponent(<App />, document.body);
+axios.get('/api/whoami').success(function(data) {
+  React.renderComponent(<App />, document.body);
+}).error(function(data, st) {
+  if (st === 401) {
+    alert('login needed');
+  } else {
+    alert('Error loading application, please try again later');
+  }
+});
+
