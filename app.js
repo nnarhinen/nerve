@@ -9,7 +9,9 @@ var express = require('express'),
     jedify = require('jedify'),
     bookshelf = require('./db/bookshelf'),
     env = require('node-env-file'),
-    fs = require('fs');
+    fs = require('fs'),
+    session = require('express-session'),
+    BookshelfStore = require('connect-bookshelf')(session);
 
 
 var envFile = path.join(__dirname, 'development.env');
@@ -32,6 +34,11 @@ app.use(i18n.abide({
   debug_lang: 'it-CH',
   translation_directory: 'i18n',
   locale_on_url: true
+}));
+
+app.use(session({
+  store: new BookshelfStore({model: bookshelf.models.Session}),
+  secret: 'asdei32fa'
 }));
 
 var jedifyWithLang = function(lang) {
