@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="{{ lang }}" dir="{{ lang_dir }}">
+  <head>
+    <meta charset="utf-8">
+    <title>Nerve</title>
+    <link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/css/jasny-bootstrap.min.css">
+    <link rel="stylesheet" href="/css/auth.css">
+
+  </head>
+  <body>
+    <div class="auth-container">
+      <h1>Nerve<small>{{ title }}</small></h1>
+      <div class="content">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+    {% block script %}{% endblock %}
+  </body>
+</html>

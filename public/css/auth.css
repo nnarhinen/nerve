@@ -1,0 +1,44 @@
+.btn-primary {
+  background-color: #e2753a;
+  border-color: #de6421;
+}
+.btn-primary:hover {
+  background-color: #e5834e;
+  border-color: #e2753a;
+}
+a {
+  color: #e2753a;
+}
+a:hover,
+a:focus {
+  color: #e5834e;
+}
+body {
+  background-color: #eee;
+}
+.auth-container {
+  background-color: #fff;
+  width: 90%;
+  max-width: 500px;
+  margin: 20px auto;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  overflow: hidden;
+}
+.auth-container h1 {
+  background-color: #3b5323;
+  font-family: 'Rock Salt', cursive;
+  color: #fff;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  padding: 20px;
+  margin: 0px;
+}
+.auth-container h1 small {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  float: right;
+  color: #eee;
+}
+.auth-container .content {
+  padding: 10px;
+}

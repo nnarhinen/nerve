@@ -40,7 +40,10 @@
     "body-parser": "~1.8.3",
     "bcrypt": "~0.8.0",
     "qs": "~2.2.4",
-    "express-session": "~1.8.2"
+    "express-session": "~1.8.2",
+    "bean": "~1.0.14",
+    "class-list": "~0.1.1",
+    "sizzle": "~2.0.0"
   },
   "devDependencies": {
     "jsxgettext": "~0.4.10",
