@@ -35,7 +35,9 @@
     "moment": "~2.8.3",
     "delorean.js": "~0.7.1",
     "axios": "~0.3.1",
-    "jedify": "git://github.com/tellnes/jedify"
+    "jedify": "git://github.com/tellnes/jedify",
+    "node-oauth2-server": "~2.2.2",
+    "body-parser": "~1.8.3"
   },
   "devDependencies": {
     "jsxgettext": "~0.4.10",

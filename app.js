@@ -53,6 +53,9 @@ languages.forEach(function(lang) {
 app.use(stylus.middleware({src: __dirname + '/public', compile: compileStylus}));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/', require('./routes/oauth2'));
+app.use('/api', require('./routes/api'));
+
 app.get('/', function(req, res) {
   res.render('index.html');
 });
@@ -61,12 +64,12 @@ app.get('/app/*', function(req, res) {
   res.render('app.html');
 });
 
+/*
 app.get('/api/*', function(req, res, next) {
   if (req.session && req.session.isLoggedIn) return next();
   res.status(400).send({error: 'Auth required'});
-});
+});*/
 
-require('./routes/')(app);
 
 var server = app.listen(process.env.PORT || 3000, function() {
   console.log('Listening on port %d', server.address().port);
