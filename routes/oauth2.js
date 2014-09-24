@@ -48,7 +48,7 @@ UserSchema.properties.environment = {'$ref': '/Environment'};
 
 v.addSchema(EnvironmentSchema, '/Environment');
 
-var replaceRegex = /\.(.*)/g,
+var replaceRegex = /\.([^\.]+)/g,
     splitRegex = /\.(.+)?/;
 
 router.route('/signup')
