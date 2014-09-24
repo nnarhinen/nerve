@@ -2,7 +2,8 @@
   background-color: #e2753a;
   border-color: #de6421;
 }
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:focus {
   background-color: #e5834e;
   border-color: #e2753a;
 }
@@ -39,6 +40,12 @@ body {
   float: right;
   color: #eee;
 }
-.auth-container .content {
+.auth-container h2 {
+  background-color: #333;
+  color: #fff;
+  margin: 0px;
+  padding: 10px;
+}
+.auth-container form {
   padding: 10px;
 }

@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="login-container">
-  <form role="form" method="POST">
+  <form role="form" method="POST" action="/login">
     <input type="hidden" name="redirect" value="{{redirect}}">
     <input type="hidden" name="redirect_uri" value="{{redirect_uri}}">
     <input type="hidden" name="client_id" value="{{client_id}}">
@@ -20,7 +20,7 @@
 </div>
 <div class="signup-container hide">
   <h2>Create account</h2>
-  <a href="#" class="pull-right signup-toggle">Already have an account? Log in!</a>
+  {% include "signup-form.html" %}
 </div>
 {% endblock %}
 

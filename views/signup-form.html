@@ -1,0 +1,22 @@
+<form class="signup-form" role="form" method="POST" action="/login">
+  <h3>User details</h3>
+  <div class="form-group">
+    <label for="fe-realname">Name</label>
+    <input type="text" name="name" class="form-control" id="fe-realname" placeholder="e.g. Chuck Norris">
+  </div>
+  <div class="form-group">
+    <label for="fe-email">Email address</label>
+    <input type="email" name="email" class="form-control" id="fe-email" placeholder="e.g. chuck.norris@mycompany.com">
+  </div>
+  <div class="form-group">
+    <label for="fe-password">Password</label>
+    <input type="password" name="password" class="form-control" id="fe-password" placeholder="Password">
+  </div>
+  <h3>Organization details</h3>
+  <div class="form-group">
+    <label for="fe-company-name">Organization name</label>
+    <input type="text" name="environment[name]" class="form-control" id="fe-company-name" placeholder="e.g. My Company Ltd">
+  </div>
+  <button type="submit" class="btn btn-primary">Signup</button>
+  <a href="#" class="pull-right signup-toggle">Already have an account? Log in!</a>
+</form>
