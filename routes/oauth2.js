@@ -1,8 +1,11 @@
 var express = require('express'),
     bodyparser = require('body-parser'),
     oauthserver = require('node-oauth2-server'),
-    Qs = require('qs');
+    Qs = require('qs'),
+    _ = require('underscore'),
+    Validator = require('jsonschema').Validator;
 
+var v = new Validator();
 
 var router = module.exports = express.Router();
 
@@ -38,7 +41,27 @@ router.route('/oauth2/authorize')
           next(null, req.body.allow === 'yes', req.session.user);
         }));
 
+var UserSchema = _.clone(require('../schemas/user')),
+    EnvironmentSchema = require('../schemas/environment');
 
+UserSchema.properties.environment = {'$ref': '/Environment'};
+
+v.addSchema(EnvironmentSchema, '/Environment');
+
+var replaceRegex = /\.(.*)/g,
+    splitRegex = /\.(.+)?/;
+
+router.route('/signup')
+        .post(bodyparser.json(), function(req, res, next) {
+          var report = v.validate(req.body, UserSchema, {propertyName: 'user'});
+          if (!report.valid) {
+            var errors = _.chain(report.errors).map(function(err) {
+              return [err.property.split(splitRegex)[1].replace(replaceRegex, '[$1]'), err.message];
+            }).object().value();
+            return res.status(400).render('signup-form.html', _.extend({errors: errors}, req.body));
+          }
+          return res.status(201).end();
+        });
 
 router.route('/login')
         .get(function(req, res, next) {

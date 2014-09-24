@@ -46,6 +46,9 @@ body {
   margin: 0px;
   padding: 10px;
 }
+.auth-container .login-form {
+  padding-top: 40px;
+}
 .auth-container form {
   padding: 10px;
 }

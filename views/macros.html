@@ -1,0 +1,9 @@
+{% macro field(name, label, type, placeholder, value, errors) %}
+<div class="form-group {% if errors[name] %}has-error has-feedback{% endif %}">
+  <label for="fe-{{name}}">{{label}}</label>
+  <input type="{{type}}" name="{{name}}" class="form-control" id="fe-{{name}}" placeholder="{{placeholder}}" value="{{value}}">
+  {% if errors[name] %}
+  <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+  {% endif %}
+</div>
+{% endmacro %}
