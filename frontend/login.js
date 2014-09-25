@@ -10,10 +10,14 @@ var signupContainer = Sizzle('.signup-container')[0],
     signupContainerClasses = ClassList(signupContainer),
     loginContainerClasses = ClassList(loginContainer);
 
-bean.on(document, 'click', '.signup-toggle', function(ev) {
-  ev.preventDefault();
+var toggleSignup = function() {
   signupContainerClasses.toggle('hide');
   loginContainerClasses.toggle('hide');
+};
+
+bean.on(document, 'click', '.signup-toggle', function(ev) {
+  ev.preventDefault();
+  toggleSignup();
 });
 
 var inputAsKeyValuePair = function(el) {
@@ -25,7 +29,9 @@ bean.on(document, 'submit', '.signup-form', function(ev) {
   var form = ev.currentTarget;
   var data = qs.parse(Sizzle('input[name]', form).map(inputAsKeyValuePair).join('&'));
   axios.post(form.action, data).then(function(resp) {
-    console.log('success', resp);
+    toggleSignup();
+    Sizzle('.login-form [name="email"]')[0].value = resp.data.email;
+    Sizzle('.login-form [name="password"]')[0].focus();
   }).catch(function(resp) {
     if (resp.status === 400) {
       var div = document.createElement('div');

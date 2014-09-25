@@ -2,11 +2,11 @@
 
 <form class="signup-form" role="form" method="POST" action="/signup">
   <h3>User details</h3>
-  {{ macros.field('name', 'Name', 'text', 'e.g. Chuck Norris', name, errors) }}
-  {{ macros.field('email', 'Email address', 'email', 'e.g. chuck.norris@mycompany.com', email, errors) }}
-  {{ macros.field('password', 'Password', 'password', 'Password', '', errors) }}
+  {{ macros.field('name', 'Name', 'text', 'e.g. Chuck Norris', name, errors, true) }}
+  {{ macros.field('email', 'Email address', 'email', 'e.g. chuck.norris@mycompany.com', email, errors, true) }}
+  {{ macros.field('password', 'Password', 'password', 'Password', '', errors, true) }}
   <h3>Organization details</h3>
-  {{ macros.field('environment[name]', 'Organization name', 'text', 'e.g. My Company Ltd', environment.name, errors) }}
+  {{ macros.field('environment[name]', 'Organization name', 'text', 'e.g. My Company Ltd', environment.name, errors, true) }}
   <button type="submit" class="btn btn-primary">Signup</button>
   <a href="#" class="pull-right signup-toggle">Already have an account? Log in!</a>
 </form>

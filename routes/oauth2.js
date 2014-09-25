@@ -53,14 +53,23 @@ var replaceRegex = /\.([^\.]+)/g,
 
 router.route('/signup')
         .post(bodyparser.json(), function(req, res, next) {
+          var renderError = function(errors) {
+            return res.status(400).render('signup-form.html', _.extend({errors: errors}, req.body));
+          };
           var report = v.validate(req.body, UserSchema, {propertyName: 'user'});
           if (!report.valid) {
             var errors = _.chain(report.errors).map(function(err) {
               return [err.property.split(splitRegex)[1].replace(replaceRegex, '[$1]'), err.message];
             }).object().value();
-            return res.status(400).render('signup-form.html', _.extend({errors: errors}, req.body));
+            return renderError(errors);
           }
-          return res.status(201).end();
+          var User = req.app.get('bookshelf').models.User;
+          User.exists({email: req.body.email}).then(function(exists) {
+            if (exists) return renderError({email: 'is already registered'});
+            return User.signupWithEnvironment(req.body).then(function(user) {
+              res.send(201, user.decorate());
+            });
+          }).catch(next);
         });
 
 router.route('/login')

@@ -43,7 +43,8 @@
     "express-session": "~1.8.2",
     "bean": "~1.0.14",
     "class-list": "~0.1.1",
-    "sizzle": "~2.0.0"
+    "sizzle": "~2.0.0",
+    "bluebird": "~2.3.2"
   },
   "devDependencies": {
     "jsxgettext": "~0.4.10",

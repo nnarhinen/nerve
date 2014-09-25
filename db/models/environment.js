@@ -1,6 +1,6 @@
 module.exports = function(Bookshelf) {
-  Bookshelf.models.Session = Bookshelf.Model.extend({
-    tableName: 'sessions',
+  Bookshelf.models.Environment = Bookshelf.Model.extend({
+    tableName: 'environments',
     hasTimestamps: ['created_at', 'updated_at']
   });
 };
