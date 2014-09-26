@@ -9,3 +9,4 @@ module.exports.models = {};
 require('./models/session')(Bookshelf);
 require('./models/environment')(Bookshelf);
 require('./models/user')(Bookshelf);
+require('./models/oauth')(Bookshelf);
