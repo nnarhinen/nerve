@@ -80,7 +80,4 @@ app.get('/api/*', function(req, res, next) {
   res.status(400).send({error: 'Auth required'});
 });*/
 
-
-var server = app.listen(process.env.PORT || 3000, function() {
-  console.log('Listening on port %d', server.address().port);
-});
+module.exports = app;

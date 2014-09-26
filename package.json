@@ -10,7 +10,7 @@
     "syncpo": "PATH=\"$PATH:/usr/local/opt/gettext/bin\" merge-po locale",
     "start": "node app.js",
     "migrate": "knex migrate:latest",
-    "dev-server": "supervisor -e js,html app.js"
+    "dev-server": "supervisor -e js,html server.js"
   },
   "author": "Niklas Närhinen <niklas@narhinen.net>",
   "license": "AGPLv3",
@@ -44,11 +44,14 @@
     "bean": "~1.0.14",
     "class-list": "~0.1.1",
     "sizzle": "~2.0.0",
-    "bluebird": "~2.3.2"
+    "bluebird": "~2.3.2",
+    "node-uuid": "~1.4.1"
   },
   "devDependencies": {
     "jsxgettext": "~0.4.10",
     "sqlite3": "~2.2.7",
-    "supervisor": "~0.6.0"
+    "supervisor": "~0.6.0",
+    "express-repl": "0.0.1",
+    "repl-promised": "~0.1.0"
   }
 }
