@@ -38,7 +38,9 @@ app.use(i18n.abide({
 
 app.use(session({
   store: new BookshelfStore({model: bookshelf.models.Session}),
-  secret: 'asdei32fa'
+  secret: 'asdei32fa',
+  resave: true,
+  saveUninitialized: false
 }));
 
 var jedifyWithLang = function(lang) {
