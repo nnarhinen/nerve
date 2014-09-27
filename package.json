@@ -45,7 +45,8 @@
     "class-list": "~0.1.1",
     "sizzle": "~2.0.0",
     "bluebird": "~2.3.2",
-    "node-uuid": "~1.4.1"
+    "node-uuid": "~1.4.1",
+    "connect-bookshelf": "0.0.1"
   },
   "devDependencies": {
     "jsxgettext": "~0.4.10",

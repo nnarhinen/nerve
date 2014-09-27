@@ -67,7 +67,7 @@ router.route('/signup')
           User.exists({email: req.body.email}).then(function(exists) {
             if (exists) return renderError({email: 'is already registered'});
             return User.signupWithEnvironment(req.body).then(function(user) {
-              res.send(201, user.decorate());
+              res.status(201).send(user.decorate());
             });
           }).catch(next);
         });
