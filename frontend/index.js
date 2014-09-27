@@ -11,7 +11,8 @@ var React = require('react'),
     ActiveState = ReactRouter.ActiveState,
     Pages = require('./pages'),
     axios = require('axios'),
-    i18n = requirePo('../locale/%s/LC_MESSAGES/messages.po');
+    i18n = requirePo('../locale/%s/LC_MESSAGES/messages.po'),
+    hello = require('hellojs');
 
 var MenuItem = React.createClass({
   mixins: [ActiveState],
@@ -74,6 +75,9 @@ var App = React.createClass({
           }
 });
 
+
+
+/*
 axios.get('/api/whoami').success(function(data) {
   React.renderComponent(<App />, document.body);
 }).error(function(data, st) {
@@ -83,4 +87,25 @@ axios.get('/api/whoami').success(function(data) {
     alert('Error loading application, please try again later');
   }
 });
+*/
 
+
+
+hello.init({
+  nerve: {
+    oauth: {
+      version: 2,
+      auth: '/oauth2/authorize',
+      base: '/oauth2/token'
+    }
+  }
+});
+
+hello.init({
+  nerve: process.env.NERVE_OAUTH_CLIENT_ID
+});
+
+var auth = hello('insense').getAuthResponse();
+if (!auth || !auth.access_token) {
+  hello.login('nerve', {display: 'page'});
+}

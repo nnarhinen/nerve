@@ -56,7 +56,7 @@ var compileStylus = function(str, path) {
 };
 
 languages.forEach(function(lang) {
-  app.get('/js/application.' + lang + '.js', browserify('./frontend/index.' + lang + '.js', {transform: ['reactify', jedifyWithLang(lang)], 'jedify-lang': lang}));
+  app.get('/js/application.' + lang + '.js', browserify('./frontend/index.' + lang + '.js', {transform: ['reactify', jedifyWithLang(lang), 'envify']}));
 });
 app.get('/js/login.js', browserify('./frontend/login.js'));
 
