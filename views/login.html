@@ -4,12 +4,15 @@
 <div class="login-container">
   <h2>Login</h2>
   <form role="form" method="POST" action="/login" class="login-form">
+    {% if failedLogin %}
+    <div class="alert alert-danger" role="alert">{{ gettext('Invalid email or password') }}</div>
+    {% endif %}
     <input type="hidden" name="redirect" value="{{redirect}}">
     <input type="hidden" name="redirect_uri" value="{{redirect_uri}}">
     <input type="hidden" name="client_id" value="{{client_id}}">
     <div class="form-group">
       <label for="fe-email">Email address</label>
-      <input type="email" name="email" class="form-control" id="fe-email" placeholder="Enter email">
+      <input type="email" name="email" class="form-control" id="fe-email" value="{{email}}" placeholder="Enter email">
     </div>
     <div class="form-group">
       <label for="fe-password">Password</label>

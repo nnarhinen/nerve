@@ -28,6 +28,15 @@ module.exports = function(Bookshelf) {
           return self.forge(params).save();
         });
       });
+    },
+    login: function(email, password) {
+      return this.forge({email: email}).fetch().then(function(user) {
+        if (!user) return null;
+        return bcrypt.compareAsync(password, user.get('password_hash')).then(function(valid) {
+          if (!valid) return null;
+          return user;
+        });
+      });
     }
   });
 };

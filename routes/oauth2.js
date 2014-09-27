@@ -80,4 +80,18 @@ router.route('/login')
             client_id: req.query.client_id,
             redirect_uri: req.query.redirect_uri
           });
+        })
+        .post(function(req, res, next) {
+          var User = req.app.get('bookshelf').models.User;
+          User.login(req.body.email, req.body.password).then(function(user) {
+            if (!user) return res.status(400).render('login.html', {
+              redirect: req.body.redirect,
+              client_id: req.body.client_id,
+              redirect_uri: req.body.redirect_uri,
+              failedLogin: true,
+              email: req.body.email
+            });
+            req.session.user = user.toJSON();
+            res.redirect((req.body.redirect || '/app') + '?' + Qs.stringify({client_id: req.body.client_id, redirect_uri: req.body.redirect_uri}))
+          }).catch(next);
         });
