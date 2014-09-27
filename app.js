@@ -11,7 +11,8 @@ var express = require('express'),
     env = require('node-env-file'),
     fs = require('fs'),
     session = require('express-session'),
-    BookshelfStore = require('connect-bookshelf')(session);
+    BookshelfStore = require('connect-bookshelf')(session),
+    util = require('util');
 
 
 var envFile = path.join(__dirname, 'development.env');
@@ -20,6 +21,11 @@ if (fs.existsSync(envFile)) {
 }
 
 var languages = ['en', 'fi'];
+
+app.locals.sprintf = function() {
+  return util.format.apply(util, arguments);
+};
+
 
 nunjucks.configure('views', {
   autoescape: true,

@@ -10,13 +10,14 @@ var v = new Validator();
 var router = module.exports = express.Router();
 
 var oauth = router.oauth2 = oauthserver({
-  model: {}, // See below for specification
-  grants: ['password'],
-  debug: process.env.NODE_ENVIRONMENT === 'development'
+  model: require('./oauth2-server-model'), // See below for specification
+  grants: ['authorization_code', 'refresh_token'],
+  debug: process.env.NODE_ENVIRONMENT !== 'production',
+  passthroughErrors: true
 });
 
 router.use(bodyparser.urlencoded({extended: true}));
-router.all('/oauth2/token', oauth.grant());
+router.all('/oauth/token', oauth.grant());
 
 var redirectIfNoLogin = function(req, res, next) {
   if (!req.session.user) {
@@ -30,11 +31,16 @@ var redirectIfNoLogin = function(req, res, next) {
   next();
 };
 
-router.route('/oauth2/authorize')
+router.route('/oauth/authorize')
         .get(redirectIfNoLogin, function(req, res, next) {
-          res.render('authorize.html', {
-            client_id: req.query.client_id,
-            redirect_uri: req.query.redirect_uri
+          oauth.model.getClient(req.query.client_id, null, function(err, client) {
+            if (err) return next(err);
+            res.render('authorize.html', {
+              client_id: req.query.client_id,
+              redirect_uri: req.query.redirect_uri,
+              response_type: req.query.response_type,
+              client: client
+            });
           });
         })
         .post(redirectIfNoLogin, oauth.authCodeGrant(function(req, next) {
@@ -95,3 +101,13 @@ router.route('/login')
             res.redirect((req.body.redirect || '/app') + '?' + Qs.stringify({client_id: req.body.client_id, redirect_uri: req.body.redirect_uri}))
           }).catch(next);
         });
+
+router.route('/logout')
+      .get(function(req, res, next) {
+        req.session.destroy();
+        res.redirect('/');
+      });
+
+if (process.env.NODE_ENVIRONMENT === 'production') {
+  router.use(oauth.errorHandler())
+}

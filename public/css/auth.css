@@ -52,3 +52,9 @@ body {
 .auth-container form {
   padding: 10px;
 }
+.auth-container .inner {
+  padding: 10px;
+}
+.auth-container .question {
+  text-align: center;
+}

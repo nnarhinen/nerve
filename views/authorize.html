@@ -1,5 +1,22 @@
 {% extends 'auth.html' %}
 
 {% block content %}
-<h3>{{ client.name }}</h3>
+<h2>{{ gettext('Authorize access') }}</h2>
+<form method="POST" action="/oauth/authorize">
+  <input type="hidden" name="client_id" value="{{client_id}}">
+  <input type="hidden" name="redirect_uri" value="{{redirect_uri}}">
+  <input type="hidden" name="response_type" value="{{response_type}}">
+  <h3><em>{{ client.name }}</em> {{ gettext('would like to connect your account') }}</h3>
+  <p>
+    {{ sprintf(gettext('The application %s would like to access your account information and be able to use the service as you.'), client.name) }}
+  </p>
+  <p>&nbsp;</p>
+  <p class="question">
+    {{ sprintf(gettext('Allow %s access?'), client.name) }}
+  </p>
+  <p class="question">
+    <button class="btn btn-secondary" type="submit" name="allow" value="no">{{ gettext('Deny') }}</button>
+    <button class="btn btn-primary" type="submit" name="allow" value="yes">{{ gettext('Allow') }}</button>
+  </p>
+</form>
 {% endblock %}

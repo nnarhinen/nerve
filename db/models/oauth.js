@@ -3,6 +3,7 @@ var uuid = require('node-uuid');
 module.exports = function(Bookshelf) {
   var OAuthClient = Bookshelf.Model.extend({
     tableName: 'oauth_clients',
+    hasTimestamps: ['created_at', 'updated_at'],
     initialize: function() {
       this.on('creating', this.onCreate);
     },
@@ -16,5 +17,23 @@ module.exports = function(Bookshelf) {
     }
   });
 
+  var OAuthAuthCode = Bookshelf.Model.extend({
+    tableName: 'oauth_auth_codes',
+    hasTimestamps: ['created_at', 'updated_at']
+  });
+
+  var OAuthAccessToken = Bookshelf.Model.extend({
+    tableName: 'oauth_access_tokens',
+    hasTimestamps: ['created_at', 'updated_at']
+  });
+
+  var OAuthRefreshToken = Bookshelf.Model.extend({
+    tableName: 'oauth_refresh_tokens',
+    hasTimestamps: ['created_at', 'updated_at']
+  });
+
   Bookshelf.models.OAuthClient = OAuthClient;
+  Bookshelf.models.OAuthAuthCode = OAuthAuthCode;
+  Bookshelf.models.OAuthAccessToken = OAuthAccessToken;
+  Bookshelf.models.OAuthRefreshToken = OAuthRefreshToken;
 };
