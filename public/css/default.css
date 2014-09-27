@@ -15,3 +15,9 @@
 .navmenu.navmenu-default.navmenu-fixed-left.offcanvas-sm.show {
   padding-top: 60px;
 }
+.app-loading {
+  width: 100%;
+  padding-top: 40%;
+  text-align: center;
+  color: #3b5323;
+}
