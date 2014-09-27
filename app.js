@@ -42,13 +42,6 @@ app.use(i18n.abide({
   locale_on_url: true
 }));
 
-app.use(session({
-  store: new BookshelfStore({model: bookshelf.models.Session}),
-  secret: 'asdei32fa',
-  resave: true,
-  saveUninitialized: false
-}));
-
 var jedifyWithLang = function(lang) {
   return function(file) {
     return jedify(file, { 'lang': lang });
@@ -69,15 +62,66 @@ app.get('/js/login.js', browserify('./frontend/login.js'));
 app.use(stylus.middleware({src: __dirname + '/public', compile: compileStylus}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', require('./routes/oauth2'));
-app.use('/api', require('./routes/api'));
-
 app.get('/', function(req, res) {
   res.render('index.html');
 });
 
-app.get('/app/*', function(req, res) {
-  res.render('app.html');
+
+app.use('/api', require('./routes/api'));
+
+app.use(session({
+  store: new BookshelfStore({model: bookshelf.models.Session}),
+  secret: 'asdei32fa',
+  resave: true,
+  saveUninitialized: false
+}));
+
+app.use('/', require('./routes/oauth2'));
+
+var oauth2 = require('simple-oauth2')({
+  clientID: process.env.NERVE_OAUTH_CLIENT_ID,
+  clientSecret: process.env.NERVE_OAUTH_CLIENT_SECRET,
+  site: process.env.NERVE_ENDPOINT,
+  tokenPath: '/oauth/token'
+});
+
+var authorizationUri = oauth2.AuthCode.authorizeURL({
+  redirect_uri: process.env.NERVE_OAUTH_REDIRECT_URI
+});
+
+app.get('/callback/nerve', function(req, res, next) {
+  var code = req.query.code;
+  oauth2.AuthCode.getToken({
+    code: code,
+    redirect_uri: process.env.NERVE_OAUTH_REDIRECT_URI
+  }, function(err, result) {
+    if (err) return next(err);
+    var token = oauth2.AccessToken.create(result);
+    req.session.oauth2 = token.token;
+    res.redirect('/app/');
+  });
+});
+
+app.get('/app/*', function(req, res, next) {
+  if (!req.session.oauth2 || !req.session.oauth2.access_token) {
+    return res.redirect(authorizationUri);
+  }
+  var token = oauth2.AccessToken.create(req.session.oauth2);
+  console.log('is token expired?', token.expired());
+  if (token.expired()) {
+    return token.refresh(function(err, result) {
+      if (err) return next(err);
+      req.session.oauth2 = result;
+      render();
+    });
+  }
+  render();
+
+  function render() {
+    res.render('app.html', {
+      accessToken: req.session.oauth2.access_token
+    });
+  };
 });
 
 /*

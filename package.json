@@ -48,7 +48,8 @@
     "node-uuid": "~1.4.1",
     "connect-bookshelf": "0.0.1",
     "hellojs": "git://github.com/nnarhinen/hello.js#commonjs",
-    "envify": "~3.0.0"
+    "envify": "~3.0.0",
+    "simple-oauth2": "~0.2.0"
   },
   "devDependencies": {
     "jsxgettext": "~0.4.10",

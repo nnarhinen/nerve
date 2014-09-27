@@ -75,7 +75,8 @@ var App = React.createClass({
           }
 });
 
-
+var bearerToken = oauthAccessToken;
+console.log(bearerToken);
 
 /*
 axios.get('/api/whoami').success(function(data) {
@@ -88,24 +89,23 @@ axios.get('/api/whoami').success(function(data) {
   }
 });
 */
-
-
-
+/*
 hello.init({
   nerve: {
     oauth: {
       version: 2,
       auth: '/oauth2/authorize',
-      base: '/oauth2/token'
-    }
+      grant: '/oauth2/token',
+      response_type: 'code'
+    },
   }
 });
 
 hello.init({
   nerve: process.env.NERVE_OAUTH_CLIENT_ID
 });
-
-var auth = hello('insense').getAuthResponse();
+debugger;
+var auth = hello('nerve').getAuthResponse();
 if (!auth || !auth.access_token) {
-  hello.login('nerve', {display: 'page'});
-}
+  hello.login('nerve', {display: 'page', response_type: 'code'});
+  }*/
