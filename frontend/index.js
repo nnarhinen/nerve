@@ -12,7 +12,7 @@ var React = require('react'),
     Pages = require('./pages'),
     axios = require('axios'),
     i18n = requirePo('../locale/%s/LC_MESSAGES/messages.po'),
-    hello = require('hellojs');
+    Flux = require('delorean.js').Flux;
 
 var MenuItem = React.createClass({
   mixins: [ActiveState],
@@ -31,8 +31,29 @@ var MenuItem = React.createClass({
   }
 });
 
+var SettingsStore = Flux.createStore({
+  actions: {
+  },
+  loading: true,
+  getState: function() {
+    return {
+      loading: this.loading
+    };
+  }
+});
+
+var settingsStore = new SettingsStore();
+
+var AppDispatcher = Flux.createDispatcher({
+  getStores: function() {
+    return {
+      settings: settingsStore
+    };
+  }
+});
 
 var App = React.createClass({
+  mixins: [Flux.mixins.storeListener],
   onNavButtonClick: function() {
     this.setState({menuVisible: !this.state.menuVisible});
   },
@@ -40,6 +61,15 @@ var App = React.createClass({
     return {};
   },
   render: function() {
+            if (this.getStore('settings').loading) {
+              return (
+                <div className="app-loading">
+                  <i className="fa fa-5x fa-spin fa-circle-o-notch"></i>
+                  <br />
+                  Loading settings
+                </div>
+                );
+            }
             var menuClass = 'navmenu navmenu-default navmenu-fixed-left offcanvas-sm';
             if (this.state.menuVisible) menuClass += ' show';
             return (
@@ -76,36 +106,5 @@ var App = React.createClass({
 });
 
 var bearerToken = oauthAccessToken;
-console.log(bearerToken);
 
-/*
-axios.get('/api/whoami').success(function(data) {
-  React.renderComponent(<App />, document.body);
-}).error(function(data, st) {
-  if (st === 401) {
-    alert('login needed');
-  } else {
-    alert('Error loading application, please try again later');
-  }
-});
-*/
-/*
-hello.init({
-  nerve: {
-    oauth: {
-      version: 2,
-      auth: '/oauth2/authorize',
-      grant: '/oauth2/token',
-      response_type: 'code'
-    },
-  }
-});
-
-hello.init({
-  nerve: process.env.NERVE_OAUTH_CLIENT_ID
-});
-debugger;
-var auth = hello('nerve').getAuthResponse();
-if (!auth || !auth.access_token) {
-  hello.login('nerve', {display: 'page', response_type: 'code'});
-  }*/
+React.renderComponent(<App bearerToken={bearerToken} dispatcher={AppDispatcher} />, document.body);
