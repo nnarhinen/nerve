@@ -12,7 +12,8 @@ var React = require('react'),
     Pages = require('./pages'),
     axios = require('axios'),
     i18n = requirePo('../locale/%s/LC_MESSAGES/messages.po'),
-    Flux = require('delorean.js').Flux;
+    Flux = require('delorean.js').Flux,
+    api = require('./api');
 
 var MenuItem = React.createClass({
   mixins: [ActiveState],
@@ -33,12 +34,20 @@ var MenuItem = React.createClass({
 
 var SettingsStore = Flux.createStore({
   actions: {
+    'fetch:settings': 'fetch'
   },
   loading: true,
   getState: function() {
-    return {
-      loading: this.loading
-    };
+    if (this.loading) return {loading: true};
+    return this.settings;
+  },
+  fetch: function(bearerToken) {
+    var self = this;
+    api(bearerToken).settings().then(function(settings) {
+      self.loading = false;
+      self.settings = settings;
+      self.emit('change');
+    });
   }
 });
 
@@ -49,8 +58,17 @@ var AppDispatcher = Flux.createDispatcher({
     return {
       settings: settingsStore
     };
+  },
+  fetchSettings: function(bearerToken) {
+    this.dispatch('fetch:settings', bearerToken);
   }
 });
+
+var SettingsActions = {
+  fetch: function() {
+    AppDispatcher.fetchSettings();
+  }
+};
 
 var App = React.createClass({
   mixins: [Flux.mixins.storeListener],
@@ -59,6 +77,9 @@ var App = React.createClass({
   },
   getInitialState: function() {
     return {};
+  },
+  componentWillMount: function() {
+    this.props.dispatcher.fetchSettings(this.props.bearerToken);
   },
   render: function() {
             if (this.getStore('settings').loading) {
