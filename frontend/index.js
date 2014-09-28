@@ -103,6 +103,7 @@ var App = React.createClass({
                   <Routes>
                     <Route name="dashboard" path="/" handler={Pages.Dashboard} />
                     <Route name="customers" path="/customers" handler={Pages.Customers} />
+                    <Route name="settings" path="/settings" handler={Pages.Settings} />
                     <NotFound handler={Pages.NotFound} />
                   </Routes>
                 </div>
@@ -111,6 +112,7 @@ var App = React.createClass({
                   <ul className="nav navmenu-nav">
                     <MenuItem to="dashboard">{ i18n.gettext('Dashboard') }</MenuItem>
                     <MenuItem to="customers">{ i18n.gettext('Customers') }</MenuItem>
+                    <MenuItem to="settings">{ i18n.gettext('Settings') }</MenuItem>
                   </ul>
                 </div>
                 <div className="navbar navbar-default navbar-fixed-top hidden-md hidden-lg">
