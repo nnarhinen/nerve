@@ -6,7 +6,7 @@ var React = require('react'),
     Flux = require('delorean.js').Flux,
     i18n = requirePo('../../locale/%s/LC_MESSAGES/messages.po'),
     _ = require('underscore'),
-    SettinsActions = require('../actions/settings-actions');
+    SettingsActions = require('../actions/settings-actions');
 
 module.exports = React.createClass({
   mixins: [Flux.mixins.storeListener],

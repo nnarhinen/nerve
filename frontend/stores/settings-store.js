@@ -1,5 +1,6 @@
 var Flux = require('delorean.js').Flux,
-    _ = require('underscore');
+    _ = require('underscore'),
+    api = require('../api');
 
 var SettingsStore = module.exports = Flux.createStore({
   actions: {

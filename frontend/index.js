@@ -5,7 +5,7 @@
 var React = require('react'),
     ReactRouter = require('react-router'),
     Routes = ReactRouter.Routes,
-    Route = ReactRouter.Route
+    Route = ReactRouter.Route,
     NotFound = ReactRouter.NotFoundRoute,
     Link = ReactRouter.Link,
     ActiveState = ReactRouter.ActiveState,
