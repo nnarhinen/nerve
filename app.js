@@ -12,6 +12,7 @@ var express = require('express'),
     fs = require('fs'),
     session = require('express-session'),
     BookshelfStore = require('connect-bookshelf')(session),
+    _ = require('underscore'),
     util = require('util');
 
 
@@ -97,7 +98,7 @@ app.get('/callback/nerve', function(req, res, next) {
   }, function(err, result) {
     if (err) return next(err);
     var token = oauth2.AccessToken.create(result);
-    req.session.oauth2 = token.token;
+    req.session.oauth2 = _.omit(token.token, 'expires_in');
     res.redirect('/app/');
   });
 });
@@ -106,15 +107,18 @@ app.get('/app/*', function(req, res, next) {
   if (!req.session.oauth2 || !req.session.oauth2.access_token) {
     return res.redirect(authorizationUri);
   }
-  var token = oauth2.AccessToken.create(req.session.oauth2);
-  console.log('is token expired?', token.expired());
+  var tokenData = _.extend({
+    expires_in: (new Date(req.session.oauth2.expires_at).getTime() - new Date().getTime()) / 1000
+  }, _.omit(req.session.oauth2, 'expires_at'));
+  var token = oauth2.AccessToken.create(tokenData);
   if (token.expired()) {
     return token.refresh(function(err, result) {
       if (err) return next(err);
-      req.session.oauth2 = result;
+      //var token = oauth2.AccessToken.create(result);
+      req.session.oauth2 = _.omit(token.token, 'expires_in');
       render();
     });
-  }
+    }
   render();
 
   function render() {

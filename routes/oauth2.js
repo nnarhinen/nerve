@@ -22,9 +22,7 @@ router.all('/oauth/token', oauth.grant());
 var redirectIfNoLogin = function(req, res, next) {
   if (!req.session.user) {
     var params = {
-      redirect: req.path,
-      client_id: req.query.client_id,
-      redirect_uri: req.query.redirect_uri
+      redirect: req.originalUrl
     };
     return res.redirect('/login?' + Qs.stringify(params));
   }
@@ -98,7 +96,7 @@ router.route('/login')
               email: req.body.email
             });
             req.session.user = user.toJSON();
-            res.redirect((req.body.redirect || '/app') + '?' + Qs.stringify({client_id: req.body.client_id, redirect_uri: req.body.redirect_uri}))
+            res.redirect(req.body.redirect || '/app')
           }).catch(next);
         });
 
