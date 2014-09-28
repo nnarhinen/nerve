@@ -36,7 +36,14 @@
   color: #3b5323;
   font-family: 'Rock Salt', cursive;
 }
+.navmenu-default .navmenu-nav > li > a:hover {
+  color: #3b5323;
+}
 .navmenu-default .navmenu-nav > .active > a {
   background-color: #3b5323;
+  color: #fff;
+}
+.navmenu-default .navmenu-nav > .active > a:hover {
+  background-color: #4f6f2f;
   color: #fff;
 }

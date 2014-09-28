@@ -38,7 +38,13 @@
     font-family 'Rock Salt', cursive
 
   .navmenu-nav
+    > li
+      > a:hover
+        color mainColor
     > .active
       > a
         background-color mainColor
         color #fff
+        &:hover
+          background-color lighten(mainColor, 10%)
+          color #fff
