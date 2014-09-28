@@ -21,3 +21,22 @@
   text-align: center;
   color: #3b5323;
 }
+.navbar-default .navbar-brand {
+  color: #3b5323;
+  font-family: 'Rock Salt', cursive;
+}
+.navbar-default .navbar-toggle {
+  border-color: #e2753a;
+  color: #e2753a;
+}
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #e2753a;
+}
+.navmenu-default .navmenu-brand {
+  color: #3b5323;
+  font-family: 'Rock Salt', cursive;
+}
+.navmenu-default .navmenu-nav > .active > a {
+  background-color: #3b5323;
+  color: #fff;
+}
