@@ -13,7 +13,8 @@ var React = require('react'),
     axios = require('axios'),
     i18n = requirePo('../locale/%s/LC_MESSAGES/messages.po'),
     Flux = require('delorean.js').Flux,
-    api = require('./api');
+    api = require('./api'),
+    SettingsActions = require('./actions/settings-actions');
 
 var MenuItem = React.createClass({
   mixins: [ActiveState],
@@ -32,44 +33,6 @@ var MenuItem = React.createClass({
   }
 });
 
-var SettingsStore = Flux.createStore({
-  actions: {
-    'fetch:settings': 'fetch'
-  },
-  loading: true,
-  getState: function() {
-    if (this.loading) return {loading: true};
-    return this.settings;
-  },
-  fetch: function(bearerToken) {
-    var self = this;
-    api(bearerToken).settings().then(function(settings) {
-      self.loading = false;
-      self.settings = settings;
-      self.emit('change');
-    });
-  }
-});
-
-var settingsStore = new SettingsStore();
-
-var AppDispatcher = Flux.createDispatcher({
-  getStores: function() {
-    return {
-      settings: settingsStore
-    };
-  },
-  fetchSettings: function(bearerToken) {
-    this.dispatch('fetch:settings', bearerToken);
-  }
-});
-
-var SettingsActions = {
-  fetch: function() {
-    AppDispatcher.fetchSettings();
-  }
-};
-
 var App = React.createClass({
   mixins: [Flux.mixins.storeListener],
   onNavButtonClick: function() {
@@ -79,7 +42,8 @@ var App = React.createClass({
     return {};
   },
   componentWillMount: function() {
-    this.props.dispatcher.fetchSettings(this.props.bearerToken);
+    this.props.dispatcher.bearerToken = this.props.bearerToken;
+    SettingsActions.fetch();
   },
   render: function() {
             if (this.getStore('settings').loading) {
@@ -101,9 +65,9 @@ var App = React.createClass({
                 </div>
                 <div className="route-container">
                   <Routes>
-                    <Route name="dashboard" path="/" handler={Pages.Dashboard} />
-                    <Route name="customers" path="/customers" handler={Pages.Customers} />
-                    <Route name="settings" path="/settings" handler={Pages.Settings} />
+                    <Route name="dashboard" path="/" handler={Pages.Dashboard} dispatcher={this.props.dispatcher} />
+                    <Route name="customers" path="/customers" handler={Pages.Customers} dispatcher={this.props.dispatcher} />
+                    <Route name="settings" path="/settings" handler={Pages.Settings} dispatcher={this.props.dispatcher} />
                     <NotFound handler={Pages.NotFound} />
                   </Routes>
                 </div>
@@ -130,4 +94,4 @@ var App = React.createClass({
 
 var bearerToken = oauthAccessToken;
 
-React.renderComponent(<App bearerToken={bearerToken} dispatcher={AppDispatcher} />, document.body);
+React.renderComponent(<App bearerToken={bearerToken} dispatcher={require('./dispatchers/app-dispatcher')} />, document.body);
