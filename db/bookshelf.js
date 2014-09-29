@@ -11,3 +11,4 @@ require('./models/environment')(Bookshelf);
 require('./models/user')(Bookshelf);
 require('./models/oauth')(Bookshelf);
 require('./models/settings')(Bookshelf);
+require('./models/expenses')(Bookshelf);

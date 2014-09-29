@@ -4,7 +4,16 @@ var express = require('express'),
     expenses = require('./expenses'),
     settings = require('./api/settings'),
     bodyParser = require('body-parser'),
-    Maventa = require('node-maventa');
+    Maventa = require('node-maventa'),
+    AWS = require('aws-sdk'),
+    Promise = require('bluebird');
+
+AWS.config.accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+AWS.config.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+AWS.config.region = 'eu-west-1';
+
+var s3 = Promise.promisifyAll(new AWS.S3());
+
 
 router.use(oauth.authorise());
 router.use(bodyParser.json());
@@ -12,6 +21,7 @@ router.use(function(req, res, next) {
   var userId = req.user.id;
   var Bookshelf = req.app.get('bookshelf');
   Bookshelf.models.User.forge(req.user).fetch().then(function(user) {
+    req.s3 = s3;
     req.user = user;
     req.getEnvironmentSettings = function() {
       var model = Bookshelf.models.Settings.forge({environment_id: req.user.get('environment_id')});
