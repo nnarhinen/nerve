@@ -1,4 +1,5 @@
-var axios = require('axios');
+var axios = require('axios'),
+    Promise = require('bluebird');
 
 function Api(bearerToken) {
   this.bearerToken = bearerToken;
@@ -13,12 +14,12 @@ var processOpts = function(bearerToken, opts) {
 
 Api.prototype.get = function(url, opts) {
   opts = processOpts(this.bearerToken, opts);
-  return axios.get(url, opts);
+  return Promise.resolve(axios.get(url, opts));
 };
 
 Api.prototype.put = function(url, data, opts) {
   opts = processOpts(this.bearerToken, opts);
-  return axios.put(url, data, opts);
+  return Promise.resolve(axios.put(url, data, opts));
 };
 
 

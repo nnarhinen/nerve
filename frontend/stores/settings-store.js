@@ -4,33 +4,27 @@ var Flux = require('delorean.js').Flux,
 
 var SettingsStore = module.exports = Flux.createStore({
   actions: {
-    'settings:fetch': 'fetch',
-    'settings:change': 'changeSettings'
-  },
-  initialize: function() {
-    this.saveToBackendDelayed = _.debounce(this.saveToBackend, 1000)
+    'settings:reset': 'reset',
+    'settings:change': 'changeSettings',
+    'settings:save': 'saveToBackend'
   },
   loading: true,
   getState: function() {
     if (this.loading) return {loading: true};
     return this.settings;
   },
-  fetch: function(bearerToken) {
-    var self = this;
-    api(bearerToken).settings().then(function(settings) {
-      self.loading = false;
-      self.settings = settings;
-      self.emit('change');
-    });
+  reset: function(settings) {
+    this.loading = false;
+    this.settings = settings;
+    this.emitChange();
   },
   changeSettings: function(data) {
     this.settings[data.name] = data.value;
-    this.emit('change');
-    this.saveToBackendDelayed(data);
+    this.emitChange();
   },
-  saveToBackend: function(data) {
+  saveToBackend: function(bearerToken) {
     var self = this;
-    api(data.bearerToken).updateSettings(_.extend({}, this.settings, _.object([[data.name, data.value]]))).then(function(settings) {
+    return api(bearerToken).updateSettings(this.settings).then(function(settings) {
       self.settings = settings;
       self.emit('change');
     });

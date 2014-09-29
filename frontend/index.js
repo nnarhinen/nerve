@@ -14,7 +14,12 @@ var React = require('react'),
     i18n = requirePo('../locale/%s/LC_MESSAGES/messages.po'),
     Flux = require('delorean.js').Flux,
     api = require('./api'),
-    SettingsActions = require('./actions/settings-actions');
+    SettingsActions = require('./actions/settings-actions'),
+    Promise = require('bluebird');
+
+Promise.onPossiblyUnhandledRejection(function(e, promise) {
+  throw e;
+});
 
 var MenuItem = React.createClass({
   mixins: [ActiveState],
@@ -30,6 +35,13 @@ var MenuItem = React.createClass({
     var className = this.state.isActive ? 'active' : '';
     var link = Link(this.props);
     return <li className={className}>{link}</li>;
+  }
+});
+
+var Notification = React.createClass({
+  render: function() {
+    var className = "alert alert-" + this.props.state;
+    return <div className={className}>{this.props.message}</div>
   }
 });
 
@@ -86,6 +98,11 @@ var App = React.createClass({
                     <span className="icon-bar"></span>
                   </button>
                   <a className="navbar-brand" href="#">Nerve</a>
+                </div>
+                <div className="notification-area">
+                  {this.getStore('notifications').notifications.map(function(notification) {
+                    return <Notification key={notification.id} state={notification.state} message={notification.message} />
+                  })}
                 </div>
               </div>
               );
