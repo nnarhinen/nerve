@@ -3,9 +3,15 @@
  */
 
 var React = require('react'),
-    i18n = requirePo('../../locale/%s/LC_MESSAGES/messages.po');
+    Flux = require('delorean.js').Flux,
+    i18n = requirePo('../../locale/%s/LC_MESSAGES/messages.po'),
+    InboundInvoiceActions = require('../actions/inbound-invoice-actions');
 
 module.exports = React.createClass({
+  mixins: [Flux.mixins.storeListener],
+  componentWillMount: function() {
+    InboundInvoiceActions.fetch();
+  },
   render: function() {
             return (
               <div className="container-fluid">
@@ -17,9 +23,11 @@ module.exports = React.createClass({
                       <div className="panel-heading">
                         <h4 className="panel-title">{ i18n.gettext('Pending invoices') }</h4>
                       </div>
-                      <div className="panel-body">
-                        <i className="fa fa-spin fa-circle-o-notch"></i>
-                      </div>
+                      {this.getStore('inboundInvoices').loading ?
+                        <div className="panel-body"><i className="fa fa-spin fa-circle-o-notch"></i></div> :
+                        <table className="table">
+                        </table>
+                      }
                     </div>
                     <div className="panel panel-default">
                       <div className="panel-heading">

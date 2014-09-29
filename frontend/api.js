@@ -33,7 +33,13 @@ Api.prototype.updateSettings = function(data) {
   return this.put('/api/settings', data).then(function(resp) {
     return resp.data;
   });
-}
+};
+
+Api.prototype.inboundInvoices = function() {
+  return this.get('/api/expenses/pending').then(function(resp) {
+    return resp.data;
+  });
+};
 
 module.exports = function(bearerToken) {
   return new Api(bearerToken);
