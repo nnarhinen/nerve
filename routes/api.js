@@ -3,7 +3,8 @@ var express = require('express'),
     oauth = require('./oauth2').oauth2,
     expenses = require('./expenses'),
     settings = require('./api/settings'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    Maventa = require('node-maventa');
 
 router.use(oauth.authorise());
 router.use(bodyParser.json());
@@ -19,6 +20,12 @@ router.use(function(req, res, next) {
         return sett;
       });
     }
+    req.maventaClient = function() {
+      return req.getEnvironmentSettings().then(function(sett) {
+        //return new Maventa(process.env.MAVENTA_VENDOR_API_KEY, sett.get('maventa_api_key'), sett.get('maventa_company_uuid'), process.env.NODE_ENVIRONMENT !== 'production');
+        return new Maventa(process.env.MAVENTA_VENDOR_API_KEY, sett.get('maventa_api_key'), sett.get('maventa_company_uuid'));
+      });
+    };
     next();
   }).catch(next);
 });
