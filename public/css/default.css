@@ -48,3 +48,8 @@
   background-color: #4f6f2f;
   color: #fff;
 }
+@media (max-width: 990px) {
+  .route-container {
+    width: 100%;
+  }
+}
