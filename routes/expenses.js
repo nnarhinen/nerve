@@ -11,9 +11,12 @@ module.exports = {
     var Expense = req.app.get('bookshelf').models.Expense;
 
     var listAllExpenses = function() {
-      Expense.where({
-        environment_id: req.user.get('environment_id'),
-        status: 'unpaid'
+      Expense.query(function(qb) {
+        qb.where({
+          environment_id: req.user.get('environment_id'),
+          status: 'unpaid'
+        });
+        qb.orderBy('due_date');
       }).fetchAll({withRelated: ['supplier', 'attachments']}).then(function(col) {
         res.send(col.toJSON());
       });
