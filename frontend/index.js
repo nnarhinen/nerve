@@ -78,6 +78,7 @@ var App = React.createClass({
                 <div className="route-container">
                   <Routes>
                     <Route name="dashboard" path="/" handler={Pages.Dashboard} dispatcher={this.props.dispatcher} />
+                    <Route name="expenses" path="/expenses" handler={Pages.Expenses} />
                     <Route name="customers" path="/customers" handler={Pages.Customers} dispatcher={this.props.dispatcher} />
                     <Route name="settings" path="/settings" handler={Pages.Settings} dispatcher={this.props.dispatcher} />
                     <NotFound handler={Pages.NotFound} />

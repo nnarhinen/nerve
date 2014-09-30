@@ -35,7 +35,7 @@ Api.prototype.updateSettings = function(data) {
   });
 };
 
-Api.prototype.inboundInvoices = function() {
+Api.prototype.pendingInboundInvoices = function() {
   return this.get('/api/expenses/pending').then(function(resp) {
     return resp.data;
   });

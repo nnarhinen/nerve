@@ -2,10 +2,10 @@ var AppDispatcher = require('../dispatchers/app-dispatcher'),
     api = require('../api');
 
 var InboundInvoiceActions = module.exports = {
-  fetch: function() {
+  fetchPending: function() {
     var bearerToken = AppDispatcher.bearerToken;
-    api(bearerToken).inboundInvoices().then(function(invoices) {
-      AppDispatcher.resetInboundInvoices(invoices);
+    api(bearerToken).pendingInboundInvoices().then(function(invoices) {
+      AppDispatcher.resetPendingInboundInvoices(invoices);
     });
   }
 };

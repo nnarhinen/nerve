@@ -3,15 +3,18 @@ var Flux = require('delorean.js').Flux,
 
 var InboundInvoiceStore = module.exports = Flux.createStore({
   actions: {
-    'inboundinvoices:reset': 'reset'
+    'inboundinvoices:reset:pending': 'resetPending'
   },
   loading: true,
   getState: function() {
     if (this.loading) return { loading: true };
-    return { invoices: this.invoices }
+    return {
+      invoices: this.invoices,
+      pending: this.pending
+    };
   },
-  reset: function(invoices) {
-    this.invoices = invoices;
+  resetPending: function(invoices) {
+    this.pending = invoices;
     this.loading = false;
     this.emitChange();
   }
