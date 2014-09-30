@@ -2,7 +2,9 @@ var moment = require('moment'),
     Promise = require('bluebird'),
     mmm = require('mmmagic'),
     Magic = mmm.Magic,
-    magic = Promise.promisifyAll(new Magic(mmm.MAGIC_MIME_TYPE));
+    magic = Promise.promisifyAll(new Magic(mmm.MAGIC_MIME_TYPE)),
+    debug = require('debug')('nerve:api:expenses'),
+    _ = require('underscore');
 
 module.exports = {
   pending: function(req,res,next) {
@@ -10,33 +12,52 @@ module.exports = {
     req.maventaClient().then(function(maventa) {
       return maventa.invoiceListInboundBetweenDates(moment().add(-3, 'months').toDate(), new Date()).then(function(resp) {
         return Promise.all(resp.map(function(inboundInvoice) {
+          debug
           return Expense.forge({intermediator_id: inboundInvoice.id, environment_id: req.user.get('environment_id')}).fetch().then(function(model) {
-            if (!model) {
-              //Fetch detailed information from Maventa
-              return maventa.inboundInvoiceShow(inboundInvoice.id, true).then(function(maventaInvoice) {
-                //Save attachments
-                return Promise.all(maventaInvoice.attachments.map(function(att) {
-                  return magic.detectAsync(att.file).then(function(mimeType) {
-                    var fileName = req.user.get('environment_id') + '/expenses/' + att.filename;
-                    return req.s3.putObjectAsync({
-                      Bucket: process.env.AWS_S3_BUCKET,
-                      Key: fileName,
-                      Body: att.file,
-                      ContentLength: att.file.length,
-                      ContentType: mimeType
-                    }).then(function() {
-                      return {attachmentType: att.attachment_type, s3Path: fileName};
-                    });
+            debug('Searched for expense with intermediator_id %s and environmen_id %s, found: %s', inboundInvoice.id, req.user.get('environment_id'), model ? model.id : 'nothing');
+            if (model) return model;
+            //Fetch detailed information from Maventa
+            return maventa.inboundInvoiceShow(inboundInvoice.id, true).then(function(maventaInvoice) {
+              //Save attachments
+              return Promise.all(maventaInvoice.attachments.map(function(att) {
+                return magic.detectAsync(att.file).then(function(mimeType) {
+                  var fileName = req.user.get('environment_id') + '/expenses/' + att.filename;
+                  return req.s3.putObjectAsync({
+                    Bucket: process.env.AWS_S3_BUCKET,
+                    Key: fileName,
+                    Body: att.file,
+                    ContentLength: att.file.length,
+                    ContentType: mimeType
+                  }).then(function() {
+                    return {type: att.attachment_type.toLowerCase(), s3Path: fileName};
                   });
-                })).then(function(s3Files) {
-                  //Here goes details saving from maventaInvoice
-                  console.log('s3Files', s3Files);
-                  model = Expense.forge({environment_id: req.user.get('environment_id')});
-                  return model;
                 });
+              })).then(function(s3files) {
+                //Here goes details saving from maventaInvoice
+                var account = _.find(maventaInvoice.accounts, function(acc) { return !!acc.iban; });
+                return Expense.createWithSupplierAndAttachments({
+                  environment_id: req.user.get('environment_id'),
+                  status: 'unpaid',
+                  iban: account && account.iban,
+                  bic: account && account.swift,
+                  reference_number: maventaInvoice.reference_nr,
+                  expense_date: moment(maventaInvoice.date, 'YYYYMMDD').toDate(),
+                  due_date: moment(maventaInvoice.date_due, 'YYYYMMDD').toDate(),
+                  expense_type: 'invoice',
+                  sum: Number(maventaInvoice.sum),
+                  intermediator: 'maventa',
+                  intermediator_info: maventaInvoice,
+                  intermediator_id: maventaInvoice.id
+                }, {
+                  name: maventaInvoice.company_name,
+                  business_id: maventaInvoice.company_bid,
+                  bic: account.swift,
+                  iban: account.iban,
+                  environment_id: req.user.get('environment_id')
+                }, s3files.map(function(f) { return _.extend({environment_id: req.user.get('environment_id')}, f); }));
+                return model;
               });
-            }
-            return model;
+            });
           });
         })).then(function(items) {
           console.log('items', items);

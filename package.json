@@ -25,6 +25,7 @@
     "browserify-middleware": "~3.0.1",
     "class-list": "~0.1.1",
     "connect-bookshelf": "0.0.1",
+    "debug": "^2.0.0",
     "delorean.js": "~0.7.1",
     "envify": "~3.0.0",
     "express": "~4.9.0",
