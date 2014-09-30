@@ -9,6 +9,16 @@ var moment = require('moment'),
 module.exports = {
   pending: function(req,res,next) {
     var Expense = req.app.get('bookshelf').models.Expense;
+
+    var listAllExpenses = function() {
+      Expense.where({
+        environment_id: req.user.get('environment_id'),
+        status: 'unpaid'
+      }).fetchAll({withRelated: ['supplier', 'attachments']}).then(function(col) {
+        res.send(col.toJSON());
+      });
+    };
+
     req.maventaClient().then(function(maventa) {
       return maventa.invoiceListInboundBetweenDates(moment().add(-3, 'months').toDate(), new Date()).then(function(resp) {
         return Promise.all(resp.map(function(inboundInvoice) {
@@ -55,16 +65,17 @@ module.exports = {
                   iban: account.iban,
                   environment_id: req.user.get('environment_id')
                 }, s3files.map(function(f) { return _.extend({environment_id: req.user.get('environment_id')}, f); }));
-                return model;
               });
             });
           });
         })).then(function(items) {
-          console.log('items', items);
-          res.send(resp); //FIXME
+          debug('Processed %d items from maventa request', items.length);
+          listAllExpenses();
         });
       }).catch(function(err) {
         if (err.message === 'ERROR: NO INVOICES') {
+          debug('No new maventa invoices');
+          listAllExpenses();
           return res.send([]);
         }
         throw err;
