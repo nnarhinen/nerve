@@ -4,7 +4,7 @@ exports.up = function(knex, Promise) {
   return knex.schema.createTable('oauth_refresh_tokens', function(table) {
     table.increments('id').primary();
     table.string('refresh_token').unique();
-    table.string('client_id').references('oauth_clients.client_id');
+    table.uuid('client_id').references('oauth_clients.client_id');
     table.timestamp('expires');
     table.integer('user_id').references('users.id');
 

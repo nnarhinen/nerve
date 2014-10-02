@@ -8,4 +8,10 @@ module.exports = {
   }
 };
 
-
+// Use postrgres in development if variable set
+if (process.env.DATABASE_URL) {
+  module.exports.development = {
+    client: 'pg',
+    connection: process.env.DATABASE_URL
+  };
+}

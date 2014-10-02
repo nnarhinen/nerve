@@ -1,3 +1,12 @@
+var env = require('node-env-file'),
+    path = require('path'),
+    fs = require('fs'),
+    envFile = path.join(__dirname, 'development.env');
+if (fs.existsSync(envFile)) {
+  env(envFile);
+}
+
+
 var express = require('express'),
     app = express(),
     nunjucks = require('nunjucks'),
@@ -5,21 +14,13 @@ var express = require('express'),
     browserify = require('browserify-middleware'),
     stylus = require('stylus'),
     nib = require('nib'),
-    path = require('path'),
     jedify = require('jedify'),
     bookshelf = require('./db/bookshelf'),
-    env = require('node-env-file'),
-    fs = require('fs'),
     session = require('express-session'),
     BookshelfStore = require('connect-bookshelf')(session),
     _ = require('underscore'),
     util = require('util');
 
-
-var envFile = path.join(__dirname, 'development.env');
-if (fs.existsSync(envFile)) {
-  env(envFile);
-}
 
 var languages = ['en', 'fi'];
 
