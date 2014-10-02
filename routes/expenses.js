@@ -7,6 +7,15 @@ var moment = require('moment'),
     _ = require('underscore');
 
 module.exports = {
+  fetchOne: function(req, res, next) {
+    var Expense = req.app.get('bookshelf').models.Expense;
+    Expense.where({
+      environment_id: req.user.get('environment_id'),
+      id: req.params.id
+    }).fetch({withRelated: ['supplier', 'attachments']}).then(function(m)  {
+      res.send(m.toJSON());
+    }).catch(next);
+  },
   pending: function(req,res,next) {
     var Expense = req.app.get('bookshelf').models.Expense;
 
