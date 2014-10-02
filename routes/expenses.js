@@ -51,7 +51,7 @@ module.exports = {
                     ContentLength: att.file.length,
                     ContentType: mimeType
                   }).then(function() {
-                    return {type: att.attachment_type.toLowerCase(), s3Path: fileName};
+                    return {type: att.attachment_type.toLowerCase(), s3path: fileName, mime_type: mimeType};
                   });
                 });
               })).then(function(s3files) {
@@ -68,7 +68,7 @@ module.exports = {
                   expense_type: 'invoice',
                   sum: Number(maventaInvoice.sum),
                   intermediator: 'maventa',
-                  intermediator_info: maventaInvoice,
+                  intermediator_info: _.omit(maventaInvoice, 'attachments'),
                   intermediator_id: maventaInvoice.id
                 }, {
                   name: maventaInvoice.company_name,
