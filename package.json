@@ -20,6 +20,7 @@
     "bcrypt": "~0.8.0",
     "bean": "~1.0.14",
     "bluebird": "~2.3.2",
+    "blueimp-md5": "^1.1.0",
     "body-parser": "~1.8.3",
     "bookshelf": "~0.7.7",
     "browserify-middleware": "~3.0.1",

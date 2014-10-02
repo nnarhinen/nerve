@@ -33,6 +33,23 @@
 .navbar-default .navbar-toggle .icon-bar {
   background-color: #e2753a;
 }
+.navmenu-default .account-info {
+  position: absolute;
+  bottom: 0px;
+  background-color: #3b5323;
+  left: 0px;
+  right: 0px;
+  padding: 10px;
+  color: #ddd;
+}
+.navmenu-default .account-info a {
+  color: #fff;
+  font-weight: bold;
+}
+.navmenu-default .account-info a:hover,
+.navmenu-default .account-info a:focus {
+  color: #e6e6e6;
+}
 .navmenu-default .navmenu-brand {
   color: #3b5323;
   font-family: 'Rock Salt', cursive;

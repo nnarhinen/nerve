@@ -103,6 +103,14 @@ app.get('/callback/nerve', function(req, res, next) {
   });
 });
 
+app.use(function(req, res, next) {
+  if (!req.session.user || !req.session.user.id) return next();
+  app.get('bookshelf').models.User.forge({id: req.session.user.id}).fetch().then(function(model) {
+    req.user = model;
+    next();
+  }).catch(next);
+});
+
 app.get('/app/*', function(req, res, next) {
   if (!req.session.oauth2 || !req.session.oauth2.access_token) {
     return res.redirect(authorizationUri);
@@ -118,12 +126,13 @@ app.get('/app/*', function(req, res, next) {
       req.session.oauth2 = _.omit(token.token, 'expires_in');
       render();
     });
-    }
+  }
   render();
 
   function render() {
     res.render('app.html', {
-      accessToken: req.session.oauth2.access_token
+      accessToken: req.session.oauth2.access_token,
+      user: req.user && JSON.stringify(_.omit(req.user.toJSON(), 'password_hash'))
     });
   };
 });

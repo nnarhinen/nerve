@@ -17,7 +17,8 @@ var React = require('react'),
     api = require('./api'),
     SettingsActions = require('./actions/settings-actions'),
     Promise = require('bluebird'),
-    MenuItem = require('./components/menu-item');
+    MenuItem = require('./components/menu-item'),
+    md5 = require('blueimp-md5').md5;
 
 Promise.onPossiblyUnhandledRejection(function(e, promise) {
   throw e;
@@ -43,6 +44,7 @@ var App = React.createClass({
     SettingsActions.fetch();
   },
   render: function() {
+    var gravatarUrl = 'https://www.gravatar.com/avatar/' + md5(this.props.user.email) + '?s=60';
             if (this.getStore('settings').loading) {
               return (
                 <div className="app-loading">
@@ -80,6 +82,16 @@ var App = React.createClass({
                     <MenuItem to="customers">{ i18n.gettext('Customers') }</MenuItem>
                     <MenuItem to="settings">{ i18n.gettext('Settings') }</MenuItem>
                   </ul>
+                  <div className="account-info">
+                    <div className="col-md-4">
+                      <img className="img-rounded" src={ gravatarUrl }/>
+                    </div>
+                    <div className="col-md-8">
+                      { this.props.user.name }
+                      <br />
+                      <a href="/logout">Logoff</a>
+                    </div>
+                  </div>
                 </div>
                 <div className="navbar navbar-default navbar-fixed-top hidden-md hidden-lg">
                   <button onClick={this.onNavButtonClick} type="button" className="pull-left navbar-toggle visible-sm visible-xs" style={ {'margin-left': '20px'} } data-toggle="offcanvas" data-target=".navmenu">
@@ -101,4 +113,4 @@ var App = React.createClass({
 
 var bearerToken = oauthAccessToken;
 
-React.renderComponent(<App bearerToken={bearerToken} dispatcher={require('./dispatchers/app-dispatcher')} />, document.body);
+React.renderComponent(<App bearerToken={bearerToken} user={window.userInfo} dispatcher={require('./dispatchers/app-dispatcher')} />, document.body);
