@@ -2,3 +2,4 @@ node_modules
 *.mo
 development.sqlite
 development.env
+npm-debug.log

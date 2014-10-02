@@ -9,33 +9,18 @@ var React = require('react'),
     NotFound = ReactRouter.NotFoundRoute,
     Link = ReactRouter.Link,
     ActiveState = ReactRouter.ActiveState,
+    DefaultRoute = ReactRouter.DefaultRoute,
     Pages = require('./pages'),
     axios = require('axios'),
     i18n = requirePo('../locale/%s/LC_MESSAGES/messages.po'),
     Flux = require('delorean.js').Flux,
     api = require('./api'),
     SettingsActions = require('./actions/settings-actions'),
-    Promise = require('bluebird');
+    Promise = require('bluebird'),
+    MenuItem = require('./components/menu-item');
 
 Promise.onPossiblyUnhandledRejection(function(e, promise) {
   throw e;
-});
-
-var MenuItem = React.createClass({
-  mixins: [ActiveState],
-  getInitialState: function () {
-    return { isActive: false };
-  },
-  updateActiveState: function () {
-    this.setState({
-      isActive: MenuItem.isActive(this.props.to, this.props.params, this.props.query)
-    })
-  },
-  render: function() {
-    var className = this.state.isActive ? 'active' : '';
-    var link = Link(this.props);
-    return <li className={className}>{link}</li>;
-  }
 });
 
 var Notification = React.createClass({
@@ -78,7 +63,10 @@ var App = React.createClass({
                 <div className="route-container">
                   <Routes>
                     <Route name="dashboard" path="/" handler={Pages.Dashboard} dispatcher={this.props.dispatcher} />
-                    <Route name="expenses" path="/expenses" handler={Pages.Expenses} />
+                    <Route name="expenses" path="/expenses" handler={Pages.Expenses}>
+                      <Route name="expenses-history" path="/expenses/history" handler={Pages.Expenses} history={true} />
+                      <Route name="expenses-pending" path="/expenses" handler={Pages.Expenses} />
+                    </Route>
                     <Route name="customers" path="/customers" handler={Pages.Customers} dispatcher={this.props.dispatcher} />
                     <Route name="settings" path="/settings" handler={Pages.Settings} dispatcher={this.props.dispatcher} />
                     <NotFound handler={Pages.NotFound} />
@@ -88,6 +76,7 @@ var App = React.createClass({
                   <a className="navmenu-brand visible-md visible-lg" href="#">Nerve</a>
                   <ul className="nav navmenu-nav">
                     <MenuItem to="dashboard">{ i18n.gettext('Dashboard') }</MenuItem>
+                    <MenuItem to="expenses">{ i18n.gettext('Expenses') }</MenuItem>
                     <MenuItem to="customers">{ i18n.gettext('Customers') }</MenuItem>
                     <MenuItem to="settings">{ i18n.gettext('Settings') }</MenuItem>
                   </ul>
