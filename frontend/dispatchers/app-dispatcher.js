@@ -31,6 +31,9 @@ var AppDispatcher = module.exports = Flux.createDispatcher({
   },
   resetPendingInboundInvoices: function(invoices) {
     this.dispatch('inboundinvoices:reset:pending', invoices);
+  },
+  resetInboundInvoice: function(invoice) {
+    this.dispatch('inboundinvoices:reset:one', invoice);
   }
 });
 

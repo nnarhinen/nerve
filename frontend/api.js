@@ -41,6 +41,12 @@ Api.prototype.pendingInboundInvoices = function() {
   });
 };
 
+Api.prototype.inboundInvoice = function(id) {
+  return this.get('/api/expenses/' + id).then(function(resp) {
+    return resp.data;
+  });
+};
+
 module.exports = function(bearerToken) {
   return new Api(bearerToken);
 };

@@ -3,5 +3,7 @@ module.exports = {
   Customers: require('./pages/customers'),
   NotFound: require('./pages/not-found'),
   Settings: require('./pages/settings'),
-  Expenses: require('./pages/expenses')
+  Expenses: require('./pages/expenses'),
+  Expense: require('./pages/expense'),
+  EmptyParent: require('./pages/empty-parent')
 };
