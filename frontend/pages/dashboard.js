@@ -38,7 +38,7 @@ module.exports = React.createClass({
                           <tbody>
                             {this.getStore('inboundInvoices').pending.map(function(inv) {
                               return (
-                                <tr>
+                                <tr key={inv.id}>
                                   <td>{ inv.supplier.name }</td>
                                   <td>{ inv.sum }</td>
                                   <td> { moment(inv.due_date).format('DD.MM.YYYY') }</td>
