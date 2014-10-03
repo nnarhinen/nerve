@@ -1,3 +1,26 @@
+.btn-primary {
+  background-color: #e2753a;
+  border-color: #de6421;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #e5834e;
+  border-color: #e2753a;
+}
+a {
+  color: #e2753a;
+}
+a:hover,
+a:focus {
+  color: #e5834e;
+}
+.nav-pills > li.active a {
+  background-color: #e2753a;
+}
+.nav-pills > li.active a:hover,
+.nav-pills > li.active a:focus {
+  background-color: #e5834e;
+}
 .route-container {
   float: left;
   box-sizing: border-box;

@@ -44,7 +44,7 @@ var App = React.createClass({
     SettingsActions.fetch();
   },
   render: function() {
-    var gravatarUrl = 'https://www.gravatar.com/avatar/' + md5(this.props.user.email) + '?s=60';
+    var gravatarUrl = 'https://www.gravatar.com/avatar/' + md5(this.props.user.email) + '?s=45';
             if (this.getStore('settings').loading) {
               return (
                 <div className="app-loading">
@@ -87,10 +87,10 @@ var App = React.createClass({
                     <MenuItem to="settings">{ i18n.gettext('Settings') }</MenuItem>
                   </ul>
                   <div className="account-info">
-                    <div className="col-md-4">
-                      <img className="img-rounded" src={ gravatarUrl }/>
+                    <div className="col-md-3">
+                      <img className="img-rounded" title={ i18n.gettext('Change your profile image at gravatar.com') } src={ gravatarUrl }/>
                     </div>
-                    <div className="col-md-8">
+                    <div className="col-md-9">
                       { this.props.user.name }
                       <br />
                       <a href="/logout">Logoff</a>
