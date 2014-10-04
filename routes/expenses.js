@@ -33,11 +33,16 @@ module.exports = {
 
     req.maventaClient().then(function(maventa) {
       return maventa.invoiceListInboundBetweenDates(moment().add(-3, 'months').toDate(), new Date()).then(function(resp) {
-        return Promise.all(resp.map(function(inboundInvoice) {
-          debug
-          return Expense.forge({intermediator_id: inboundInvoice.id, environment_id: req.user.get('environment_id')}).fetch().then(function(model) {
-            debug('Searched for expense with intermediator_id %s and environmen_id %s, found: %s', inboundInvoice.id, req.user.get('environment_id'), model ? model.id : 'nothing');
-            if (model) return model;
+        return Promise.reduce(resp, function(m, inboundInvoice) { // We use reduce here to process sequentially to avoid duplicate suppliers etc
+          return Expense.forge({
+            intermediator_id: inboundInvoice.id,
+            environment_id: req.user.get('environment_id')
+          }).fetch().then(function(model) {
+            debug('Searched for expense with intermediator_id %s and environmen_id %s, found: %s',
+                  inboundInvoice.id,
+                  req.user.get('environment_id'),
+                  model ? model.id : 'nothing');
+            if (model) return m.concat([model]);
             //Fetch detailed information from Maventa
             return maventa.inboundInvoiceShow(inboundInvoice.id, true).then(function(maventaInvoice) {
               //Save attachments
@@ -76,11 +81,13 @@ module.exports = {
                   bic: account.swift,
                   iban: account.iban,
                   environment_id: req.user.get('environment_id')
-                }, s3files.map(function(f) { return _.extend({environment_id: req.user.get('environment_id')}, f); }));
+                }, s3files.map(function(f) { return _.extend({environment_id: req.user.get('environment_id')}, f); })).then(function(model) {
+                  return m.concat([model]);
+                });
               });
             });
           });
-        })).then(function(items) {
+        }, []).then(function(items) {
           debug('Processed %d items from maventa request', items.length);
           listAllExpenses();
         });
