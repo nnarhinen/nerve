@@ -44,4 +44,5 @@ router.use(function(req, res, next) {
 router.get('/expenses/pending', expenses.pending);
 router.get('/expenses/:id', expenses.fetchOne);
 router.route('/settings').get(settings.fetch).put(settings.update);
+router.use(require('./api/suppliers'));
 router.use(oauth.errorHandler());

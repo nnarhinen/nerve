@@ -47,6 +47,12 @@ Api.prototype.inboundInvoice = function(id) {
   });
 };
 
+Api.prototype.suppliers= function() {
+  return this.get('/api/suppliers').then(function(resp) {
+    return resp.data;
+  });
+};
+
 module.exports = function(bearerToken) {
   return new Api(bearerToken);
 };

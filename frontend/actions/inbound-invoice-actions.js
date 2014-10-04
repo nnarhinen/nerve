@@ -13,6 +13,10 @@ var InboundInvoiceActions = module.exports = {
     api(bearerToken).inboundInvoice(id).then(function(invoice) {
       AppDispatcher.resetInboundInvoice(invoice);
     });
+  },
+  updateOne: function(inv) {
+    AppDispatcher.updateInboundInvoice(inv);
+    //TODO persist to backend
   }
 };
 

@@ -21,6 +21,13 @@ a:focus {
 .nav-pills > li.active a:focus {
   background-color: #e5834e;
 }
+.btn-primary-inverted {
+  color: #e2753a;
+}
+.cursor-hand {
+  cursor: pointer;
+  cursor: hand;
+}
 .route-container {
   float: left;
   box-sizing: border-box;

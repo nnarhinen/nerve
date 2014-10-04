@@ -4,7 +4,8 @@ var Flux = require('delorean.js').Flux,
 var InboundInvoiceStore = module.exports = Flux.createStore({
   actions: {
     'inboundinvoices:reset:pending': 'resetPending',
-    'inboundinvoices:reset:one': 'resetOne'
+    'inboundinvoices:reset:one': 'resetOne',
+    'inboundinvoices:update:one': 'updateOne'
   },
   invoices: [],
   loading: true,
@@ -38,6 +39,9 @@ var InboundInvoiceStore = module.exports = Flux.createStore({
     this[k].push(invoice);
     this[k] = _.sortBy(this[k], 'due_date');
     this.emitChange();
+  },
+  updateOne: function(invoice) {
+    this.resetOne(invoice);
   }
 });
 

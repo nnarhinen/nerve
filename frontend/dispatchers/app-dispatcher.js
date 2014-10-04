@@ -4,14 +4,17 @@ var Flux = require('delorean.js').Flux,
     NotificationStore = require('../stores/notification-store'),
     notificationStore = new NotificationStore(),
     InboundInvoiceStore = require('../stores/inbound-invoice-store'),
-    inboundInvoices = new InboundInvoiceStore();
+    inboundInvoices = new InboundInvoiceStore(),
+    SupplierStore = require('../stores/supplier-store'),
+    supplierStore = new SupplierStore();
 
 var AppDispatcher = module.exports = Flux.createDispatcher({
   getStores: function() {
     return {
       settings: settingsStore,
       notifications: notificationStore,
-      inboundInvoices: inboundInvoices
+      inboundInvoices: inboundInvoices,
+      suppliers: supplierStore
     };
   },
   fetchSettings: function(bearerToken) {
@@ -34,6 +37,12 @@ var AppDispatcher = module.exports = Flux.createDispatcher({
   },
   resetInboundInvoice: function(invoice) {
     this.dispatch('inboundinvoices:reset:one', invoice);
+  },
+  updateInboundInvoice: function(invoice) {
+    this.dispatch('inboundinvoices:update:one', invoice);
+  },
+  resetSuppliers: function(suppliers) {
+    this.dispatch('suppliers:reset', suppliers);
   }
 });
 
