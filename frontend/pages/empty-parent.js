@@ -7,7 +7,7 @@ var React = require('react'),
 
 module.exports = React.createClass({
   render: function() {
-    return <div>{ this.props.activeRouteHandler() }</div>
+    return this.transferPropsTo(<this.props.activeRouteHandler />);
   }
 });
 

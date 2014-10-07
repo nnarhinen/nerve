@@ -3,14 +3,12 @@
  */
 
 var React = require('react'),
-    Flux = require('delorean.js').Flux,
     i18n = requirePo('../../locale/%s/LC_MESSAGES/messages.po'),
     InboundInvoiceActions = require('../actions/inbound-invoice-actions'),
     moment = require('moment'),
     Link = require('react-router').Link;
 
 module.exports = React.createClass({
-  mixins: [Flux.mixins.storeListener],
   componentWillMount: function() {
     InboundInvoiceActions.fetchPending();
   },
@@ -25,7 +23,7 @@ module.exports = React.createClass({
                       <div className="panel-heading">
                         <h4 className="panel-title">{ i18n.gettext('Pending invoices') } <small><Link to="expenses">{ i18n.gettext('show all') }</Link></small></h4>
                       </div>
-                      {this.getStore('inboundInvoices').loading ?
+                      {this.props.expenses.loading ?
                         <div className="panel-body"><i className="fa fa-spin fa-circle-o-notch"></i></div> :
                         <table className="table">
                           <thead>
@@ -36,7 +34,7 @@ module.exports = React.createClass({
                             </tr>
                           </thead>
                           <tbody>
-                            {this.getStore('inboundInvoices').pending.map(function(inv) {
+                            {this.props.expenses.pending.map(function(inv) {
                               return (
                                 <tr key={inv.id}>
                                   <td>{ inv.supplier.name }</td>

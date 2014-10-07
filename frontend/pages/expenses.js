@@ -5,14 +5,12 @@
 var React = require('react'),
     i18n = requirePo('../../locale/%s/LC_MESSAGES/messages.po'),
     InboundInvoiceActions = require('../actions/inbound-invoice-actions'),
-    Flux = require('delorean.js').Flux,
     ReactRouter = require('react-router'),
     moment = require('moment'),
     MenuItem = require('../components/menu-item'),
     Link = ReactRouter.Link;
 
 module.exports = React.createClass({
-  mixins: [Flux.mixins.storeListener],
   componentDidMount: function() {
     InboundInvoiceActions.fetchPending();
   },
@@ -24,7 +22,7 @@ module.exports = React.createClass({
           <MenuItem to="expenses-pending">Pending</MenuItem>
           <MenuItem to="expenses-history">History</MenuItem>
         </ul>
-        {this.getStore('inboundInvoices').loading ? <i className="fa fa-spin fa-spinner"></i> :
+        {this.props.expenses.loading ? <i className="fa fa-spin fa-spinner"></i> :
         <table className="table">
           <thead>
             <tr>
@@ -34,7 +32,7 @@ module.exports = React.createClass({
             </tr>
           </thead>
           <tbody>
-            {this.getStore('inboundInvoices').pending.map(function(inv) {
+            {this.props.expenses.pending.map(function(inv) {
               return (
                 <tr key={inv.id}>
                   <td><Link to="expense" params={inv}>{ inv.supplier.name }</Link></td>

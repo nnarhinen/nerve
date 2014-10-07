@@ -38,6 +38,7 @@ var InboundInvoiceStore = module.exports = Flux.createStore({
     var k = invoice.status === 'unpaid' ? 'pending' : 'invoices';
     this[k].push(invoice);
     this[k] = _.sortBy(this[k], 'due_date');
+    this.loading = false;
     this.emitChange();
   },
   updateOne: function(invoice) {

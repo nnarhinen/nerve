@@ -13,7 +13,7 @@ var React = require('react'),
 
 
 var SupplierInput = module.exports = React.createClass({
-  mixins: [OverlayMixin, Flux.mixins.storeListener],
+  mixins: [OverlayMixin],
   getInitialState: function() {
     return {
       isModalOpen: false

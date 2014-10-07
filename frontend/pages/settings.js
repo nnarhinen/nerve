@@ -9,7 +9,6 @@ var React = require('react'),
     SettingsActions = require('../actions/settings-actions');
 
 module.exports = React.createClass({
-  mixins: [Flux.mixins.storeListener],
   onValueChange: function(ev) {
     SettingsActions.changeSetting(ev.target.name, ev.target.value);
   },
@@ -22,13 +21,13 @@ module.exports = React.createClass({
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="fe-settings-maventa-api-key">{ i18n.gettext('API-key') }</label>
-                      <input type="text" className="form-control" id="fe-settings-maventa-api-key" name="maventa_api_key" onChange={this.onValueChange} value={this.getStore('settings').maventa_api_key} />
+                      <input type="text" className="form-control" id="fe-settings-maventa-api-key" name="maventa_api_key" onChange={this.onValueChange} value={this.props.settings.maventa_api_key} />
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
                       <label htmlFor="fe-settings-maventa-customer-uuid">{ i18n.gettext('Customer UUID') }</label>
-                      <input type="text" className="form-control" id="fe-settings-maventa-customer-uuid" name="maventa_customer_uuid" onChange={this.onValueChange} value={this.getStore('settings').maventa_customer_uuid} />
+                      <input type="text" className="form-control" id="fe-settings-maventa-customer-uuid" name="maventa_customer_uuid" onChange={this.onValueChange} value={this.props.settings.maventa_customer_uuid} />
                     </div>
                   </div>
                 </div>

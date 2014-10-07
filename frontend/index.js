@@ -18,6 +18,7 @@ var React = require('react'),
     SettingsActions = require('./actions/settings-actions'),
     Promise = require('bluebird'),
     MenuItem = require('./components/menu-item'),
+    NotificationActions = require('./actions/notification-actions'),
     md5 = require('blueimp-md5').md5;
 
 Promise.onPossiblyUnhandledRejection(function(e, promise) {
@@ -43,6 +44,27 @@ var App = React.createClass({
     this.props.dispatcher.bearerToken = this.props.bearerToken;
     SettingsActions.fetch();
   },
+  /**
+   * Flash messages
+   */
+  notify: function(notification) {
+    NotificationActions.notify(notification);
+  },
+  notificationMessages: {
+    'waiting-for-modifications': i18n.gettext('Waiting for more modifications..'),
+    persisting: i18n.gettext('Persiting..'),
+    persisted: i18n.gettext('Persisted!')
+  },
+  storeDidChange: function(storeName, event) {
+    if (['persisting', 'persisted', 'waiting-for-modifications'].indexOf(event) !== -1) {
+      this.notify({
+        message: this.notificationMessages[event],
+        state: event === 'persisted' ? 'success' : 'info',
+        id: storeName,
+        ttl: event === 'persisted' ? 1000 : undefined
+      })
+    }
+  },
   render: function() {
     var gravatarUrl = 'https://www.gravatar.com/avatar/' + md5(this.props.user.email) + '?s=45';
             if (this.getStore('settings').loading) {
@@ -63,20 +85,10 @@ var App = React.createClass({
                 <div className="clearfix vertical-spacer hidden-md hidden-lg">
                 </div>
                 <div className="route-container">
-                  <Routes>
-                    <Route name="dashboard" path="/" handler={Pages.Dashboard} dispatcher={this.props.dispatcher} />
-                    <Route name="expenses" handler={Pages.EmptyParent}>
-                      <Route name="expenses-history" path="/expenses/history" handler={Pages.Expenses} history={true} />
-                      <Route name="expenses-pending" path="/expenses" handler={Pages.Expenses} />
-                      <Route name="expense" path="/expenses/:id" handler={Pages.Expense}>
-                        <DefaultRoute name="expense-info" handler={Pages.ExpenseInfo} />
-                        <Route name="expense-attachments" path="attachments" handler={Pages.ExpenseAttachments} />
-                      </Route>
-                    </Route>
-                    <Route name="customers" path="/customers" handler={Pages.Customers} dispatcher={this.props.dispatcher} />
-                    <Route name="settings" path="/settings" handler={Pages.Settings} dispatcher={this.props.dispatcher} />
-                    <NotFound handler={Pages.NotFound} />
-                  </Routes>
+                  <this.props.activeRouteHandler
+                    expenses={this.getStore('inboundInvoices')}
+                    settings={this.getStore('settings')}
+                  />
                 </div>
                 <div className={menuClass}>
                   <a className="navmenu-brand visible-md visible-lg" href="#">Nerve</a>
@@ -117,4 +129,27 @@ var App = React.createClass({
 
 var bearerToken = oauthAccessToken;
 
-React.renderComponent(<App bearerToken={bearerToken} user={window.userInfo} dispatcher={require('./dispatchers/app-dispatcher')} />, document.body);
+var RouteApp = React.createClass({
+  render: function() {
+    return (
+      <Routes>
+        <Route name="container" path="/" handler={App} user={this.props.user} bearerToken={this.props.bearerToken} dispatcher={this.props.dispatcher}>
+          <DefaultRoute name="dashboard"  handler={Pages.Dashboard} />
+          <Route name="expenses" handler={Pages.EmptyParent}>
+            <Route name="expenses-history" path="/expenses/history" handler={Pages.Expenses} history={true} />
+            <Route name="expenses-pending" path="/expenses" handler={Pages.Expenses} />
+            <Route name="expense" path="/expenses/:id" handler={Pages.Expense}>
+              <DefaultRoute name="expense-info" handler={Pages.ExpenseInfo} />
+              <Route name="expense-attachments" path="attachments" handler={Pages.ExpenseAttachments} />
+            </Route>
+          </Route>
+          <Route name="customers" path="/customers" handler={Pages.Customers}  />
+          <Route name="settings" path="/settings" handler={Pages.Settings} />
+          <NotFound handler={Pages.NotFound} />
+        </Route>
+      </Routes>
+      );
+  }
+});
+
+React.renderComponent(<RouteApp bearerToken={bearerToken} user={window.userInfo} dispatcher={require('./dispatchers/app-dispatcher')} />, document.body);
