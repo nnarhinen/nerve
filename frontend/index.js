@@ -140,7 +140,10 @@ var RouteApp = React.createClass({
             <Route name="expenses-pending" path="/expenses" handler={Pages.Expenses} />
             <Route name="expense" path="/expenses/:id" handler={Pages.Expense}>
               <DefaultRoute name="expense-info" handler={Pages.ExpenseInfo} />
-              <Route name="expense-attachments" path="attachments" handler={Pages.ExpenseAttachments} />
+              <Route name="expense-attachments" path="attachments" handler={Pages.EmptyParent}>
+                <DefaultRoute handler={Pages.ExpenseAttachments} />
+                <Route name="expense-attachment" path=":attachmentId" handler={Pages.ExpenseAttachment} />
+              </Route>
             </Route>
           </Route>
           <Route name="customers" path="/customers" handler={Pages.Customers}  />

@@ -22,6 +22,10 @@ Api.prototype.put = function(url, data, opts) {
   return Promise.resolve(axios.put(url, data, opts));
 };
 
+Api.prototype.post = function(url, data, opts) {
+  opts = processOpts(this.bearerToken, opts);
+  return Promise.resolve(axios.post(url, data, opts));
+};
 
 Api.prototype.settings = function() {
   return this.get('/api/settings').then(function(resp) {
@@ -49,6 +53,12 @@ Api.prototype.inboundInvoice = function(id) {
 
 Api.prototype.suppliers= function() {
   return this.get('/api/suppliers').then(function(resp) {
+    return resp.data;
+  });
+};
+
+Api.prototype.fileDownloadUrl = function(obj) {
+  return this.post('/api/files/url', obj).then(function(resp) {
     return resp.data;
   });
 };

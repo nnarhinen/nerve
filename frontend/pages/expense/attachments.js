@@ -3,11 +3,13 @@
  */
 
 var React = require('react'),
-    i18n = requirePo('../../../locale/%s/LC_MESSAGES/messages.po');
+    i18n = requirePo('../../../locale/%s/LC_MESSAGES/messages.po'),
+    Link = require('react-router').Link;
 
 module.exports = React.createClass({
   render: function() {
-    return this.props.expense.attachments.length ? (
+    var expense = this.props.expense;
+    return expense.attachments.length ? (
       <table className="table">
         <thead>
           <tr>
@@ -18,7 +20,7 @@ module.exports = React.createClass({
         </thead>
         <tbody>
           {this.props.expense.attachments.map(function(att) {
-            return <tr key={att.id}><td>{att.type}</td><td><a target="_blank" href={'/api/s3/' + att.s3path}>{att.s3path}</a></td><td>{att.mime_type}</td></tr>;
+            return <tr key={att.id}><td>{att.type}</td><td><Link to="expense-attachment" params={ {id: expense.id, attachmentId: att.id} }>{att.s3path}</Link></td><td>{att.mime_type}</td></tr>;
           }) }
         </tbody>
       </table> ) : <div className="row"><div className="col-md-6">No attachments</div></div>;

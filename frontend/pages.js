@@ -7,5 +7,6 @@ module.exports = {
   Expense: require('./pages/expense'),
   ExpenseInfo: require('./pages/expense/basic'),
   ExpenseAttachments: require('./pages/expense/attachments'),
+  ExpenseAttachment: require('./pages/expense/attachment'),
   EmptyParent: require('./pages/empty-parent')
 };
