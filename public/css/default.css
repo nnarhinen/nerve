@@ -63,10 +63,13 @@ a:focus {
 .navbar-default .navbar-toggle .icon-bar {
   background-color: #e2753a;
 }
+.navmenu-default {
+  overflow-y: visible;
+}
 .navmenu-default .account-info {
   position: absolute;
   bottom: 0px;
-  background-color: #3b5323;
+  background-color: #333;
   left: 0px;
   right: 0px;
   padding: 10px;
@@ -80,21 +83,33 @@ a:focus {
 .navmenu-default .account-info a:focus {
   color: #e6e6e6;
 }
-.navmenu-default .navmenu-brand {
-  color: #3b5323;
+.navmenu-default .top-wrap {
+  background-color: #3b5323;
+  margin-bottom: 10px;
+}
+.navmenu-default .top-wrap .btn-link .caret {
+  color: #fff;
+}
+.navmenu-default .top-wrap .btn-link:hover .caret {
+  color: #e2753a;
+}
+.navmenu-default .top-wrap .navmenu-brand {
+  color: #fff;
   font-family: 'Rock Salt', cursive;
 }
-.navmenu-default .navmenu-nav > li > a:hover {
-  color: #3b5323;
-}
-.navmenu-default .navmenu-nav > .active > a {
-  background-color: #3b5323;
-  color: #fff;
-}
-.navmenu-default .navmenu-nav > .active > a:hover {
-  background-color: #4f6f2f;
-  color: #fff;
-}
+/*
+  .navmenu-nav
+    > li
+      > a:hover
+        color mainColor
+    > .active
+      > a
+        background-color mainColor
+        color #fff
+        &:hover
+          background-color lighten(mainColor, 10%)
+          color #fff
+*/
 .notification-area {
   position: fixed;
   right: 10px;

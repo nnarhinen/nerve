@@ -41,11 +41,11 @@
       background-color accentColor
 
 .navmenu-default
-
+  overflow-y visible
   .account-info
     position absolute
     bottom 0px
-    background-color mainColor
+    background-color #333
     left 0px
     right 0px
     padding 10px
@@ -56,10 +56,19 @@
       &:hover, &:focus
         color darken(#fff, 10%)
 
-  .navmenu-brand
-    color mainColor
-    font-family 'Rock Salt', cursive
-
+  .top-wrap
+    background-color mainColor
+    margin-bottom 10px
+    .btn-link
+      .caret
+        color #fff
+      &:hover
+        .caret
+          color accentColor
+    .navmenu-brand
+      color #fff
+      font-family 'Rock Salt', cursive
+/*
   .navmenu-nav
     > li
       > a:hover
@@ -71,7 +80,7 @@
         &:hover
           background-color lighten(mainColor, 10%)
           color #fff
-
+*/
 
 .notification-area
   position fixed

@@ -19,7 +19,9 @@ var React = require('react'),
     Promise = require('bluebird'),
     MenuItem = require('./components/menu-item'),
     NotificationActions = require('./actions/notification-actions'),
-    md5 = require('blueimp-md5').md5;
+    md5 = require('blueimp-md5').md5,
+    DropdownButton = require('react-bootstrap/DropdownButton'),
+    BsMenuItem = require('react-bootstrap/MenuItem');
 
 Promise.onPossiblyUnhandledRejection(function(e, promise) {
   throw e;
@@ -91,23 +93,21 @@ var App = React.createClass({
                   />
                 </div>
                 <div className={menuClass}>
-                  <a className="navmenu-brand visible-md visible-lg" href="#">Nerve</a>
+                  <div className="top-wrap">
+                    <a className="navmenu-brand col-md-8 visible-md visible-lg" href="#">Nerve</a>
+                    <div className="col-md-4">
+                      <DropdownButton bsStyle="link" title={<img className="img-rounded" title={ i18n.gettext('Change your profile image at gravatar.com') } src={ gravatarUrl }/>}>
+                        <BsMenuItem key="asdf" href="/logout">Logout</BsMenuItem>
+                      </DropdownButton>
+                    </div>
+                    <div className="clearfix"></div>
+                  </div>
                   <ul className="nav navmenu-nav">
                     <MenuItem to="dashboard">{ i18n.gettext('Dashboard') }</MenuItem>
                     <MenuItem to="expenses">{ i18n.gettext('Expenses') }</MenuItem>
                     <MenuItem to="customers">{ i18n.gettext('Customers') }</MenuItem>
                     <MenuItem to="settings">{ i18n.gettext('Settings') }</MenuItem>
                   </ul>
-                  <div className="account-info">
-                    <div className="col-md-3">
-                      <img className="img-rounded" title={ i18n.gettext('Change your profile image at gravatar.com') } src={ gravatarUrl }/>
-                    </div>
-                    <div className="col-md-9">
-                      { this.props.user.name }
-                      <br />
-                      <a href="/logout">Logoff</a>
-                    </div>
-                  </div>
                 </div>
                 <div className="navbar navbar-default navbar-fixed-top hidden-md hidden-lg">
                   <button onClick={this.onNavButtonClick} type="button" className="pull-left navbar-toggle visible-sm visible-xs" style={ {'margin-left': '20px'} } data-toggle="offcanvas" data-target=".navmenu">
