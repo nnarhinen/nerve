@@ -38,7 +38,7 @@ var SupplierInput = module.exports = React.createClass({
   },
   selectSupplier: function(ev) {
     var supplierId = Number(ev.currentTarget.getAttribute('data-id'));
-    var supplier = _.find(this.getStore('suppliers').suppliers, function(s) { return s.id === supplierId; });
+    var supplier = _.find(this.props.suppliers.suppliers, function(s) { return s.id === supplierId; });
     this.props.onSupplierChange && this.props.onSupplierChange(supplier);
     this.handleToggle();
   },
@@ -50,7 +50,7 @@ var SupplierInput = module.exports = React.createClass({
     return (
       <Modal title={ i18n.gettext('Choose supplier') } onRequestHide={this.handleToggle}>
         <div className="modal-body">
-          {this.getStore('suppliers').loading ? <i className="fa fa-spin fa-spinner"></i> :
+          {this.props.suppliers.loading ? <i className="fa fa-spin fa-spinner"></i> :
             (
               <table className="table">
                 <thead>
@@ -59,7 +59,7 @@ var SupplierInput = module.exports = React.createClass({
                   </tr>
                 </thead>
                 <tbody>
-                  {this.getStore('suppliers').suppliers.map(function(s) {
+                  {this.props.suppliers.suppliers.map(function(s) {
                     return <tr onClick={self.selectSupplier} data-id={s.id} className="cursor-hand" key={s.id}><td>{s.name}</td></tr>;
                   }) }
                 </tbody>

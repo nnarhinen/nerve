@@ -90,6 +90,7 @@ var App = React.createClass({
                   <this.props.activeRouteHandler
                     expenses={this.getStore('inboundInvoices')}
                     settings={this.getStore('settings')}
+                    suppliers={this.getStore('suppliers')}
                   />
                 </div>
                 <div className={menuClass}>

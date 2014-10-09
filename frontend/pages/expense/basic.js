@@ -17,7 +17,7 @@ module.exports = React.createClass({
         <div className="col-md-6">
           <div className="form-group">
             <label htmlFor="fe-expense-supplier">{ i18n.gettext('Supplier') }</label>
-            <SupplierInput value={this.props.expense.supplier} onSupplierChange={this.onSupplierChanged} />
+            <SupplierInput suppliers={this.props.suppliers} value={this.props.expense.supplier} onSupplierChange={this.onSupplierChanged} />
           </div>
         </div>
       </div>
