@@ -21,6 +21,22 @@ a:focus {
 .nav-pills > li.active a:focus {
   background-color: #e5834e;
 }
+.rbc-calendar td,
+.rbc-calendar th {
+  text-align: center;
+}
+.rbc-calendar td {
+  cursor: pointer;
+  border-radius: 5px;
+}
+.rbc-calendar td.rbc-today {
+  background-color: #ddd;
+}
+.rbc-calendar td.rbc-selected-date {
+  background-color: #357ebd;
+  color: #fff;
+  font-weight: bold;
+}
 .btn-primary-inverted {
   color: #e2753a;
 }
