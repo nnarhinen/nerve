@@ -11,7 +11,9 @@ var React = require('react'),
     Popover = require('react-bootstrap/Popover'),
     Calendar = require('react-bootstrap-calendar').Calendar,
     moment = require('moment'),
-    common = require('../../common');
+    common = require('../../common'),
+    expenseSchema = require('../../../schemas/expense'),
+    validator = require('../../../schemas/validator');
 
 
 var DatePickerInput = React.createClass({
@@ -49,43 +51,106 @@ var formatReferenceNumber = function(str) {
 
 module.exports = React.createClass({
   onSupplierChanged: function(supplier) {
-    InboundInvoiceActions.updateOne(_.extend({}, this.props.expense, {supplier: supplier}));
+    //InboundInvoiceActions.updateOne(_.extend({}, this.props.expense, {supplier: supplier}));
+    this.onPropertyChanged({
+      supplier_id: supplier.id,
+      supplier: supplier
+    });
+  },
+  getInitialState: function() {
+    return {
+      expense: this.props.expense,
+      validationErrors: {}
+    }
+  },
+  componentWillReceiveProps: function(newProps) {
+    this.setState({
+      expense: newProps.expense
+    });
   },
   onFormSubmit: function(ev) {
     ev.preventDefault();
   },
+  transformObject: function(o) {
+    if (/\.$/.exec(o.sum) || isNaN(Number(o.sum))) return o; // Let flow to validator
+    return _.extend({}, o, {sum: Number(o.sum)});
+  },
+  onPropertyChanged: function(property, newValue) {
+    var newObject = _.extend({}, this.props.expense, _.isObject(property) ? property : _.object([[property, newValue]]));
+    newObject = this.transformObject(newObject);
+    this.setState({ // Modify only locally
+      expense: newObject,
+      validationErrors: {} // Be optimistic
+    });
+    var validationReport = validator.validate(newObject, expenseSchema);
+    if (!validationReport.errors.length) return InboundInvoiceActions.updateOne(newObject);
+    var validationErrors = _.chain(validationReport.errors)
+                                .map(function(e) {
+                                  var pr = e.property.split('.')[1]; //FIXME this is not a generic solutions
+                                  return [pr, e.message];
+                                })
+                                .object().value();
+    this.setState({
+      validationErrors: validationErrors
+    });
+  },
+  validationState: function(property) {
+    if (this.state.validationErrors[property]) return 'error';
+    return 'default';
+  },
+  validationMessage: function(property) {
+    return this.state.validationErrors[property];
+  },
+  onIBANChange: function(ev) {
+    this.onPropertyChanged('iban', ev.target.value.toUpperCase().replace(/ /g, ''));
+  },
+  onReferenceNumberChange: function(ev) {
+    this.onPropertyChanged('reference_number', ev.target.value.replace(/ /g, ''));
+  },
+  expenseDateChanged: function(m) {
+    this.onPropertyChanged('expense_date', m.format('YYYY-MM-DD'));
+  },
+  dueDateChanged: function(m) {
+    this.onPropertyChanged('due_date', m.format('YYYY-MM-DD'));
+  },
+  onNumericInputChange: function(ev) {
+    this.onPropertyChanged(ev.target.name, ev.target.value.replace(',', '.'));
+  },
+  onUppercaseInputChange: function(ev) {
+    this.onPropertyChanged(ev.target.name, ev.target.value.toUpperCase());
+  },
+
   render: function() {
-    var dueDate = moment(this.props.expense.due_date);
     return (
       <form onSubmit={this.onFormSubmit}>
         <div className="row">
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="fe-expense-supplier">{ i18n.gettext('Supplier') }</label>
-              <SupplierInput suppliers={this.props.suppliers} value={this.props.expense.supplier} onSupplierChange={this.onSupplierChanged} />
+              <SupplierInput suppliers={this.props.suppliers} value={this.state.expense.supplier} onSupplierChange={this.onSupplierChanged} />
             </div>
           </div>
           <div className="col-md-3">
-            <Input label={ i18n.gettext('Sum') } value={this.props.expense.sum} type="text" />
+            <Input bsStyle={this.validationState('sum')} hasFeedback help={this.validationMessage('sum')} onChange={this.onNumericInputChange} name="sum" label={ i18n.gettext('Sum') } value={this.state.expense.sum} type="text" />
           </div>
           <div className="col-md-3">
-            <DatePickerInput onChange={this.expenseDateChanged} label={ i18n.gettext('Invoice date') } value={this.props.expense.expense_date} type="text" />
+            <DatePickerInput onChange={this.expenseDateChanged} label={ i18n.gettext('Invoice date') } value={this.state.expense.expense_date} type="text" />
           </div>
         </div>
         <div className="row">
           <div className="col-md-6">
-            <Input label={ i18n.gettext('IBAN') } value={formatIban(this.props.expense.iban)} type="text" />
+            <Input bsStyle={this.validationState('iban')} hasFeedback help={this.validationMessage('iban')} onChange={this.onIBANChange} label={ i18n.gettext('IBAN') } value={formatIban(this.state.expense.iban)} type="text" />
           </div>
           <div className="col-md-3">
-            <Input label={ i18n.gettext('BIC') } value={this.props.expense.bic} type="text" />
+            <Input bsStyle={this.validationState('bic')} hasFeedback help={this.validationMessage('bic')} onChange={this.onUppercaseInputChange} name="bic" label={ i18n.gettext('BIC') } value={this.state.expense.bic} type="text" />
           </div>
           <div className="col-md-3">
-            <DatePickerInput onChange={this.dueDateChanged} label={ i18n.gettext('Due date') } value={dueDate.toString('DD.MM.YYYY')} type="text" />
+            <DatePickerInput onChange={this.dueDateChanged} label={ i18n.gettext('Due date') } value={this.state.expense.due_date} type="text" />
           </div>
         </div>
         <div className="row">
           <div className="col-md-6">
-            <Input label={ i18n.gettext('Reference number') } value={formatReferenceNumber(this.props.expense.reference_number)} type="text" />
+            <Input bsStyle={this.validationState('reference_number')} hasFeedback help={this.validationMessage('reference_number')} onChange={this.onReferenceNumberChange} label={ i18n.gettext('Reference number') } value={formatReferenceNumber(this.state.expense.reference_number)} type="text" />
           </div>
         </div>
       </form>

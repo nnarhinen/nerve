@@ -22,7 +22,7 @@ module.exports = {
   properties: {
     supplier_id: required('integer'),
     expense_date: _.extend({format: 'date'}, required('string')),
-    sum: required('float'),
+    sum: required('number'),
     iban: { type: 'string', iban: true },
     reference_number: { type: 'string', referenceNumber: true  },
     bic: { type: 'string',  minLength: 8, maxLength: 8  },
