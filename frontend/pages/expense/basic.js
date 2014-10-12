@@ -36,6 +36,16 @@ var DatePickerInput = React.createClass({
   }
 });
 
+var formatIban = function(str) {
+  str = str || '';
+  return str.match(/.{1,4}/g).join(' ');
+};
+
+var formatReferenceNumber = function(str) {
+  str = str || '';
+  return str.replace(/^0+/, '').split('').reverse().join('').match(/.{1,5}/g).map(function(p) { return p.split('').reverse().join(''); }).reverse().join(' ');
+};
+
 
 module.exports = React.createClass({
   onSupplierChanged: function(supplier) {
@@ -56,13 +66,27 @@ module.exports = React.createClass({
             </div>
           </div>
           <div className="col-md-3">
+            <Input label={ i18n.gettext('Sum') } value={this.props.expense.sum} type="text" />
+          </div>
+          <div className="col-md-3">
             <DatePickerInput onChange={this.expenseDateChanged} label={ i18n.gettext('Invoice date') } value={this.props.expense.expense_date} type="text" />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-6">
+            <Input label={ i18n.gettext('IBAN') } value={formatIban(this.props.expense.iban)} type="text" />
+          </div>
+          <div className="col-md-3">
+            <Input label={ i18n.gettext('BIC') } value={this.props.expense.bic} type="text" />
           </div>
           <div className="col-md-3">
             <DatePickerInput onChange={this.dueDateChanged} label={ i18n.gettext('Due date') } value={dueDate.toString('DD.MM.YYYY')} type="text" />
           </div>
         </div>
         <div className="row">
+          <div className="col-md-6">
+            <Input label={ i18n.gettext('Reference number') } value={formatReferenceNumber(this.props.expense.reference_number)} type="text" />
+          </div>
         </div>
       </form>
       );
