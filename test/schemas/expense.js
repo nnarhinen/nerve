@@ -47,4 +47,25 @@ describe('Expense schema', function() {
       result.errors.should.have.lengthOf(1);
     });
   });
+  it('should validate iban', function() {
+    var obj = {
+      expense_type: 'invoice',
+      supplier_id: 123,
+      sum: 123.4,
+      expense_date: '2014-10-12',
+      bic: 'NDEAFIHH',
+      due_date: '2014-10-19',
+      reference_number: '54492899582187561412'
+    };
+    ['FI3715903000000776', 'FI4819503000000010', 'FI3229506200000019'].forEach(function(ib) {
+      obj.iban = ib;
+      var result = validator.validate(obj, expenseSchema);
+      result.errors.should.have.lengthOf(0);
+    });
+    ['FI3329506200000019', 'FI481950300000001', 'FI4919503000000010'].forEach(function(ib) {
+      obj.iban = ib;
+      var result = validator.validate(obj, expenseSchema);
+      result.errors.should.have.lengthOf(1);
+    });
+  });
 });

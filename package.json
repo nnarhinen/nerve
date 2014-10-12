@@ -19,6 +19,7 @@
     "axios": "~0.3.1",
     "bcrypt": "~0.8.0",
     "bean": "~1.0.14",
+    "big.js": "git://github.com/MikeMcl/big.js",
     "bluebird": "~2.3.2",
     "blueimp-md5": "^1.1.0",
     "body-parser": "~1.8.3",
