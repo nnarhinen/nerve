@@ -6,6 +6,7 @@ var React = require('react'),
     i18n = requirePo('../../locale/%s/LC_MESSAGES/messages.po'),
     InboundInvoiceActions = require('../actions/inbound-invoice-actions'),
     MenuItem = require('../components/menu-item'),
+    Label = require('react-bootstrap/Label'),
     _ = require('underscore');
 
 
@@ -23,7 +24,7 @@ module.exports = React.createClass({
         <h1>{ i18n.gettext('Expense') } <small>{ expense.supplier.name }</small></h1>
         <ul className="nav nav-tabs">
           <MenuItem to="expense-info" params={routeParams}>Basic information</MenuItem>
-          <MenuItem to="expense-attachments" params={routeParams}>Attachments</MenuItem>
+          <MenuItem to="expense-attachments" params={routeParams}>Attachments <Label bsStyle="default">{expense.attachments.length}</Label></MenuItem>
         </ul>
         <this.props.activeRouteHandler suppliers={this.props.suppliers} expense={expense} />
       </div>
