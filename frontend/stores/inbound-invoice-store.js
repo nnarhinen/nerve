@@ -7,6 +7,9 @@ var InboundInvoiceStore = module.exports = Flux.createStore({
     'inboundinvoices:reset:one': 'resetOne',
     'inboundinvoices:update:one': 'updateOne'
   },
+  initialize: function() {
+    this.delayedSave = _.debounce(this.saveToBackend, 5000);
+  },
   invoices: [],
   loading: true,
   pending: [],
@@ -41,8 +44,18 @@ var InboundInvoiceStore = module.exports = Flux.createStore({
     this.loading = false;
     this.emitChange();
   },
-  updateOne: function(invoice) {
-    this.resetOne(invoice);
+  saveToBackend: function(bearerToken, invoice) {
+    var self = this;
+    this.emitChange('persisting');
+    return api(bearerToken).saveExpense(invoice).then(function(invoice) {
+      self.resetOne(invoice);
+      self.emitChange('persisted');
+    });
+  },
+  updateOne: function(data) {
+    this.resetOne(data.invoice);
+    this.emitChange('waiting-for-modifications');
+    this.delayedSave(data.bearerToken, data.invoice);
   }
 });
 

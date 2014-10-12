@@ -39,7 +39,7 @@ var AppDispatcher = module.exports = Flux.createDispatcher({
     this.dispatch('inboundinvoices:reset:one', invoice);
   },
   updateInboundInvoice: function(invoice) {
-    this.dispatch('inboundinvoices:update:one', invoice);
+    this.dispatch('inboundinvoices:update:one', {invoice: invoice, bearerToken: this.bearerToken});
   },
   resetSuppliers: function(suppliers) {
     this.dispatch('suppliers:reset', suppliers);

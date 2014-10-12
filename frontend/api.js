@@ -51,6 +51,15 @@ Api.prototype.inboundInvoice = function(id) {
   });
 };
 
+Api.prototype.saveExpense = function(exp) {
+  var prom;
+  if (exp.id) prom = this.put('/api/expenses/' + exp.id, exp);
+  else prom = this.post('/api/expenses', exp);
+  return prom.then(function(resp) {
+    return resp.data;
+  });
+};
+
 Api.prototype.suppliers= function() {
   return this.get('/api/suppliers').then(function(resp) {
     return resp.data;

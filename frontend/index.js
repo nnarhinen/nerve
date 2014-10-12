@@ -54,7 +54,7 @@ var App = React.createClass({
   },
   notificationMessages: {
     'waiting-for-modifications': i18n.gettext('Waiting for more modifications..'),
-    persisting: i18n.gettext('Persiting..'),
+    persisting: i18n.gettext('Persisting..'),
     persisted: i18n.gettext('Persisted!')
   },
   storeDidChange: function(storeName, event) {
