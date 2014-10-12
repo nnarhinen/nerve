@@ -13,7 +13,7 @@ module.exports = {
       environment_id: req.user.get('environment_id'),
       id: req.params.id
     }).fetch({withRelated: ['supplier', 'attachments']}).then(function(m)  {
-      res.send(m.toJSON());
+      res.send(m.decorate());
     }).catch(next);
   },
   pending: function(req,res,next) {
@@ -27,7 +27,7 @@ module.exports = {
         });
         qb.orderBy('due_date');
       }).fetchAll({withRelated: ['supplier', 'attachments']}).then(function(col) {
-        res.send(col.toJSON());
+        res.send(col.map(function(m) { return m.decorate(); }));
       });
     };
 

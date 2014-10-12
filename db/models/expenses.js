@@ -1,5 +1,6 @@
 var _ = require('underscore'),
-    Promise = require('bluebird');
+    Promise = require('bluebird'),
+    moment = require('moment');
 
 module.exports = function(Bookshelf) {
 
@@ -16,6 +17,9 @@ module.exports = function(Bookshelf) {
     },
     attachments: function() {
       return this.hasMany(Bookshelf.models.ExpenseAttachment);
+    },
+    decorate: function() {
+      return _.extend(this.toJSON(), {due_date: moment(this.get('due_date')).format('YYYY-MM-DD'), expense_date: moment(this.get('expense_date')).format('YYYY-MM-DD')});
     }
   }, {
     createWithSupplierAndAttachments: function(expenseData, supplierData, attachments) {
