@@ -4,7 +4,9 @@ var moment = require('moment'),
     Magic = mmm.Magic,
     magic = Promise.promisifyAll(new Magic(mmm.MAGIC_MIME_TYPE)),
     debug = require('debug')('nerve:api:expenses'),
-    _ = require('underscore');
+    _ = require('underscore'),
+    expenseSchema = require('../schemas/expense'),
+    validator = require('../schemas/validator');
 
 module.exports = {
   fetchOne: function(req, res, next) {
@@ -14,6 +16,20 @@ module.exports = {
       id: req.params.id
     }).fetch({withRelated: ['supplier', 'attachments']}).then(function(m)  {
       res.send(m.decorate());
+    }).catch(next);
+  },
+  saveOne: function(req, res, next) {
+    var Expense = req.app.get('bookshelf').models.Expense;
+    Expense.where({
+      environment_id: req.user.get('environment_id'),
+      id: req.params.id
+    }).fetch({withRelated: ['supplier', 'attachments']}).then(function(m) {
+      var data = _.omit(req.body, 'id', 'environment_id', 'supplier', 'attachments');
+      var report = validator.validate(req.body, expenseSchema);
+      if (report.errors.length) return res.status(400).send({error: 'Validation failed', details: report});
+      return m.save(data).then(function() {
+        res.send(m.decorate());
+      });
     }).catch(next);
   },
   pending: function(req,res,next) {
