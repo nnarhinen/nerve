@@ -10,6 +10,15 @@ var React = require('react'),
     MenuItem = require('../components/menu-item'),
     Link = ReactRouter.Link;
 
+var isOverdue = function(expense) {
+  return moment(expense.due_date).isBefore(moment(), 'date');
+};
+
+var trClass = function(expense) {
+  if (expense.status === 'unpaid' && isOverdue(expense)) return 'danger';
+  if (expense.status === 'unpaid') return 'warning';
+}
+
 module.exports = React.createClass({
   componentDidMount: function() {
     InboundInvoiceActions.fetchPending();
@@ -34,7 +43,7 @@ module.exports = React.createClass({
           <tbody>
             {this.props.expenses.pending.map(function(inv) {
               return (
-                <tr key={inv.id}>
+                <tr key={inv.id} className={trClass(inv)}>
                   <td><Link to="expense" params={inv}>{ inv.supplier.name }</Link></td>
                   <td>{ inv.sum }</td>
                   <td>{ moment(inv.due_date).format('DD.MM.YYYY') }</td>

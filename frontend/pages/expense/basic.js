@@ -9,6 +9,7 @@ var React = require('react'),
     Input = require('react-bootstrap/Input'),
     OverlayTrigger = require('react-bootstrap/OverlayTrigger'),
     Popover = require('react-bootstrap/Popover'),
+    Label = require('react-bootstrap/Label'),
     Calendar = require('react-bootstrap-calendar').Calendar,
     moment = require('moment'),
     common = require('../../common'),
@@ -119,7 +120,6 @@ module.exports = React.createClass({
   onUppercaseInputChange: function(ev) {
     this.onPropertyChanged(ev.target.name, ev.target.value.toUpperCase());
   },
-
   render: function() {
     return (
       <form onSubmit={this.onFormSubmit}>
