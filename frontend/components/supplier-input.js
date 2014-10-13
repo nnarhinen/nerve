@@ -29,7 +29,7 @@ var SupplierInput = module.exports = React.createClass({
   render: function() {
     return (
       <div className="input-group">
-        <input type="text" className="form-control" value={this.props.value.name} onChange={this.handleInputChange} />
+        <input id={this.props.id} type="text" className="form-control" value={this.props.value.name} onChange={this.handleInputChange} />
         <span className="input-group-btn">
           <Button onClick={this.handleToggle} className="btn-btn-default btn-primary-inverted" type="button" title={ i18n.gettext('Choose supplier') }><i className="fa fa-folder-open-o"></i></Button>
         </span>
