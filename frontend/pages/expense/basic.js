@@ -14,7 +14,9 @@ var React = require('react'),
     moment = require('moment'),
     common = require('../../common'),
     expenseSchema = require('../../../schemas/expense'),
-    validator = require('../../../schemas/validator');
+    validator = require('../../../schemas/validator'),
+    ButtonToolbar = require('react-bootstrap/ButtonToolbar'),
+    Button = require('react-bootstrap/Button');
 
 
 var DatePickerInput = React.createClass({
@@ -41,11 +43,13 @@ var DatePickerInput = React.createClass({
 
 var formatIban = function(str) {
   str = str || '';
+  if (!str.length) return '';
   return str.match(/.{1,4}/g).join(' ');
 };
 
 var formatReferenceNumber = function(str) {
   str = str || '';
+  if (!str.length) return '';
   return str.replace(/^0+/, '').split('').reverse().join('').match(/.{1,5}/g).map(function(p) { return p.split('').reverse().join(''); }).reverse().join(' ');
 };
 
@@ -65,6 +69,7 @@ module.exports = React.createClass({
     }
   },
   componentWillReceiveProps: function(newProps) {
+    if (this.props.confirmSave) return; //Don't be bothered by outside world this time
     this.setState({
       expense: newProps.expense
     });
@@ -77,14 +82,17 @@ module.exports = React.createClass({
     return _.extend({}, o, {sum: Number(o.sum)});
   },
   onPropertyChanged: function(property, newValue) {
-    var newObject = _.extend({}, this.props.expense, _.isObject(property) ? property : _.object([[property, newValue]]));
+    var newObject = _.extend({}, this.props.expense, this.state.expense, _.isObject(property) ? property : _.object([[property, newValue]]));
     newObject = this.transformObject(newObject);
     this.setState({ // Modify only locally
       expense: newObject,
       validationErrors: {} // Be optimistic
     });
     var validationReport = validator.validate(newObject, expenseSchema);
-    if (!validationReport.errors.length) return InboundInvoiceActions.updateOne(newObject);
+    if (!validationReport.errors.length) {
+      if (!this.props.confirmSave) InboundInvoiceActions.updateOne(newObject);
+      return;
+    }
     var validationErrors = _.chain(validationReport.errors)
                                 .map(function(e) {
                                   var pr = e.property.split('.')[1]; //FIXME this is not a generic solutions
@@ -120,6 +128,14 @@ module.exports = React.createClass({
   onUppercaseInputChange: function(ev) {
     this.onPropertyChanged(ev.target.name, ev.target.value.toUpperCase());
   },
+  saveButtonHandler: function(ev) {
+    ev.preventDefault();
+    this.props.onSave && this.props.onSave(this.state.expense);
+  },
+  cancelButtonHandler: function(ev) {
+    ev.preventDefault();
+    this.props.onCancel && this.props.onCancel();
+  },
   render: function() {
     return (
       <form onSubmit={this.onFormSubmit}>
@@ -152,7 +168,17 @@ module.exports = React.createClass({
           <div className="col-md-6">
             <Input id="fe-expense-reference-number" bsStyle={this.validationState('reference_number')} hasFeedback help={this.validationMessage('reference_number')} onChange={this.onReferenceNumberChange} label={ i18n.gettext('Reference number') } value={formatReferenceNumber(this.state.expense.reference_number)} type="text" />
           </div>
+          <div className="col-md-6">
+          </div>
         </div>
+        {this.props.confirmSave ? <div className="row">
+          <div className="col-md-12">
+            <ButtonToolbar>
+              <Button onClick={this.saveButtonHandler} bsStyle="primary">{ i18n.gettext('Save') }</Button>
+              <Button onClick={this.cancelButtonHandler}>{ i18n.gettext('Cancel') }</Button>
+            </ButtonToolbar>
+          </div>
+        </div> : ''}
       </form>
       );
   }
