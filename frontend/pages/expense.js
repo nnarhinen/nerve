@@ -8,8 +8,13 @@ var React = require('react'),
     MenuItem = require('../components/menu-item'),
     Label = require('react-bootstrap/Label'),
     _ = require('underscore'),
-    moment = require('moment');
+    moment = require('moment'),
+    OverlayTrigger = require('react-bootstrap/OverlayTrigger'),
+    Tooltip = require('react-bootstrap/Tooltip');
 
+var formatDt = function(dt) {
+  return moment(dt).format('DD.MM.YYYY HH:mm:ss');
+};
 
 module.exports = React.createClass({
   componentDidMount: function() {
@@ -26,7 +31,7 @@ module.exports = React.createClass({
     if (expense.status === 'unpaid') {
       return <Label bsStyle="warning">{ i18n.gettext('Unpaid') }</Label>
     }
-    return <Label bsStyle="success">{ i18n.gettext('Paid') + ': ' + expense.payment_date }</Label>;
+    return <OverlayTrigger overlay={<Tooltip>{formatDt(expense.payment_date)}</Tooltip>}><Label bsStyle="success">{ i18n.gettext('Paid') }</Label></OverlayTrigger>;
   },
   render: function() {
     var id = Number(this.props.params.id),

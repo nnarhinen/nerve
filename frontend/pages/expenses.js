@@ -21,7 +21,6 @@ var isOverdue = function(expense) {
 
 var trClass = function(expense) {
   if (expense.status === 'unpaid' && isOverdue(expense)) return 'danger';
-  if (expense.status === 'unpaid') return 'warning';
 }
 
 module.exports = React.createClass({

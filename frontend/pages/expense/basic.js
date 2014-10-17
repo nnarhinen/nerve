@@ -136,6 +136,12 @@ module.exports = React.createClass({
     ev.preventDefault();
     this.props.onCancel && this.props.onCancel();
   },
+  setPaid: function() {
+    this.onPropertyChanged({
+      status: 'paid',
+      payment_date: new Date()
+    });
+  },
   render: function() {
     return (
       <form onSubmit={this.onFormSubmit}>
@@ -171,6 +177,14 @@ module.exports = React.createClass({
           <div className="col-md-6">
           </div>
         </div>
+        {this.state.expense.id && this.state.expense.status === 'unpaid' ? <div className="row">
+          <div className="col-md-12">
+            <ButtonToolbar className="well">
+              <Button bsStyle="primary" onClick={this.setPaid}>{ i18n.gettext('Mark as paid') }</Button>
+              <Button bsStyle="primary" disabled>{ i18n.gettext('Pay via bank') }</Button>
+            </ButtonToolbar>
+          </div>
+        </div> : null }
         {this.props.confirmSave ? <div className="row">
           <div className="col-md-12">
             <ButtonToolbar>
