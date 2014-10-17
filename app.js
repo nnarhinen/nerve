@@ -62,7 +62,7 @@ languages.forEach(function(lang) {
 });
 app.get('/js/login.js', browserify('./frontend/login.js'));
 
-app.use(stylus.middleware({src: __dirname + '/public', compile: compileStylus}));
+app.use('/static', stylus.middleware({src: __dirname + '/public', compile: compileStylus}));
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.get('/', function(req, res) {
