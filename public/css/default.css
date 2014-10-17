@@ -7,6 +7,10 @@
   background-color: #e5834e;
   border-color: #e2753a;
 }
+.btn-primary[disabled] {
+  background-color: #e89161;
+  border-color: #e5834e;
+}
 a {
   color: #e2753a;
 }
