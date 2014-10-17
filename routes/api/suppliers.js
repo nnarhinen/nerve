@@ -1,4 +1,6 @@
-var express = require('express');
+var express = require('express'),
+    validator = require('../../schemas/validator'),
+    supplierSchema = require('../../schemas/supplier');
 
 var router = module.exports = express.Router();
 
@@ -9,5 +11,14 @@ router.get('/suppliers', function(req, res, next) {
     qb.orderBy('name');
   }).fetchAll().then(function(suppliers) {
     res.send(suppliers.toJSON());
+  }).catch(next);
+});
+
+router.post('/suppliers', function(req, res, next) {
+  var Supplier = req.app.get('bookshelf').models.Supplier;
+  var report = validator.validate(req.body, supplierSchema);
+  if (report.errors.length) return res.status(400).send({error: 'Validation failed', details: report});
+  Supplier.forge(req.body).save().then(function(supplier) {
+    res.status(201).send(supplier);
   }).catch(next);
 });
