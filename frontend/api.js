@@ -66,6 +66,15 @@ Api.prototype.suppliers= function() {
   });
 };
 
+Api.prototype.saveSupplier = function(supplier) {
+  var prom;
+  if (supplier.id) prom = this.put('/api/suppliers/' + supplier.id, supplier);
+  else prom = this.post('/api/suppliers', supplier);
+  return prom.then(function(resp) {
+    return resp.data;
+  });
+};
+
 Api.prototype.fileDownloadUrl = function(obj) {
   return this.post('/api/files/url', obj).then(function(resp) {
     return resp.data;

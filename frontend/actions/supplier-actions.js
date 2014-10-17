@@ -7,6 +7,13 @@ var SupplierActions = module.exports = {
     api(bearerToken).suppliers().then(function(suppliers) {
       AppDispatcher.resetSuppliers(suppliers);
     });
+  },
+  createNew: function(newSupplier) {
+    var bearerToken = AppDispatcher.bearerToken;
+    return api(bearerToken).saveSupplier(newSupplier).then(function(supplier) {
+      AppDispatcher.resetOneSupplier(supplier);
+      return supplier;
+    });
   }
 };
 

@@ -16,13 +16,14 @@ var React = require('react'),
     expenseSchema = require('../../../schemas/expense'),
     validator = require('../../../schemas/validator'),
     ButtonToolbar = require('react-bootstrap/ButtonToolbar'),
-    Button = require('react-bootstrap/Button');
+    Button = require('react-bootstrap/Button'),
+    FormMixin = require('../../mixins/form-mixin');
 
 
 var DatePickerInput = React.createClass({
   getInitialState: function() {
     return {
-      value: moment(this.props.value),
+      value: this.props.value && moment(this.props.value),
       dateFormat: this.props.dateFormat || 'YYYY-MM-DD'
     };
   },
@@ -35,31 +36,21 @@ var DatePickerInput = React.createClass({
   render: function() {
     return (
       <OverlayTrigger trigger="click" placement="bottom" overlay={<Popover><Calendar onDaySelected={this.daySelected} selectedDate={this.state.value} /></Popover>}>
-        <Input id={this.props.id} type="text" onChange={common.noop} name={this.props.name} value={this.state.value.format(this.state.dateFormat)} label={this.props.label} />
+        <Input id={this.props.id} type="text" onChange={common.noop} name={this.props.name} value={this.state.value && this.state.value.format(this.state.dateFormat)} label={this.props.label} />
       </OverlayTrigger>
       );
   }
 });
 
-var formatIban = function(str) {
-  str = str || '';
-  if (!str.length) return '';
-  return str.match(/.{1,4}/g).join(' ');
-};
-
-var formatReferenceNumber = function(str) {
-  str = str || '';
-  if (!str.length) return '';
-  return str.replace(/^0+/, '').split('').reverse().join('').match(/.{1,5}/g).map(function(p) { return p.split('').reverse().join(''); }).reverse().join(' ');
-};
-
-
 module.exports = React.createClass({
+  mixins: [FormMixin],
   onSupplierChanged: function(supplier) {
     //InboundInvoiceActions.updateOne(_.extend({}, this.props.expense, {supplier: supplier}));
     this.onPropertyChanged({
       supplier_id: supplier.id,
-      supplier: supplier
+      supplier: supplier,
+      iban: supplier.iban,
+      bic: supplier.bic
     });
   },
   getInitialState: function() {
@@ -81,52 +72,19 @@ module.exports = React.createClass({
     if (/\.$/.exec(o.sum) || isNaN(Number(o.sum))) return o; // Let flow to validator
     return _.extend({}, o, {sum: Number(o.sum)});
   },
-  onPropertyChanged: function(property, newValue) {
-    var newObject = _.extend({}, this.props.expense, this.state.expense, _.isObject(property) ? property : _.object([[property, newValue]]));
-    newObject = this.transformObject(newObject);
-    this.setState({ // Modify only locally
-      expense: newObject,
-      validationErrors: {} // Be optimistic
-    });
-    var validationReport = validator.validate(newObject, expenseSchema);
-    if (!validationReport.errors.length) {
-      if (!this.props.confirmSave) InboundInvoiceActions.updateOne(newObject);
-      return;
-    }
-    var validationErrors = _.chain(validationReport.errors)
-                                .map(function(e) {
-                                  var pr = e.property.split('.')[1]; //FIXME this is not a generic solutions
-                                  return [pr, e.message];
-                                })
-                                .object().value();
-    this.setState({
-      validationErrors: validationErrors
-    });
+  objectPropertyPath: 'expense',
+  validationSchema: expenseSchema,
+  autoSave: function() {
+    return !this.props.confirmSave;
   },
-  validationState: function(property) {
-    if (this.state.validationErrors[property]) return 'error';
-    return null;
-  },
-  validationMessage: function(property) {
-    return this.state.validationErrors[property];
-  },
-  onIBANChange: function(ev) {
-    this.onPropertyChanged('iban', ev.target.value.toUpperCase().replace(/ /g, ''));
-  },
-  onReferenceNumberChange: function(ev) {
-    this.onPropertyChanged('reference_number', ev.target.value.replace(/ /g, ''));
+  updateOne: function(newObject) {
+    InboundInvoiceActions.updateOne(newObject);
   },
   expenseDateChanged: function(m) {
     this.onPropertyChanged('expense_date', m.format('YYYY-MM-DD'));
   },
   dueDateChanged: function(m) {
     this.onPropertyChanged('due_date', m.format('YYYY-MM-DD'));
-  },
-  onNumericInputChange: function(ev) {
-    this.onPropertyChanged(ev.target.name, ev.target.value.replace(',', '.'));
-  },
-  onUppercaseInputChange: function(ev) {
-    this.onPropertyChanged(ev.target.name, ev.target.value.toUpperCase());
   },
   saveButtonHandler: function(ev) {
     ev.preventDefault();
@@ -161,7 +119,7 @@ module.exports = React.createClass({
         </div>
         <div className="row">
           <div className="col-md-6">
-            <Input id="fe-expense-iban" bsStyle={this.validationState('iban')} hasFeedback help={this.validationMessage('iban')} onChange={this.onIBANChange} label={ i18n.gettext('IBAN') } value={formatIban(this.state.expense.iban)} type="text" />
+            <Input id="fe-expense-iban" bsStyle={this.validationState('iban')} hasFeedback help={this.validationMessage('iban')} onChange={this.onIBANChange} label={ i18n.gettext('IBAN') } value={common.formatIban(this.state.expense.iban)} type="text" />
           </div>
           <div className="col-md-3">
             <Input id="fe-expense-bic" bsStyle={this.validationState('bic')} hasFeedback help={this.validationMessage('bic')} onChange={this.onUppercaseInputChange} name="bic" label={ i18n.gettext('BIC') } value={this.state.expense.bic} type="text" />
@@ -172,7 +130,7 @@ module.exports = React.createClass({
         </div>
         <div className="row">
           <div className="col-md-6">
-            <Input id="fe-expense-reference-number" bsStyle={this.validationState('reference_number')} hasFeedback help={this.validationMessage('reference_number')} onChange={this.onReferenceNumberChange} label={ i18n.gettext('Reference number') } value={formatReferenceNumber(this.state.expense.reference_number)} type="text" />
+            <Input id="fe-expense-reference-number" bsStyle={this.validationState('reference_number')} hasFeedback help={this.validationMessage('reference_number')} onChange={this.onReferenceNumberChange} label={ i18n.gettext('Reference number') } value={common.formatReferenceNumber(this.state.expense.reference_number)} type="text" />
           </div>
           <div className="col-md-6">
           </div>

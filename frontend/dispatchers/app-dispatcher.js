@@ -43,6 +43,9 @@ var AppDispatcher = module.exports = Flux.createDispatcher({
   },
   resetSuppliers: function(suppliers) {
     this.dispatch('suppliers:reset', suppliers);
+  },
+  resetOneSupplier: function(supplier) {
+    this.dispatch('suppliers:reset:one', supplier);
   }
 });
 
