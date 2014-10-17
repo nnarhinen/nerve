@@ -27,6 +27,7 @@ a:focus {
 }
 .rbc-calendar td {
   cursor: pointer;
+  -webkit-border-radius: 5px;
   border-radius: 5px;
 }
 .rbc-calendar td.rbc-today {
@@ -46,6 +47,8 @@ a:focus {
 }
 .route-container {
   float: left;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   padding: 10px;
@@ -82,30 +85,15 @@ a:focus {
 .navmenu-default {
   overflow-y: visible;
   width: 200px;
-  box-shadow: 3px 0px 10px #3b5323;
-  border-right: 1px solid #3b5323;
+  border-right-width: 0px;
   background-color: #3b5323;
-}
-.navmenu-default .account-info {
-  position: absolute;
-  bottom: 0px;
-  background-color: #333;
-  left: 0px;
-  right: 0px;
-  padding: 10px;
-  color: #ddd;
-}
-.navmenu-default .account-info a {
-  color: #fff;
-  font-weight: bold;
-}
-.navmenu-default .account-info a:hover,
-.navmenu-default .account-info a:focus {
-  color: #e6e6e6;
 }
 .navmenu-default .top-wrap {
   background-color: #3b5323;
   margin-bottom: 10px;
+}
+.navmenu-default .top-wrap .btn-link {
+  padding-left: 10px;
 }
 .navmenu-default .top-wrap .btn-link .caret {
   color: #fff;
@@ -126,9 +114,15 @@ a:focus {
 }
 .navmenu-default .navmenu-nav > .active > a {
   color: #e2753a;
+  background-color: #fff;
+  border-left: 5px solid #e2753a;
 }
-.navmenu-default .navmenu-nav > .active > a:focus,
+.navmenu-default .navmenu-nav > .active > a:focus {
+  color: #e2753a;
+  background-color: #fff;
+}
 .navmenu-default .navmenu-nav > .active > a:hover {
+  background-color: #fff;
   color: #e5834e;
 }
 .notification-area {

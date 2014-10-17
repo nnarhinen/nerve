@@ -53,7 +53,8 @@ var jedifyWithLang = function(lang) {
 var compileStylus = function(str, path) {
   return stylus(str)
     .set('filename', path)
-    .use(nib());
+    .use(nib())
+    .import('nib');
 };
 
 languages.forEach(function(lang) {

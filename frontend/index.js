@@ -23,6 +23,9 @@ var React = require('react'),
     DropdownButton = require('react-bootstrap/DropdownButton'),
     BsMenuItem = require('react-bootstrap/MenuItem');
 
+
+window.React = React; // For devtools
+
 Promise.onPossiblyUnhandledRejection(function(e, promise) {
   throw e;
 });

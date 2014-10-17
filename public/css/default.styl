@@ -44,27 +44,16 @@
 .navmenu-default
   overflow-y visible
   width 200px
-  box-shadow 3px 0px 10px mainColor
-  border-right 1px solid mainColor
+  //box-shadow 3px 0px 10px mainColor
+  //border-right 1px solid mainColor
+  border-right-width 0px
   background-color mainColor
-  .account-info
-    position absolute
-    bottom 0px
-    background-color #333
-    left 0px
-    right 0px
-    padding 10px
-    color #ddd
-    a
-      color #fff
-      font-weight bold
-      &:hover, &:focus
-        color darken(#fff, 10%)
 
   .top-wrap
     background-color mainColor
     margin-bottom 10px
     .btn-link
+      padding-left 10px
       .caret
         color #fff
       &:hover
@@ -83,7 +72,14 @@
     > .active
       > a
         color accentColor
-        &:focus, &:hover
+        //background linear-gradient(left, 90% #e7, transparent)
+        background-color #fff
+        border-left 5px solid accentColor
+        &:focus
+          color accentColor
+          background-color #fff
+        &:hover
+          background-color #fff
           color lighten(accentColor, 10%)
 
 
