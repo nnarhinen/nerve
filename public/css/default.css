@@ -49,11 +49,11 @@ a:focus {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   padding: 10px;
-  width: calc(100% - 315px);
+  width: calc(100% - 215px);
 }
 .horizontal-spacer {
   float: left;
-  width: 310px;
+  width: 210px;
   height: 1px;
 }
 .vertical-spacer {
@@ -81,6 +81,10 @@ a:focus {
 }
 .navmenu-default {
   overflow-y: visible;
+  width: 200px;
+  box-shadow: 3px 0px 10px #3b5323;
+  border-right: 1px solid #3b5323;
+  background-color: #3b5323;
 }
 .navmenu-default .account-info {
   position: absolute;
@@ -113,19 +117,20 @@ a:focus {
   color: #fff;
   font-family: 'Rock Salt', cursive;
 }
-/*
-  .navmenu-nav
-    > li
-      > a:hover
-        color mainColor
-    > .active
-      > a
-        background-color mainColor
-        color #fff
-        &:hover
-          background-color lighten(mainColor, 10%)
-          color #fff
-*/
+.navmenu-default .navmenu-nav > li > a {
+  color: #fff;
+}
+.navmenu-default .navmenu-nav > li > a:hover,
+.navmenu-default .navmenu-nav > li > a:focus {
+  color: #b3b3b3;
+}
+.navmenu-default .navmenu-nav > .active > a {
+  color: #e2753a;
+}
+.navmenu-default .navmenu-nav > .active > a:focus,
+.navmenu-default .navmenu-nav > .active > a:hover {
+  color: #e5834e;
+}
 .notification-area {
   position: fixed;
   right: 10px;

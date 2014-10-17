@@ -68,7 +68,7 @@ var App = React.createClass({
     }
   },
   render: function() {
-    var gravatarUrl = 'https://www.gravatar.com/avatar/' + md5(this.props.user.email) + '?s=45';
+    var gravatarUrl = 'https://www.gravatar.com/avatar/' + md5(this.props.user.email) + '?s=35';
             if (this.getStore('settings').loading) {
               return (
                 <div className="app-loading">
@@ -95,8 +95,8 @@ var App = React.createClass({
                 </div>
                 <div className={menuClass}>
                   <div className="top-wrap">
-                    <a className="navmenu-brand col-md-8 visible-md visible-lg" href="#">Nerve</a>
-                    <div className="col-md-4">
+                    <a className="navmenu-brand col-md-7 visible-md visible-lg" href="#">Nerve</a>
+                    <div className="col-md-5">
                       <DropdownButton bsStyle="link" title={<img className="img-rounded" title={ i18n.gettext('Change your profile image at gravatar.com') } src={ gravatarUrl }/>}>
                         <BsMenuItem key="asdf" href="/logout">Logout</BsMenuItem>
                       </DropdownButton>

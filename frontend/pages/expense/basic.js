@@ -105,7 +105,7 @@ module.exports = React.createClass({
   },
   validationState: function(property) {
     if (this.state.validationErrors[property]) return 'error';
-    return 'default';
+    return null;
   },
   validationMessage: function(property) {
     return this.state.validationErrors[property];
