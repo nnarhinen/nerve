@@ -87,7 +87,7 @@ var authorizationUri = oauth2.AuthCode.authorizeURL({
   redirect_uri: process.env.NERVE_OAUTH_REDIRECT_URI
 });
 
-app.get('/callback/nerve', function(req, res, next) {
+app.get('/callbacks/nerve', function(req, res, next) {
   var code = req.query.code;
   oauth2.AuthCode.getToken({
     code: code,
@@ -101,8 +101,8 @@ app.get('/callback/nerve', function(req, res, next) {
 });
 
 app.use(function(req, res, next) {
-  if (!req.session.user || !req.session.user.id) return next();
-  app.get('bookshelf').models.User.forge({id: req.session.user.id}).fetch().then(function(model) {
+  if (!req.session.passwordless) return next();
+  app.get('bookshelf').models.User.forge({id: req.session.passwordless}).fetch().then(function(model) {
     req.user = model;
     next();
   }).catch(next);

@@ -1,6 +1,7 @@
 var Promise = require('bluebird'),
     bcrypt = Promise.promisifyAll(require('bcrypt')),
-    _ = require('underscore');
+    _ = require('underscore'),
+    uuid = require('node-uuid');
 
 module.exports = function(Bookshelf) {
   var User = Bookshelf.models.User = Bookshelf.Model.extend({
@@ -22,7 +23,7 @@ module.exports = function(Bookshelf) {
       var self = this;
       return Bookshelf.models.Environment.forge(params.environment).save().then(function(environment) {
         return bcrypt.genSaltAsync(10).then(function(salt) {
-          return bcrypt.hashAsync(params.password, salt);
+          return bcrypt.hashAsync(params.password || uuid.v4(), salt);
         }).then(function(passwordHash) {
           params = _.extend(_.omit(params, 'environment', 'password'), {environment_id: environment.id, password_hash: passwordHash});
           return self.forge(params).save();

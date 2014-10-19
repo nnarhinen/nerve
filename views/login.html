@@ -4,27 +4,18 @@
 <div class="login-container">
   <h2>Login</h2>
   <form role="form" method="POST" action="/login" class="login-form">
-    {% if failedLogin %}
-    <div class="alert alert-danger" role="alert">{{ gettext('Invalid email or password') }}</div>
-    {% endif %}
     <input type="hidden" name="redirect" value="{{redirect}}">
-    <input type="hidden" name="redirect_uri" value="{{redirect_uri}}">
-    <input type="hidden" name="client_id" value="{{client_id}}">
     <div class="form-group">
       <label for="fe-email">Email address</label>
-      <input type="email" name="email" class="form-control" id="fe-email" value="{{email}}" placeholder="Enter email">
+      <input type="email" name="user" class="form-control" id="fe-email" value="{{email}}" placeholder="Enter email">
     </div>
-    <div class="form-group">
-      <label for="fe-password">Password</label>
-      <input type="password" name="password" class="form-control" id="fe-password" placeholder="Password">
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-    <a href="#" class="pull-right signup-toggle">Don't have an account? Sign up!</a>
+    <button type="submit" class="btn btn-primary btn-block">Give me access</button>
+    <p class="well">
+      Just give your e-mail address. We will send you a link that automatically logs you in. If you didn't previously have an account, one will be created for you.
+    </p>
+    <button disabled class="btn btn-block btn-google"><i class="fa fa-google"></i> Log in with Google Account</button>
+    <button disabled class="btn btn-block btn-facebook"><i class="fa fa-facebook"></i> Log in with Facebook Account</button>
   </form>
-</div>
-<div class="signup-container hide">
-  <h2>Create account</h2>
-  {% include "signup-form.html" %}
 </div>
 {% endblock %}
 

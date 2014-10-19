@@ -3,9 +3,24 @@ var express = require('express'),
     oauthserver = require('node-oauth2-server'),
     Qs = require('qs'),
     _ = require('underscore'),
-    Validator = require('jsonschema').Validator;
+    Validator = require('jsonschema').Validator,
+    passwordless = require('passwordless'),
+    BookshelfStore = require('passwordless-bookshelfstore'),
+    Bookshelf = require('../db/bookshelf'),
+    Mailgun = require('mailgun').Mailgun,
+    util = require('util');
 
-var v = new Validator();
+var v = new Validator(),
+    mg = new Mailgun(process.env.MAILGUN_API_KEY);
+
+passwordless.init(new BookshelfStore(Bookshelf.models.PasswordlessToken), {
+  userProperty: 'userId'
+});
+passwordless.addDelivery(function(tokenToSend, uidToSend, recipient, callback) {
+  var host = process.env.NERVE_ENDPOINT;
+  mg.sendText('no-reply@nerve.fi', recipient, 'Access to Nerve',
+      util.format('Hello there!\nYou can access your Nerve account by following this link: %s/login?token=%s&uid=%s\n\n-The Nerve Team', host, tokenToSend, uidToSend), callback);
+});
 
 var router = module.exports = express.Router();
 
@@ -18,18 +33,17 @@ var oauth = router.oauth2 = oauthserver({
 router.use(bodyparser.urlencoded({extended: true}));
 router.all('/oauth/token', oauth.grant());
 
-var redirectIfNoLogin = function(req, res, next) {
-  if (!req.session.user) {
-    var params = {
-      redirect: req.originalUrl
-    };
-    return res.redirect('/login?' + Qs.stringify(params));
-  }
-  next();
-};
+router.use(passwordless.sessionSupport());
+router.use(function(req, res, next) {
+  if (!req.userId) return next();
+  Bookshelf.models.User.where({id: req.userId}).fetch().then(function(u) {
+    req.user = u && u.toJSON();
+    next();
+  }).catch(next);
+});
 
 router.route('/oauth/authorize')
-        .get(redirectIfNoLogin, function(req, res, next) {
+        .get(passwordless.restricted({ originField: 'redirect', failureRedirect: '/login' }), function(req, res, next) {
           oauth.model.getClient(req.query.client_id, null, function(err, client) {
             if (err) return next(err);
             res.render('authorize.html', {
@@ -40,8 +54,8 @@ router.route('/oauth/authorize')
             });
           });
         })
-        .post(redirectIfNoLogin, oauth.authCodeGrant(function(req, next) {
-          next(null, req.body.allow === 'yes', req.session.user);
+        .post(passwordless.restricted(), oauth.authCodeGrant(function(req, next) {
+          next(null, req.body.allow === 'yes', req.user);
         }));
 
 var UserSchema = _.clone(require('../schemas/user')),
@@ -76,28 +90,25 @@ router.route('/signup')
         });
 
 router.route('/login')
-        .get(function(req, res, next) {
+        .get(passwordless.acceptToken({enableOriginRedirect: true}), function(req, res, next) {
           res.render('login.html', {
             title: 'Login',
             redirect: req.query.redirect,
-            client_id: req.query.client_id,
-            redirect_uri: req.query.redirect_uri
           });
         })
-        .post(function(req, res, next) {
-          var User = req.app.get('bookshelf').models.User;
-          User.login(req.body.email, req.body.password).then(function(user) {
-            if (!user) return res.status(400).render('login.html', {
-              redirect: req.body.redirect,
-              client_id: req.body.client_id,
-              redirect_uri: req.body.redirect_uri,
-              failedLogin: true,
-              email: req.body.email
+        .post(passwordless.requestToken(
+              function(user, delivery, callback) {
+                Bookshelf.models.User.where({email: user}).fetch().then(function(u) {
+                  if (u) return u;
+                  return Bookshelf.models.User.signupWithEnvironment({email: user, environment: {name: user + '\'s Company'}});
+                }).then(function(u) {
+                  callback(null, u && u.id);
+                }).catch(callback);
+              },
+              { originField: 'redirect' }),
+            function(req, res){
+              res.redirect('/');
             });
-            req.session.user = user.toJSON();
-            res.redirect(req.body.redirect || '/app')
-          }).catch(next);
-        });
 
 router.route('/logout')
       .get(function(req, res, next) {
