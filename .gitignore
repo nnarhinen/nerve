@@ -3,3 +3,4 @@ node_modules
 development.sqlite
 development.env
 npm-debug.log
+.env

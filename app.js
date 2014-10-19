@@ -1,11 +1,5 @@
-var env = require('node-env-file'),
-    path = require('path'),
-    fs = require('fs'),
-    envFile = path.join(__dirname, 'development.env');
-if (fs.existsSync(envFile)) {
-  env(envFile);
-}
-
+//Load env
+require('./env');
 
 var express = require('express'),
     app = express(),
@@ -18,6 +12,7 @@ var express = require('express'),
     bookshelf = require('./db/bookshelf'),
     session = require('express-session'),
     BookshelfStore = require('connect-bookshelf')(session),
+    path = require('path'),
     _ = require('underscore'),
     util = require('util');
 

@@ -1,3 +1,6 @@
+//Load env
+require('./env');
+
 var dbConfig = require('./config/db'),
     _ = require('underscore');
 
