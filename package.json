@@ -56,7 +56,7 @@
     "react-bootstrap-calendar": "0.0.3",
     "react-fileprompt": "0.0.1",
     "react-pdf": "0.0.2",
-    "react-router": "~0.7.0",
+    "react-router": "~0.9.0",
     "reactify": "~0.14.0",
     "should": "^4.0.4",
     "simple-oauth2": "=0.2.0",

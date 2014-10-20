@@ -21,7 +21,8 @@ var React = require('react'),
     NotificationActions = require('./actions/notification-actions'),
     md5 = require('blueimp-md5').md5,
     DropdownButton = require('react-bootstrap/DropdownButton'),
-    BsMenuItem = require('react-bootstrap/MenuItem');
+    BsMenuItem = require('react-bootstrap/MenuItem'),
+    i18n = requirePo('../locale/%s/LC_MESSAGES/messages.po');
 
 
 window.React = React; // For devtools
@@ -151,7 +152,11 @@ var RouteApp = React.createClass({
             </Route>
           </Route>
           <Route name="customers" path="/customers" handler={Pages.Customers}  />
-          <Route name="settings" path="/settings" handler={Pages.Settings} />
+          <Route name="settings" path="/settings" handler={Pages.Settings.Index}>
+            <DefaultRoute handler={Pages.Settings.User} title={i18n.gettext('User information')} name="settings/user" />
+            <Route name="settings/environment" path="environment" handler={Pages.Settings.Company} title={i18n.gettext('Company information')} />
+            <Route name="settings/maventa" path="maventa" handler={Pages.Settings.Maventa} title="Maventa" />
+          </Route>
           <NotFound handler={Pages.NotFound} />
         </Route>
       </Routes>

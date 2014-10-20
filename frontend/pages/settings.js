@@ -3,36 +3,30 @@
  */
 
 var React = require('react'),
-    Flux = require('delorean.js').Flux,
     i18n = requirePo('../../locale/%s/LC_MESSAGES/messages.po'),
     _ = require('underscore'),
-    SettingsActions = require('../actions/settings-actions');
-
-module.exports = React.createClass({
-  onValueChange: function(ev) {
-    SettingsActions.changeSetting(ev.target.name, ev.target.value);
-  },
+    SettingsActions = require('../actions/settings-actions'),
+    Router = require('react-router'),
+    MenuItem = require('../components/menu-item');
+var Settings = module.exports = React.createClass({
+  mixins: [Router.ActiveState],
   render: function() {
-            return (
-              <div>
-                <h1>{ i18n.gettext('Settings') }</h1>
-                <h2>Maventa</h2>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="form-group">
-                      <label htmlFor="fe-settings-maventa-api-key">{ i18n.gettext('API-key') }</label>
-                      <input type="text" className="form-control" id="fe-settings-maventa-api-key" name="maventa_api_key" onChange={this.onValueChange} value={this.props.settings.maventa_api_key} />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="form-group">
-                      <label htmlFor="fe-settings-maventa-customer-uuid">{ i18n.gettext('Customer UUID') }</label>
-                      <input type="text" className="form-control" id="fe-settings-maventa-customer-uuid" name="maventa_customer_uuid" onChange={this.onValueChange} value={this.props.settings.maventa_customer_uuid} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              );
-          }
+    var title = _.last(this.getActiveRoutes()).props.title;
+    return (
+        <div>
+          <h1>{ i18n.gettext('Settings') } <small>{ title }</small></h1>
+          <div className="row">
+            <div className="col-md-9">{ this.transferPropsTo(<this.props.activeRouteHandler />) }</div>
+            <div className="col-md-3">
+              <ul className="nav nav-pills nav-stacked">
+                <MenuItem to="settings/user">{ i18n.gettext('User information') }</MenuItem>
+                <MenuItem to="settings/environment">{ i18n.gettext('Company information') }</MenuItem>
+                <MenuItem to="settings/maventa">Maventa</MenuItem>
+              </ul>
+            </div>
+          </div>
+        </div>
+        );
+  }
 });
 
