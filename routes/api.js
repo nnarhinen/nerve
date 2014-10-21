@@ -7,7 +7,10 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     Maventa = require('node-maventa'),
     AWS = require('aws-sdk'),
-    Promise = require('bluebird');
+    Promise = require('bluebird'),
+    _ = require('underscore'),
+    envSchema = require('../schemas/environment'),
+    validator = require('../schemas/validator');
 
 AWS.config.accessKeyId = process.env.AWS_ACCESS_KEY_ID;
 AWS.config.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
@@ -44,6 +47,22 @@ router.use(function(req, res, next) {
 router.get('/me', function(req, res, next) {
   res.send(req.user.decorate());
 });
+router.route('/environment')
+  .get(function(req, res, next) {
+    req.user.environment().fetch().then(function(env) {
+      res.send(env.toJSON());
+    }).catch(next);
+  })
+  .put(function(req, res, next) {
+    req.user.environment().fetch().then(function(env) {
+      var data = _.omit(req.body, 'id', 'created_at', 'updated_at');
+      var validationReport = validator.validate(data, envSchema);
+      if (validationReport.errors.length) return res.status(400).send({error: 'Validation failed', details: validationReport});
+      return env.save(data).then(function(env) {
+        res.send(env.toJSON());
+      });
+    }).catch(next);
+  });
 router.get('/expenses/pending', expenses.pending);
 router.get('/expenses/:id', expenses.fetchOne);
 router.put('/expenses/:id', expenses.saveOne);
