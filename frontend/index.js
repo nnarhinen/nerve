@@ -2,6 +2,10 @@
  * @jsx React.DOM
  */
 
+/*global oauthAccessToken*/
+
+'use strict';
+
 var React = require('react'),
     ReactRouter = require('react-router'),
     Routes = ReactRouter.Routes,
@@ -34,7 +38,7 @@ Promise.onPossiblyUnhandledRejection(function(e, promise) {
 var Notification = React.createClass({
   render: function() {
     var className = "alert alert-" + this.props.state;
-    return <div className={className}>{this.props.message}</div>
+    return <div className={className}>{this.props.message}</div>;
   }
 });
 
@@ -68,7 +72,7 @@ var App = React.createClass({
         state: event === 'persisted' ? 'success' : 'info',
         id: storeName,
         ttl: event === 'persisted' ? 1000 : undefined
-      })
+      });
     }
   },
   render: function() {
@@ -126,7 +130,7 @@ var App = React.createClass({
                 </div>
                 <div className="notification-area">
                   {this.getStore('notifications').notifications.map(function(notification) {
-                    return <Notification key={notification.id} state={notification.state} message={notification.message} />
+                    return <Notification key={notification.id} state={notification.state} message={notification.message} />;
                   })}
                 </div>
               </div>

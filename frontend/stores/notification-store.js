@@ -22,7 +22,7 @@ var SettingsStore = module.exports = Flux.createStore({
   },
   notifications: {},
   getState: function() {
-    return {notifications: this.notificationList()}
+    return {notifications: this.notificationList()};
   },
   notificationList: function() {
     return _.values(this.notifications);

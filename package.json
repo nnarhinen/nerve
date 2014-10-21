@@ -72,6 +72,12 @@
     "repl-promised": "~0.1.0"
   },
   "jshintConfig": {
-    "node": true
+    "node": true,
+    "browser": true,
+    "eqeqeq": true,
+    "newcap": false,
+    "globals": {
+      "requirePo": true
+    }
   }
 }

@@ -26,10 +26,10 @@ module.exports = React.createClass({
   renderStatus: function(expense) {
     if (!expense) return '';
     if (expense.status === 'unpaid' && this.isOverdue(expense)) {
-      return <Label bsStyle="danger"> { i18n.gettext('Overdue') }</Label>
+      return <Label bsStyle="danger"> { i18n.gettext('Overdue') }</Label>;
     }
     if (expense.status === 'unpaid') {
-      return <Label bsStyle="warning">{ i18n.gettext('Unpaid') }</Label>
+      return <Label bsStyle="warning">{ i18n.gettext('Unpaid') }</Label>;
     }
     return <OverlayTrigger overlay={<Tooltip>{formatDt(expense.payment_date)}</Tooltip>}><Label bsStyle="success">{ i18n.gettext('Paid') }</Label></OverlayTrigger>;
   },

@@ -1,5 +1,5 @@
 var AppDispatcher = require('../dispatchers/app-dispatcher'),
-    NotificationActions = require('./notification-actions');
+    NotificationActions = require('./notification-actions'),
     api = require('../api'),
     _ = require('underscore');
 

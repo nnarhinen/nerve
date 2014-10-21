@@ -46,7 +46,7 @@ var SupplierInput = module.exports = React.createClass({
   selectSupplier: function(ev) {
     var supplierId = Number(ev.currentTarget.getAttribute('data-id'));
     var supplier = _.find(this.props.suppliers.suppliers, function(s) { return s.id === supplierId; });
-    this.props.onSupplierChange && this.props.onSupplierChange(supplier);
+    if (this.props.onSupplierChange) this.props.onSupplierChange(supplier);
     this.handleToggle();
   },
   createNew: function(ev) {
@@ -75,7 +75,7 @@ var SupplierInput = module.exports = React.createClass({
         promptNew: false,
         newSupplier: {}
       });
-      self.props.onSupplierChange && self.props.onSupplierChange(supplier);
+      if (self.props.onSupplierChange) self.props.onSupplierChange(supplier);
       self.handleToggle();
     }).catch(function() {
       alert('Unable to save');

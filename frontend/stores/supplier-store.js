@@ -20,7 +20,7 @@ var SupplierStore = module.exports = Flux.createStore({
     this.emitChange();
   },
   resetOne: function(supplier) {
-    this.suppliers = _.reject(this.suppliers, function(one) { return one.id === supplier.id }).concat(supplier);
+    this.suppliers = _.reject(this.suppliers, function(one) { return one.id === supplier.id; }).concat(supplier);
     this.emitChange();
   }
 });

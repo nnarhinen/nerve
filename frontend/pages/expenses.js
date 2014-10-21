@@ -21,14 +21,14 @@ var isOverdue = function(expense) {
 
 var trClass = function(expense) {
   if (expense.status === 'unpaid' && isOverdue(expense)) return 'danger';
-}
+};
 
 module.exports = React.createClass({
   componentDidMount: function() {
     InboundInvoiceActions.fetchPending();
   },
   getInitialState: function() {
-    return {}
+    return {};
   },
   onFilesSelected: function(files) {
     var reader = new FileReader(),
