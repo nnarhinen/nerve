@@ -95,6 +95,7 @@ var App = React.createClass({
                     expenses={this.getStore('inboundInvoices')}
                     settings={this.getStore('settings')}
                     suppliers={this.getStore('suppliers')}
+                    users={this.getStore('users')}
                   />
                 </div>
                 <div className={menuClass}>

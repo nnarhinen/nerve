@@ -4,7 +4,6 @@ module.exports = {
   type: "object",
   properties: {
     name: required('string'),
-    email: required('email'),
-    password: required('string')
+    email: required('email', {format: 'email'}),
   }
 };

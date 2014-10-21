@@ -75,6 +75,21 @@ Api.prototype.saveSupplier = function(supplier) {
   });
 };
 
+Api.prototype.me = function() {
+  return this.get('/api/me').then(function(resp) {
+    return resp.data;
+  });
+};
+
+Api.prototype.saveUser = function(user) {
+  var prom;
+  if (user.id) prom = this.put('/api/users/' + user.id, user);
+  else throw new Error('Creating of users not implemented');
+  return prom.then(function(resp) {
+    return resp.data;
+  });
+};
+
 Api.prototype.fileDownloadUrl = function(obj) {
   return this.post('/api/files/url', obj).then(function(resp) {
     return resp.data;

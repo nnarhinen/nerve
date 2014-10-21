@@ -133,7 +133,7 @@ a:focus {
   position: fixed;
   right: 10px;
   top: 10px;
-  width: 200px;
+  width: 230px;
 }
 @media (max-width: 990px) {
   .route-container {
