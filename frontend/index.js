@@ -96,6 +96,7 @@ var App = React.createClass({
                     settings={this.getStore('settings')}
                     suppliers={this.getStore('suppliers')}
                     users={this.getStore('users')}
+                    environments={this.getStore('environments')}
                   />
                 </div>
                 <div className={menuClass}>

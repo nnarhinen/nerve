@@ -90,6 +90,18 @@ Api.prototype.saveUser = function(user) {
   });
 };
 
+Api.prototype.environment = function() {
+  return this.get('/api/environment').then(function(resp) {
+    return resp.data;
+  });
+};
+
+Api.prototype.saveEnvironment = function(env) {
+  return this.put('/api/environment', env).then(function(resp) {
+    return resp.data;
+  });
+};
+
 Api.prototype.fileDownloadUrl = function(obj) {
   return this.post('/api/files/url', obj).then(function(resp) {
     return resp.data;

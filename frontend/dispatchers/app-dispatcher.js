@@ -8,7 +8,9 @@ var Flux = require('delorean.js').Flux,
     SupplierStore = require('../stores/supplier-store'),
     supplierStore = new SupplierStore(),
     UserStore = require('../stores/user-store'),
-    userStore = new UserStore();
+    userStore = new UserStore(),
+    EnvironmentStore = require('../stores/environment-store'),
+    environmentStore = new EnvironmentStore();
 
 var AppDispatcher = module.exports = Flux.createDispatcher({
   getStores: function() {
@@ -17,7 +19,8 @@ var AppDispatcher = module.exports = Flux.createDispatcher({
       notifications: notificationStore,
       inboundInvoices: inboundInvoices,
       suppliers: supplierStore,
-      users: userStore
+      users: userStore,
+      environments: environmentStore
     };
   },
   fetchSettings: function(bearerToken) {
@@ -55,6 +58,12 @@ var AppDispatcher = module.exports = Flux.createDispatcher({
   },
   updateUser: function(user) {
     this.dispatch('users:update:one', {user: user, bearerToken: this.bearerToken});
+  },
+  resetEnvironment: function(env) {
+    this.dispatch('environments:reset:one', env);
+  },
+  updateEnvironment: function(env) {
+    this.dispatch('environments:update:one', {environment: env, bearerToken: this.bearerToken});
   }
 });
 
