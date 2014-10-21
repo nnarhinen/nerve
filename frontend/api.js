@@ -8,9 +8,9 @@ function Api(bearerToken) {
 var processOpts = function(bearerToken, opts) {
   opts = opts || {};
   opts.headers = opts.headers || {};
-  opts.headers.Authorization = 'Bearer ' + bearerToken
+  opts.headers.Authorization = 'Bearer ' + bearerToken;
   return opts;
-}
+};
 
 Api.prototype.get = function(url, opts) {
   opts = processOpts(this.bearerToken, opts);

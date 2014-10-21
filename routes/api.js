@@ -1,3 +1,4 @@
+'use strict';
 var express = require('express'),
     router = module.exports = express.Router(),
     oauth = require('./oauth2').oauth2,
@@ -29,7 +30,7 @@ router.use(function(req, res, next) {
         sett = sett || model;
         return sett;
       });
-    }
+    };
     req.maventaClient = function() {
       return req.getEnvironmentSettings().then(function(sett) {
         //return new Maventa(process.env.MAVENTA_VENDOR_API_KEY, sett.get('maventa_api_key'), sett.get('maventa_company_uuid'), process.env.NODE_ENVIRONMENT !== 'production');

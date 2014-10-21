@@ -70,5 +70,8 @@
     "supervisor": "~0.6.0",
     "express-repl": "0.0.1",
     "repl-promised": "~0.1.0"
+  },
+  "jshintConfig": {
+    "node": true
   }
 }
