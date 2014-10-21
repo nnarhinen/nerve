@@ -10,8 +10,7 @@ var express = require('express'),
     Mailgun = require('mailgun').Mailgun,
     util = require('util');
 
-var v = new Validator(),
-    mg = new Mailgun(process.env.MAILGUN_API_KEY);
+var mg = new Mailgun(process.env.MAILGUN_API_KEY);
 
 passwordless.init(new BookshelfStore(Bookshelf.models.PasswordlessToken), {
   userProperty: 'userId'
@@ -58,36 +57,8 @@ router.route('/oauth/authorize')
           next(null, req.body.allow === 'yes', req.user);
         }));
 
-var UserSchema = _.clone(require('../schemas/user')),
-    EnvironmentSchema = require('../schemas/environment');
-
-UserSchema.properties.environment = {'$ref': '/Environment'};
-
-v.addSchema(EnvironmentSchema, '/Environment');
-
 var replaceRegex = /\.([^\.]+)/g,
     splitRegex = /\.(.+)?/;
-
-router.route('/signup')
-        .post(bodyparser.json(), function(req, res, next) {
-          var renderError = function(errors) {
-            return res.status(400).render('signup-form.html', _.extend({errors: errors}, req.body));
-          };
-          var report = v.validate(req.body, UserSchema, {propertyName: 'user'});
-          if (!report.valid) {
-            var errors = _.chain(report.errors).map(function(err) {
-              return [err.property.split(splitRegex)[1].replace(replaceRegex, '[$1]'), err.message];
-            }).object().value();
-            return renderError(errors);
-          }
-          var User = req.app.get('bookshelf').models.User;
-          User.exists({email: req.body.email}).then(function(exists) {
-            if (exists) return renderError({email: 'is already registered'});
-            return User.signupWithEnvironment(req.body).then(function(user) {
-              res.status(201).send(user.decorate());
-            });
-          }).catch(next);
-        });
 
 router.route('/login')
         .get(passwordless.acceptToken({enableOriginRedirect: true}), function(req, res, next) {
