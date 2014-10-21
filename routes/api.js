@@ -40,11 +40,14 @@ router.use(function(req, res, next) {
   }).catch(next);
 });
 
-
+router.get('/me', function(req, res, next) {
+  res.send(req.user.decorate());
+});
 router.get('/expenses/pending', expenses.pending);
 router.get('/expenses/:id', expenses.fetchOne);
 router.put('/expenses/:id', expenses.saveOne);
 router.route('/settings').get(settings.fetch).put(settings.update);
 router.use(require('./api/suppliers'));
+router.use('/users', require('./api/users'));
 router.use('/files', require('./api/files'));
 router.use(oauth.errorHandler());
