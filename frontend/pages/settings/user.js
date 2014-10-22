@@ -1,6 +1,7 @@
 /**
  * @jsx React.DOM
  */
+'use strict';
 
 var React = require('react'),
     FormMixin = require('../../mixins/form-mixin'),
@@ -8,7 +9,8 @@ var React = require('react'),
     userSchema = require('../../../schemas/user'),
     common = require('../../common'),
     Input = require('react-bootstrap/Input'),
-    UserActions = require('../../actions/user-actions');
+    UserActions = require('../../actions/user-actions'),
+    _ = require('underscore');
 
 module.exports = React.createClass({
   getInitialState: function() {

@@ -1,13 +1,14 @@
 /**
  * @jsx React.DOM
  */
-
+'use strict';
 var React = require('react'),
     FormMixin = require('../../mixins/form-mixin'),
     i18n = requirePo('../../../locale/%s/LC_MESSAGES/messages.po'),
     envSchema = require('../../../schemas/environment'),
     common = require('../../common'),
     Input = require('react-bootstrap/Input'),
+    _ = require('underscore'),
     EnvironmentActions = require('../../actions/environment-actions');
 
 module.exports = React.createClass({
