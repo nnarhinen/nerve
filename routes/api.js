@@ -2,7 +2,7 @@
 var express = require('express'),
     router = module.exports = express.Router(),
     oauth = require('./oauth2').oauth2,
-    expenses = require('./expenses'),
+    expenses = require('./api/expenses'),
     settings = require('./api/settings'),
     bodyParser = require('body-parser'),
     Maventa = require('node-maventa'),
@@ -63,9 +63,7 @@ router.route('/environment')
       });
     }).catch(next);
   });
-router.get('/expenses/pending', expenses.pending);
-router.get('/expenses/:id', expenses.fetchOne);
-router.put('/expenses/:id', expenses.saveOne);
+router.use(expenses);
 router.route('/settings').get(settings.fetch).put(settings.update);
 router.use(require('./api/suppliers'));
 router.use('/users', require('./api/users'));
