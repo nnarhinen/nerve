@@ -11,29 +11,6 @@ var moment = require('moment'),
 
 module.exports = router;
 
-router.get('/expenses/:id', function(req, res, next) {
-  var Expense = req.app.get('bookshelf').models.Expense;
-  Expense.where({
-    environment_id: req.user.get('environment_id'),
-    id: req.params.id
-  }).fetch({withRelated: ['supplier', 'attachments']}).then(function(m)  {
-    res.send(m.decorate());
-  }).catch(next);
-});
-router.put('/expenses:id', function(req, res, next) {
-  var Expense = req.app.get('bookshelf').models.Expense;
-  Expense.where({
-    environment_id: req.user.get('environment_id'),
-    id: req.params.id
-  }).fetch({withRelated: ['supplier', 'attachments']}).then(function(m) {
-    var data = _.omit(req.body, 'id', 'environment_id', 'supplier', 'attachments');
-    var report = validator.validate(req.body, expenseSchema);
-    if (report.errors.length) return res.status(400).send({error: 'Validation failed', details: report});
-    return m.save(data).then(function() {
-      res.send(m.decorate());
-    });
-  }).catch(next);
-});
 router.get('/expenses/pending', function(req,res,next) {
   var Expense = req.app.get('bookshelf').models.Expense;
 
@@ -46,10 +23,11 @@ router.get('/expenses/pending', function(req,res,next) {
       qb.orderBy('due_date');
     }).fetchAll({withRelated: ['supplier', 'attachments']}).then(function(col) {
       res.send(col.map(function(m) { return m.decorate(); }));
-    });
+    }).catch(next);
   };
 
   req.maventaClient().then(function(maventa) {
+    if (!maventa) return listAllExpenses();
     return maventa.invoiceListInboundBetweenDates(moment().add(-3, 'months').toDate(), new Date()).then(function(resp) {
       return Promise.reduce(resp, function(m, inboundInvoice) { // We use reduce here to process sequentially to avoid duplicate suppliers etc
         return Expense.forge({
@@ -119,3 +97,28 @@ router.get('/expenses/pending', function(req,res,next) {
     });
   }).catch(next);
 });
+
+router.get('/expenses/:id', function(req, res, next) {
+  var Expense = req.app.get('bookshelf').models.Expense;
+  Expense.where({
+    environment_id: req.user.get('environment_id'),
+    id: req.params.id
+  }).fetch({withRelated: ['supplier', 'attachments']}).then(function(m)  {
+    res.send(m.decorate());
+  }).catch(next);
+});
+router.put('/expenses:id', function(req, res, next) {
+  var Expense = req.app.get('bookshelf').models.Expense;
+  Expense.where({
+    environment_id: req.user.get('environment_id'),
+    id: req.params.id
+  }).fetch({withRelated: ['supplier', 'attachments']}).then(function(m) {
+    var data = _.omit(req.body, 'id', 'environment_id', 'supplier', 'attachments');
+    var report = validator.validate(req.body, expenseSchema);
+    if (report.errors.length) return res.status(400).send({error: 'Validation failed', details: report});
+    return m.save(data).then(function() {
+      res.send(m.decorate());
+    });
+  }).catch(next);
+});
+
