@@ -1,7 +1,7 @@
 //Load env
-require('./env');
+require('./src/backend/config/env');
 
-var dbConfig = require('./config/db'),
+var dbConfig = require('./src/backend/config/db'),
     _ = require('underscore');
 
 module.exports = _.extend({}, dbConfig, {});

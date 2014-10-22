@@ -1,0 +1,94 @@
+@import "variables"
+@import "bootstrap-overrides"
+@import "../../../../node_modules/react-bootstrap-calendar/styl/default"
+
+.btn-primary-inverted
+  color accentColor
+
+.cursor-hand
+  cursor pointer
+  cursor hand
+
+.route-container
+  float left
+  box-sizing border-box
+  -moz-box-sizing border-box
+  padding 10px
+  width calc(100% - 215px)
+.horizontal-spacer
+  float left
+  width 210px
+  height 1px
+.vertical-spacer
+  height 60px
+
+.navmenu.navmenu-default.navmenu-fixed-left.offcanvas-sm.show
+  padding-top 60px
+
+.app-loading
+  width 100%
+  padding-top 40%
+  text-align center
+  color mainColor
+
+.navbar-default
+  .navbar-brand
+    color mainColor
+    font-family 'Rock Salt', cursive
+  .navbar-toggle
+    border-color accentColor
+    color accentColor
+    .icon-bar
+      background-color accentColor
+
+.navmenu-default
+  overflow-y visible
+  width 200px
+  //box-shadow 3px 0px 10px mainColor
+  //border-right 1px solid mainColor
+  border-right-width 0px
+  background-color mainColor
+
+  .top-wrap
+    background-color mainColor
+    margin-bottom 10px
+    .btn-link
+      padding-left 10px
+      .caret
+        color #fff
+      &:hover
+        .caret
+          color accentColor
+    .navmenu-brand
+      color #fff
+      font-family 'Rock Salt', cursive
+
+  .navmenu-nav
+    > li
+      > a
+        color #fff
+        &:hover, &:focus
+          color darken(#fff, 30%)
+    > .active
+      > a
+        color accentColor
+        //background linear-gradient(left, 90% #e7, transparent)
+        background-color #fff
+        border-left 5px solid accentColor
+        &:focus
+          color accentColor
+          background-color #fff
+        &:hover
+          background-color #fff
+          color lighten(accentColor, 10%)
+
+
+.notification-area
+  position fixed
+  right 10px
+  top 10px
+  width 230px
+
+@media (max-width: 990px)
+  .route-container
+    width 100%
