@@ -129,6 +129,16 @@ a:focus {
   background-color: #fff;
   color: #e5834e;
 }
+i.fa {
+  -webkit-transition: 0.5s ease-in;
+  -moz-transition: 0.5s ease-in;
+  -o-transition: 0.5s ease-in;
+  -ms-transition: 0.5s ease-in;
+  transition: 0.5s ease-in;
+}
+i.fa.hilighted {
+  text-shadow: 0px 0px 5px #e2753a;
+}
 .notification-area {
   position: fixed;
   right: 10px;

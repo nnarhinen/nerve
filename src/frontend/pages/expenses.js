@@ -13,6 +13,7 @@ var React = require('react'),
     Tooltip = require('react-bootstrap/Tooltip'),
     FilePrompt = require('react-fileprompt'),
     BasicExpense = require('./expense/basic'),
+    common = require('../common'),
     PDF = require('react-pdf');
 
 var isOverdue = function(expense) {
@@ -57,46 +58,77 @@ module.exports = React.createClass({
         </div>
         );
     }
+    var iconClass = 'fa fa-plus';
+    if (this.state.hilightAddIcon) iconClass += ' hilighted';
     return (
       <div>
-        <h1>
-          { i18n.gettext('Expenses') } <small>
-            <OverlayTrigger placement="right" overlay={<Tooltip>{i18n.gettext('Add new expense')}</Tooltip>}>
-              <FilePrompt onFilesSelected={this.onFilesSelected}>
-                <a href="#">
-                  <i className="fa fa-plus"></i>
-                </a>
-              </FilePrompt>
-            </OverlayTrigger>
-          </small>
-        </h1>
-        <ul className="nav nav-pills pull-right">
-          <MenuItem to="expenses-pending">Pending</MenuItem>
-          <MenuItem to="expenses-history">History</MenuItem>
-        </ul>
-        {this.props.expenses.loading ? <i className="fa fa-spin fa-spinner"></i> :
-        <table className="table">
-          <thead>
-            <tr>
-              <th>{ i18n.gettext('Supplier') }</th>
-              <th>{ i18n.gettext('Sum') }</th>
-              <th>{ i18n.gettext('Due') }</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.props.expenses.pending.map(function(inv) {
-              return (
-                <tr key={inv.id} className={trClass(inv)}>
-                  <td><Link to="expense" params={inv}>{ inv.supplier.name }</Link></td>
-                  <td>{ inv.sum }</td>
-                  <td>{ moment(inv.due_date).format('DD.MM.YYYY') }</td>
-                </tr>
-                );
-            }) }
-          </tbody>
-        </table>
-        }
+        <div className="row">
+          <div className="col-md-8">
+            <h1>
+              { i18n.gettext('Expenses') } <small>
+                <OverlayTrigger placement="right" overlay={<Tooltip>{i18n.gettext('Add new expense')}</Tooltip>}>
+                  <FilePrompt onFilesSelected={this.onFilesSelected}>
+                    <a href="#">
+                      <i className={iconClass}></i>
+                    </a>
+                  </FilePrompt>
+                </OverlayTrigger>
+              </small>
+            </h1>
+          </div>
+          <div className="col-md-4">
+            <ul className="nav nav-pills pull-right">
+              <MenuItem to="expenses-pending">Pending</MenuItem>
+              <MenuItem to="expenses-history">History</MenuItem>
+            </ul>
+          </div>
+        </div>
+        {this.renderList()}
+      </div> );
+  },
+  hilightPlusIcon: function() {
+    this.setState({
+      hilightAddIcon: true
+    });
+    setTimeout(function() {
+      this.setState({
+        hilightAddIcon: false
+      });
+    }.bind(this), 1000);
+  },
+  renderList: function() {
+    if (this.props.expenses.loading) return <i className="fa fa-spin fa-spinner"></i>;
+    if (!this.props.expenses.pending.length) return (
+      <div className="row clearfix">
+        <div className="col-md-12">
+          <div className="well">
+            <h2>{ i18n.gettext('Yay, no pending expenses!') }</h2>
+            <p>{ i18n.gettext('You can use the ') } <a href="#" onMouseEnter={this.hilightPlusIcon} onClick={common.preventDefault}><i className="fa fa-plus"></i></a> { i18n.gettext('-icon at the top of this page to record new ones.') }</p>
+          </div>
+        </div>
       </div>
+    );
+    return (
+      <table className="table">
+        <thead>
+          <tr>
+            <th>{ i18n.gettext('Supplier') }</th>
+            <th>{ i18n.gettext('Sum') }</th>
+            <th>{ i18n.gettext('Due') }</th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.props.expenses.pending.map(function(inv) {
+            return (
+              <tr key={inv.id} className={trClass(inv)}>
+                <td><Link to="expense" params={inv}>{ inv.supplier.name }</Link></td>
+                <td>{ inv.sum }</td>
+                <td>{ moment(inv.due_date).format('DD.MM.YYYY') }</td>
+              </tr>
+              );
+          }) }
+        </tbody>
+      </table>
       );
     }
 });
