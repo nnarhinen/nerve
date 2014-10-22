@@ -17,7 +17,8 @@ var React = require('react'),
     validator = require('shared/schemas/validator'),
     ButtonToolbar = require('react-bootstrap/ButtonToolbar'),
     Button = require('react-bootstrap/Button'),
-    FormMixin = require('../../mixins/form-mixin');
+    FormMixin = require('../../mixins/form-mixin'),
+    _ = require('underscore');
 
 
 var DatePickerInput = React.createClass({
