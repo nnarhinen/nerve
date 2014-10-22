@@ -17,6 +17,16 @@ var InboundInvoiceActions = module.exports = {
   updateOne: function(inv) {
     AppDispatcher.updateInboundInvoice(inv);
     //TODO persist to backend
+  },
+  createNew: function(exp, fileBlobs) {
+    var a = api(AppDispatcher.bearerToken);
+    return a.saveExpense(exp).then(function(savedExpense) {
+      return a.saveExpenseAttachment(savedExpense.id, {type: 'invoice_image'}, fileBlobs).then(function(att) {
+        savedExpense.attachments = att;
+        AppDispatcher.resetInboundInvoice(savedExpense);
+        return savedExpense;
+      });
+    });
   }
 };
 

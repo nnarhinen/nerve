@@ -1,8 +1,10 @@
 /**
  * @jsx React.DOM
  */
-
+'use strict';
 var React = require('react'),
+    ReactRouter = require('react-router'),
+    Navigation = ReactRouter.Navigation,
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
     InboundInvoiceActions = require('../actions/inbound-invoice-actions'),
     ReactRouter = require('react-router'),
@@ -25,6 +27,7 @@ var trClass = function(expense) {
 };
 
 module.exports = React.createClass({
+  mixins: [Navigation],
   componentDidMount: function() {
     InboundInvoiceActions.fetchPending();
   },
@@ -36,7 +39,8 @@ module.exports = React.createClass({
         self = this;
     reader.onload = function(e) {
       self.setState({
-        file: new Uint8Array(e.target.result)
+        file: new Uint8Array(e.target.result),
+        actualFile: files[0]
       });
     };
     reader.readAsArrayBuffer(files[0]);
@@ -47,13 +51,30 @@ module.exports = React.createClass({
     });
   },
   onNewExpenseSaved: function(exp) {
-    console.log('new expense', exp);
+    this.setState({
+      addingNew: true
+    });
+    var files = {};
+    var dataView = new DataView(this.state.file.buffer);
+    files[this.state.actualFile.name] = new Blob([dataView], {type: 'application/pdf'});
+    InboundInvoiceActions.createNew(exp, files).then(function(newExp) {
+      this.setState({
+        file: null,
+        addingNew: false
+      });
+      this.transitionTo('expense', {id: newExp.id});
+    }.bind(this)).catch(function() {
+      alert('Failed to create expense');
+      this.setState({
+        addingNew: false
+      });
+    }.bind(this));
   },
   render: function() {
     if (this.state.file) {
       return (
         <div>
-          <BasicExpense confirmSave onCancel={this.onNewExpenseCanceled} onSave={this.onNewExpenseSaved} expense={{expense_type: 'invoice'}} suppliers={this.props.suppliers} />
+          <BasicExpense confirmSave saving={this.state.addingNew} onCancel={this.onNewExpenseCanceled} onSave={this.onNewExpenseSaved} expense={{expense_type: 'invoice', status: 'unpaid'}} suppliers={this.props.suppliers} />
           <PDF file={this.state.file} />
         </div>
         );

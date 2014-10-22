@@ -1,5 +1,6 @@
 var axios = require('axios'),
-    Promise = require('bluebird');
+    Promise = require('bluebird'),
+    _ = require('underscore');
 
 function Api(bearerToken) {
   this.bearerToken = bearerToken;
@@ -24,6 +25,11 @@ Api.prototype.put = function(url, data, opts) {
 
 Api.prototype.post = function(url, data, opts) {
   opts = processOpts(this.bearerToken, opts);
+  if (Object.prototype.toString.call(data) === '[object FormData]') {
+    opts.transformRequest = [_.identity];
+    //opts.headers['Content-Type'] = 'multipart/form-data';
+  }
+  
   return Promise.resolve(axios.post(url, data, opts));
 };
 
@@ -55,6 +61,22 @@ Api.prototype.saveExpense = function(exp) {
   var prom;
   if (exp.id) prom = this.put('/api/expenses/' + exp.id, exp);
   else prom = this.post('/api/expenses', exp);
+  return prom.then(function(resp) {
+    return resp.data;
+  });
+};
+
+Api.prototype.saveExpenseAttachment = function(expId, attData, fileBlobs) {
+  var data = new FormData();
+  _.pairs(attData).filter(function(p) { return typeof p[1] !== 'object'; }).forEach(function(p) {
+    data.append(p[0], p[1]);
+  });
+  _.pairs(fileBlobs).forEach(function(p) {
+    data.append('file', p[1], p[0]);
+  });
+  var prom;
+  if (attData.id) prom = this.put('/api/expenses/' + expId + '/attachments/' + attData.id, data);
+  else prom = this.post('/api/expenses/' + expId + '/attachments', data);
   return prom.then(function(resp) {
     return resp.data;
   });

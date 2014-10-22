@@ -147,7 +147,7 @@ module.exports = React.createClass({
         {this.props.confirmSave ? <div className="row">
           <div className="col-md-12">
             <ButtonToolbar>
-              <Button onClick={this.saveButtonHandler} bsStyle="primary">{ i18n.gettext('Save') }</Button>
+              <Button disabled={this.props.saving} onClick={this.saveButtonHandler} bsStyle="primary">{ this.props.saving ? i18n.gettext('Saving...') : i18n.gettext('Save') }</Button>
               <Button onClick={this.cancelButtonHandler}>{ i18n.gettext('Cancel') }</Button>
             </ButtonToolbar>
           </div>
