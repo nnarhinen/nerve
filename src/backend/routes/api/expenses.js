@@ -7,7 +7,8 @@ var moment = require('moment'),
     _ = require('underscore'),
     expenseSchema = require('shared/schemas/expense'),
     validator = require('shared/schemas/validator'),
-    router = require('express').Router();
+    router = require('express').Router(),
+    busboy = require('connect-busboy');
 
 module.exports = router;
 
@@ -107,7 +108,7 @@ router.get('/expenses/:id', function(req, res, next) {
     res.send(m.decorate());
   }).catch(next);
 });
-router.put('/expenses:id', function(req, res, next) {
+router.put('/expenses/:id', function(req, res, next) {
   var Expense = req.app.get('bookshelf').models.Expense;
   Expense.where({
     environment_id: req.user.get('environment_id'),
@@ -122,3 +123,71 @@ router.put('/expenses:id', function(req, res, next) {
   }).catch(next);
 });
 
+router.post('/expenses', function(req, res, next) {
+  var Expense = req.app.get('bookshelf').models.Expense;
+  var data = _.omit(req.body, 'id', 'environment_id', 'supplier', 'attachments');
+  var report = validator.validate(data, expenseSchema);
+  if (report.errors.length) return res.status(400).send({error: 'Validation failed', details: report});
+  Expense.forge(_.extend({environment_id: req.user.get('environment_id')}, data)).save().then(function(exp) {
+    return exp.supplier().fetch().then(function() {
+      return exp.fetch({withRelated: ['supplier']});
+    });
+  }).then(function(exp) {
+    res.status(201).send(exp.toJSON());
+  }).catch(next);
+});
+
+router.post('/expenses/:id/attachments', busboy(), function(req, res, next) {
+  var Expense = req.app.get('bookshelf').models.Expense,
+      ExpenseAttachment = req.app.get('bookshelf').models.ExpenseAttachment;
+  var envId = req.user.get('environment_id');
+  Expense.where({id: req.params.id, environment_id: envId}).fetch().then(function(exp) {
+    if (!exp) return res.status(404);
+    return new Promise(function(resolve, reject) {
+      var data = {},
+          promises = [],
+          fileNamePrefix = req.user.get('environment_id') + '/expenses/' + exp.id + '-' + Math.random().toString(36).substring(7),
+          files = [],
+          count = 0;
+      debug('will save s3 files with prefix %s', fileNamePrefix);
+
+      req.busboy.on('field', function(key, value) {
+        data[key] = value;
+      });
+      req.busboy.on('file', function(key, file, fileName, encoding, mimeType) {
+        count++;
+        var s3key = fileNamePrefix + '-' + count + '-' + fileName;
+        debug('will save with s3Key', s3key);
+        files.push({name: s3key, mimeType: mimeType});
+
+        //TODO revisit the idea of direct streaming without buffer
+        var bufs = [];
+        file.on('data', function(part) {
+          bufs.push(part);
+        });
+        file.on('end', function() {
+          promises.push(req.s3.putObjectAsync({
+            Bucket: process.env.AWS_S3_BUCKET,
+            Key: s3key,
+            Body: Buffer.concat(bufs),
+            ContentType: mimeType
+          }));
+        });
+      });
+      req.busboy.on('finish', function() {
+        files.map(function(f) {
+          return _.extend({}, data, {environment_id: envId, expense_id: req.params.id, s3path: f.name, mime_type: f.mimeType});
+        }).forEach(function(d) {
+          promises.push(ExpenseAttachment.forge(d).save());
+        });
+        Promise.all(promises).then(resolve).catch(reject);
+      });
+      req.busboy.on('error', reject);
+      req.pipe(req.busboy);
+    }).then(function() {
+      return exp.attachments().fetch().then(function(col) {
+        res.status(201).send(col.toJSON());
+      });
+    });
+  }).catch(next);
+});

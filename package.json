@@ -62,7 +62,9 @@
     "simple-oauth2": "=0.2.0",
     "sizzle": "~2.0.0",
     "stylus": "~0.48.1",
-    "underscore": "~1.7.0"
+    "underscore": "~1.7.0",
+    "busboy": "~0.2.9",
+    "connect-busboy": "0.0.2"
   },
   "devDependencies": {
     "jsxgettext": "~0.4.10",
