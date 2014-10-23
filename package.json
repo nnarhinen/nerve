@@ -66,14 +66,14 @@
     "sizzle": "~2.0.0",
     "stylus": "~0.48.1",
     "underscore": "~1.7.0",
-    "uglifyify": "~2.5.0"
+    "uglifyify": "~2.5.0",
+    "repl-promised": "~0.1.0"
   },
   "devDependencies": {
     "jsxgettext": "~0.4.10",
     "sqlite3": "~2.2.7",
     "supervisor": "~0.6.0",
-    "express-repl": "0.0.1",
-    "repl-promised": "~0.1.0"
+    "express-repl": "0.0.1"
   },
   "jshintConfig": {
     "node": true,
