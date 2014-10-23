@@ -14,7 +14,7 @@ var express = require('express'),
 
 AWS.config.accessKeyId = process.env.AWS_ACCESS_KEY_ID;
 AWS.config.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-AWS.config.region = 'eu-west-1';
+AWS.config.region = process.env.AWS_REGION || 'eu-west-1';
 
 var s3 = Promise.promisifyAll(new AWS.S3());
 
