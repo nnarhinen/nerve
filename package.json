@@ -8,7 +8,7 @@
     "pot": "jsxgettext --join-existing=true -L jinja --output-dir=./locale/templates/LC_MESSAGES --from-code=utf-8 --output=messages.pot `find . -name '*.html' | grep -v node_modules | grep -v .git`",
     "po2json": "compile-json locale i18n",
     "syncpo": "PATH=\"$PATH:/usr/local/opt/gettext/bin\" merge-po locale",
-    "start": "node src/backend/app.js",
+    "start": "node src/backend/server.js",
     "migrate": "knex migrate:latest",
     "dev-server": "supervisor -e js,html src/backend/server.js"
   },
@@ -25,8 +25,11 @@
     "body-parser": "~1.8.3",
     "bookshelf": "~0.7.7",
     "browserify-middleware": "~3.0.1",
+    "busboy": "~0.2.9",
     "class-list": "~0.1.1",
+    "compression": "^1.2.0",
     "connect-bookshelf": "0.0.1",
+    "connect-busboy": "0.0.2",
     "debug": "^2.0.0",
     "delorean.js": "~0.7.1",
     "envify": "~3.0.0",
@@ -63,8 +66,7 @@
     "sizzle": "~2.0.0",
     "stylus": "~0.48.1",
     "underscore": "~1.7.0",
-    "busboy": "~0.2.9",
-    "connect-busboy": "0.0.2"
+    "uglifyify": "~2.5.0"
   },
   "devDependencies": {
     "jsxgettext": "~0.4.10",

@@ -26,7 +26,7 @@ var router = module.exports = express.Router();
 var oauth = router.oauth2 = oauthserver({
   model: require('./oauth2-server-model'), // See below for specification
   grants: ['authorization_code', 'refresh_token'],
-  debug: process.env.NODE_ENVIRONMENT !== 'production'
+  debug: process.env.NODE_ENV !== 'production'
 });
 
 router.use(bodyparser.urlencoded({extended: true}));
@@ -87,6 +87,6 @@ router.route('/logout')
         res.redirect('/');
       });
 
-if (process.env.NODE_ENVIRONMENT === 'production') {
-  router.use(oauth.errorHandler())
+if (process.env.NODE_ENV === 'production') {
+  router.use(oauth.errorHandler());
 }

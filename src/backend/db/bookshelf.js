@@ -1,7 +1,7 @@
 var knex,
     config = require('../config/db');
 
-knex = require('knex')(config[process.env.NODE_ENVIRONMENT || 'development']);
+knex = require('knex')(config[process.env.NODE_ENV || 'development']);
 var Bookshelf = module.exports = require('bookshelf')(knex);
 
 module.exports.models = {};

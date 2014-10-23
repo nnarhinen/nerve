@@ -14,7 +14,8 @@ var express = require('express'),
     BookshelfStore = require('connect-bookshelf')(session),
     path = require('path'),
     _ = require('underscore'),
-    util = require('util');
+    util = require('util'),
+    compression = require('compression');
 
 
 var languages = ['en', 'fi'];
@@ -52,8 +53,14 @@ var compileStylus = function(str, path) {
     .import('nib');
 };
 
+app.use(compression());
+
 languages.forEach(function(lang) {
-  app.get('/js/application.' + lang + '.js', browserify('./src/frontend/index.' + lang + '.js', {transform: ['reactify', jedifyWithLang(lang), 'envify']}));
+  var transforms = ['reactify', jedifyWithLang(lang), 'envify'];
+  if (process.env.NODE_ENV === 'production') {
+    transforms.push('uglifyify');
+  }
+  app.get('/js/application.' + lang + '.js', browserify('./src/frontend/index.' + lang + '.js', {transform: transforms}));
 });
 app.get('/js/login.js', browserify('./src/frontend/login.js'));
 

@@ -5,6 +5,10 @@ module.exports = {
     connection: {
       filename: './development.sqlite'
     }
+  },
+  production: {
+    client: 'pg',
+    connection: process.env.DATABASE_URL
   }
 };
 
