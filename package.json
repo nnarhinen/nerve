@@ -15,7 +15,7 @@
   "author": "Niklas Närhinen <niklas@narhinen.net>",
   "license": "AGPLv3",
   "dependencies": {
-    "aws-sdk": "^2.0.17",
+    "aws-sdk": "~2.0.22",
     "axios": "~0.3.1",
     "bcrypt": "~0.8.0",
     "bean": "~1.0.14",
