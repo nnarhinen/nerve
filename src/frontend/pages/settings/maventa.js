@@ -23,8 +23,8 @@ module.exports = React.createClass({
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
-                      <label htmlFor="fe-settings-maventa-customer-uuid">{ i18n.gettext('Customer UUID') }</label>
-                      <input type="text" className="form-control" id="fe-settings-maventa-customer-uuid" name="maventa_customer_uuid" onChange={this.onValueChange} value={this.props.settings.maventa_customer_uuid} />
+                      <label htmlFor="fe-settings-maventa-customer-uuid">{ i18n.gettext('Company UUID') }</label>
+                      <input type="text" className="form-control" id="fe-settings-maventa-customer-uuid" name="maventa_company_uuid" onChange={this.onValueChange} value={this.props.settings.maventa_company_uuid} />
                     </div>
                   </div>
                 </div>
