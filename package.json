@@ -45,7 +45,7 @@
     "moment": "~2.8.3",
     "nib": "~1.0.3",
     "node-env-file": "~0.1.3",
-    "node-maventa": "0.0.2",
+    "node-maventa": "0.0.3",
     "node-oauth2-server": "~2.2.2",
     "node-uuid": "~1.4.1",
     "nunjucks": "~1.0.7",
