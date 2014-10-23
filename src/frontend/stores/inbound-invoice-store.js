@@ -1,5 +1,7 @@
+'use strict';
 var Flux = require('delorean.js').Flux,
-    _ = require('underscore');
+    _ = require('underscore'),
+    api = require('../api');
 
 var InboundInvoiceStore = module.exports = Flux.createStore({
   actions: {
