@@ -10,7 +10,8 @@
     "syncpo": "PATH=\"$PATH:/usr/local/opt/gettext/bin\" merge-po locale",
     "start": "node src/backend/server.js",
     "migrate": "knex migrate:latest",
-    "dev-server": "supervisor -e js,html src/backend/server.js"
+    "dev-server": "supervisor -e js,html src/backend/server.js",
+    "postinstall": "./bin/post-install"
   },
   "author": "Niklas Närhinen <niklas@narhinen.net>",
   "license": "AGPLv3",

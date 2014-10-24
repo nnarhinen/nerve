@@ -67,6 +67,11 @@ app.get('/js/login.js', browserify('./src/frontend/login.js'));
 app.use('/static', stylus.middleware({src: __dirname + '/public', compile: compileStylus}));
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
+(process.env.PRE_MIDDLEWARE || '').split(',').forEach(function(moduleName) {
+  if (!moduleName) return;
+  app.use(require(moduleName));
+});
+
 app.get('/', function(req, res) {
   res.render('index.html');
 });
