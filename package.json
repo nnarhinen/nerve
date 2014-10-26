@@ -71,10 +71,11 @@
     "repl-promised": "~0.1.0"
   },
   "devDependencies": {
+    "express-repl": "0.0.1",
     "jsxgettext": "~0.4.10",
     "sqlite3": "~2.2.7",
-    "supervisor": "~0.6.0",
-    "express-repl": "0.0.1"
+    "supertest": "^0.14.0",
+    "supervisor": "~0.6.0"
   },
   "jshintConfig": {
     "node": true,

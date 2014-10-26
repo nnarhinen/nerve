@@ -112,6 +112,12 @@ app.get('/callbacks/nerve', function(req, res, next) {
   });
 });
 
+var send405 = function(req, res) { res.send(405, 'Method not allowed'); };
+
+app.route('/callbacks/mailgun').post(function(req, res, next) {
+  res.send({});
+}).all(send405);
+
 app.use(function(req, res, next) {
   if (!req.session.passwordless) return next();
   app.get('bookshelf').models.User.forge({id: req.session.passwordless}).fetch().then(function(model) {
