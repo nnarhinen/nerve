@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/**/*.js",
+    "test": "NODE_ENV=test mocha test/**/*.js",
     "pot": "jsxgettext --join-existing=true -L jinja --output-dir=./locale/templates/LC_MESSAGES --from-code=utf-8 --output=messages.pot `find . -name '*.html' | grep -v node_modules | grep -v .git`",
     "po2json": "compile-json locale i18n",
     "syncpo": "PATH=\"$PATH:/usr/local/opt/gettext/bin\" merge-po locale",
@@ -18,6 +18,7 @@
   "dependencies": {
     "aws-sdk": "~2.0.22",
     "axios": "~0.3.1",
+    "bases": "^0.2.1",
     "bcrypt": "~0.8.0",
     "bean": "~1.0.14",
     "big.js": "git://github.com/MikeMcl/big.js",
@@ -62,13 +63,13 @@
     "react-pdf": "0.0.2",
     "react-router": "~0.9.0",
     "reactify": "~0.14.0",
+    "repl-promised": "~0.1.0",
     "should": "^4.0.4",
     "simple-oauth2": "=0.2.0",
     "sizzle": "~2.0.0",
     "stylus": "~0.48.1",
-    "underscore": "~1.7.0",
     "uglifyify": "~2.5.0",
-    "repl-promised": "~0.1.0"
+    "underscore": "~1.7.0"
   },
   "devDependencies": {
     "express-repl": "0.0.1",

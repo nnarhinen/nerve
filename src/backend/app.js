@@ -15,7 +15,8 @@ var express = require('express'),
     path = require('path'),
     _ = require('underscore'),
     util = require('util'),
-    compression = require('compression');
+    compression = require('compression'),
+    bases = require('bases');
 
 
 var languages = ['en', 'fi'];
@@ -76,6 +77,27 @@ app.get('/', function(req, res) {
   res.render('index.html');
 });
 
+var send405 = function(req, res) { res.status(405).send('Method not allowed'); };
+
+app.route('/callbacks/mailgun').post(require('connect-busboy')(), function(req, res, next) {
+  if (!req.is(['multipart/form-data', 'application/x-www-form-urlencoded'])) return res.status(406).end();
+  if (!req.query.envId) return res.status(406).end();
+  app.get('bookshelf').models.Environment.forge({id: 1000000 - bases.fromBase52(req.query.envId)}).fetch().then(function(env) {
+    if (!env) return res.status(406).end();
+    var fieldData = {};
+    req.busboy.on('field', function(fieldName, fieldValue) {
+      fieldData[fieldName] = fieldValue;
+    });
+    req.busboy.on('finish', function() {
+      if (!Number(fieldData['attachment-count'])) return res.status(406).end();
+      console.log('will send 200');
+      return res.send({});
+    });
+    req.pipe(req.busboy);
+  }).catch(next);
+}).all(send405);
+
+
 
 app.use('/api', require('./routes/api'));
 
@@ -111,12 +133,6 @@ app.get('/callbacks/nerve', function(req, res, next) {
     res.redirect('/app/');
   });
 });
-
-var send405 = function(req, res) { res.send(405, 'Method not allowed'); };
-
-app.route('/callbacks/mailgun').post(function(req, res, next) {
-  res.send({});
-}).all(send405);
 
 app.use(function(req, res, next) {
   if (!req.session.passwordless) return next();
