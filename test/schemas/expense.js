@@ -1,5 +1,5 @@
-var validator = require('../../schemas/validator'),
-    expenseSchema = require('../../schemas/expense');
+var validator = require('../../src/shared/schemas/validator'),
+    expenseSchema = require('../../src/shared/schemas/expense');
 require('should');
 describe('Expense schema', function() {
   it('should validate a receipt', function() {
