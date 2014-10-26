@@ -6,7 +6,8 @@ var request = require('supertest'),
     Bookshelf = require('../../src/backend/db/bookshelf'),
     bases = require('bases'),
     envId = null,
-    to = null;
+    to = null,
+    fs = require('fs');
 
 function insertEnvironment(done) {
   //First run migrations
@@ -18,14 +19,15 @@ function insertEnvironment(done) {
   }).then(function() { done(); }).catch(done);
 }
 
-function removeDatabase() {
+function removeDatabase(done) {
+  fs.unlink(__dirname + '/../../test.sqlite', done);
 }
 
 
 
 describe('/callbacks/mailgun', function() {
-  beforeEach(insertEnvironment);
-  afterEach(removeDatabase);
+  before(insertEnvironment);
+  after(removeDatabase);
   it('should only accept POST requests', function(done) {
     request(app)
       .get('/callbacks/mailgun?envId=' + to)
