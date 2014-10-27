@@ -15,8 +15,7 @@ var express = require('express'),
     path = require('path'),
     _ = require('underscore'),
     util = require('util'),
-    compression = require('compression'),
-    bases = require('bases');
+    compression = require('compression');
 
 
 var languages = ['en', 'fi'];
@@ -82,7 +81,7 @@ var send405 = function(req, res) { res.status(405).send('Method not allowed'); }
 app.route('/callbacks/mailgun').post(require('connect-busboy')(), function(req, res, next) {
   if (!req.is(['multipart/form-data', 'application/x-www-form-urlencoded'])) return res.status(406).end();
   if (!req.query.envId) return res.status(406).end();
-  app.get('bookshelf').models.Environment.forge({id: 1000000 - bases.fromBase52(req.query.envId)}).fetch().then(function(env) {
+  app.get('bookshelf').models.Environment.fromToken(req.query.envId).fetch().then(function(env) {
     if (!env) return res.status(406).end();
     var fieldData = {};
     req.busboy.on('field', function(fieldName, fieldValue) {

@@ -4,7 +4,6 @@ var request = require('supertest'),
     app = require('../../src/backend/app'),
     knex = require('knex'),
     Bookshelf = require('../../src/backend/db/bookshelf'),
-    bases = require('bases'),
     envId = null,
     to = null,
     fs = require('fs');
@@ -14,7 +13,7 @@ function insertEnvironment(done) {
   Bookshelf.knex.migrate.latest().then(function() {
     return Bookshelf.models.Environment.forge({name: 'Test-env'}).save().then(function(env) {
       envId = env.id;
-      to = bases.toBase52(1000000-envId);
+      to = env.getToken();
     });
   }).then(function() { done(); }).catch(done);
 }
