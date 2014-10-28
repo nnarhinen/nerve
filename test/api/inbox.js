@@ -8,6 +8,8 @@ var request = require('supertest'),
     to = null,
     fs = require('fs');
 
+require('should');
+
 function insertEnvironment(done) {
   //First run migrations
   Bookshelf.knex.migrate.latest().then(function() {
@@ -53,6 +55,31 @@ describe('/callbacks/mailgun', function() {
     .post('/callbacks/mailgun?envId=asdf')
     .send('attachment-count=1')
     .expect(406, done);
+  });
+
+  it('should add title, receiver, sender, text body and html body to db', function(done) {
+    request(app)
+      .post('/callbacks/mailgun?envId=' + to)
+      .send('attachment-count=1')
+      .send('subject=TestMail')
+      .send('from=Test%20Sender%20<test@test.com>')
+      .send('sender=test@test.com')
+      .send('recipient=in+' + to + '@melli.fi')
+      .send('body-plain=Asdfsadfa')
+      .send('body-html=<div>Asdfsadfa</div>')
+      .expect(200, function(err) {
+        if (err) return done(err);
+        app.get('bookshelf').models.InboxItem.fetchAll().then(function(col) {
+          col.length.should.equal(1);
+          var model = col.first();
+          model.get('subject').should.equal('TestMail');
+          model.get('from').should.equal('Test Sender <test@test.com>');
+          model.get('sender').should.equal('test@test.com');
+          model.get('body_plain').should.equal('Asdfsadfa');
+          model.get('body_html').should.equal('<div>Asdfsadfa</div>');
+          done();
+        }).catch(done);
+      });
   });
 
 });

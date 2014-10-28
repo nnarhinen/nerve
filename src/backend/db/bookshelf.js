@@ -13,3 +13,4 @@ require('./models/oauth')(Bookshelf);
 require('./models/settings')(Bookshelf);
 require('./models/expenses')(Bookshelf);
 require('./models/passwordless')(Bookshelf);
+require('./models/inbox')(Bookshelf);

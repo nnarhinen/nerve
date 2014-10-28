@@ -89,8 +89,16 @@ app.route('/callbacks/mailgun').post(require('connect-busboy')(), function(req, 
     });
     req.busboy.on('finish', function() {
       if (!Number(fieldData['attachment-count'])) return res.status(406).end();
-      console.log('will send 200');
-      return res.send({});
+      app.get('bookshelf').models.InboxItem.forge({
+        environment_id: env.id,
+        sender: fieldData.sender,
+        from: fieldData.from,
+        body_plain: fieldData['body-plain'],
+        body_html: fieldData['body-html'],
+        subject: fieldData.subject
+      }).save().then(function(model) {
+        res.send(model.toJSON());
+      }).catch(next);
     });
     req.pipe(req.busboy);
   }).catch(next);
