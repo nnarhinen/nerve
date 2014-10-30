@@ -6,7 +6,8 @@ var React = require('react'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
     InboundInvoiceActions = require('../actions/inbound-invoice-actions'),
     moment = require('moment'),
-    Link = require('react-router').Link;
+    Link = require('react-router').Link,
+    bases = require('bases');
 
 module.exports = React.createClass({
   componentWillMount: function() {
@@ -49,7 +50,7 @@ module.exports = React.createClass({
                     </div>
                     <div className="panel panel-default">
                       <div className="panel-heading">
-                        <h4 className="panel-title">{ i18n.gettext('E-Mail inbox') }</h4>
+                        <h4 className="panel-title">{ i18n.gettext('E-Mail inbox') } <small>{ 'in+' + bases.toBase52(1000000-userInfo.environment.id) + '@melli.fi' }</small></h4>
                       </div>
                       <div className="panel-body">
                         <i className="fa fa-spin fa-circle-o-notch"></i>

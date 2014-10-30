@@ -16,7 +16,7 @@ router.use(function(req, res, next) {
   var userId = req.user.id;
   var Bookshelf = req.app.get('bookshelf');
   Bookshelf.models.User.forge(req.user).fetch().then(function(user) {
-    req.s3 = app.get('s3');
+    req.s3 = req.app.get('s3');
     req.user = user;
     req.getEnvironmentSettings = function() {
       var model = Bookshelf.models.Settings.forge({environment_id: req.user.get('environment_id')});

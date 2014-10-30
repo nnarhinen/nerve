@@ -189,7 +189,7 @@ app.get('/callbacks/nerve', function(req, res, next) {
 
 app.use(function(req, res, next) {
   if (!req.session.passwordless) return next();
-  app.get('bookshelf').models.User.forge({id: req.session.passwordless}).fetch().then(function(model) {
+  app.get('bookshelf').models.User.forge({id: req.session.passwordless}).fetch({withRelated: ['environment']}).then(function(model) {
     req.user = model;
     next();
   }).catch(next);
