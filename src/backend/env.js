@@ -3,7 +3,7 @@ var env = require('node-env-file'),
     fs = require('fs'),
     envFile = path.join(__dirname, '/../../.env');
 if (fs.existsSync(envFile)) {
-  env(envFile);
+  env(envFile, {overwrite: false});
 }
 
 process.env.NODE_PATH = process.env.NODE_PATH + ':' + path.join(__dirname, '..') + ':' + path.join(__dirname, '..', '..');

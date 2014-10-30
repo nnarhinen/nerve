@@ -14,9 +14,17 @@ var express = require('express'),
     BookshelfStore = require('connect-bookshelf')(session),
     path = require('path'),
     _ = require('underscore'),
+    AWS = require('aws-sdk'),
+    Promise = require('bluebird'),
     util = require('util'),
-    compression = require('compression');
+    compression = require('compression'),
+    debug = require('debug')('nerve:app');
 
+AWS.config.accessKeyId = process.env.AWS_ACCESS_KEY_ID || 'dummy';
+AWS.config.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY || 'dummy';
+AWS.config.region = process.env.AWS_REGION || 'eu-west-1';
+
+var s3 = Promise.promisifyAll(new AWS.S3());
 
 var languages = ['en', 'fi'];
 
@@ -31,6 +39,7 @@ nunjucks.configure(__dirname + '/views', {
 });
 
 app.set('bookshelf', bookshelf);
+app.set('s3', s3);
 
 app.use(i18n.abide({
   supported_languages: languages,
@@ -79,15 +88,31 @@ app.get('/', function(req, res) {
 var send405 = function(req, res) { res.status(405).send('Method not allowed'); };
 
 app.route('/callbacks/mailgun').post(require('connect-busboy')(), function(req, res, next) {
-  if (!req.is(['multipart/form-data', 'application/x-www-form-urlencoded'])) return res.status(406).end();
+  debug('starting mailgun callback, req.type: %s, environment: %s', req.get('Content-Type'), req.query.envId);
+  if (!req.is(['multipart/*', 'application/x-www-form-urlencoded'])) return res.status(406).end();
   if (!req.query.envId) return res.status(406).end();
   app.get('bookshelf').models.Environment.fromToken(req.query.envId).fetch().then(function(env) {
+    debug('mailgun: resolved env to %s', env ? env.get('name') : 'undefined');
     if (!env) return res.status(406).end();
-    var fieldData = {};
+    var fieldData = {}, files = [];
     req.busboy.on('field', function(fieldName, fieldValue) {
       fieldData[fieldName] = fieldValue;
     });
+    req.busboy.on('file', function(key, file, fileName, encoding, mimeType) {
+      var bufs = [];
+      file.on('data', function(part) {
+        bufs.push(part);
+      });
+      file.on('end', function() {
+        files.push({
+          fileName: fileName,
+          buffer: Buffer.concat(bufs),
+          mimeType: mimeType
+        });
+      });
+    });
     req.busboy.on('finish', function() {
+      debug('mailgun:finish: data: %s', JSON.stringify(fieldData));
       if (!Number(fieldData['attachment-count'])) return res.status(406).end();
       app.get('bookshelf').models.InboxItem.forge({
         environment_id: env.id,
@@ -97,7 +122,28 @@ app.route('/callbacks/mailgun').post(require('connect-busboy')(), function(req, 
         body_html: fieldData['body-html'],
         subject: fieldData.subject
       }).save().then(function(model) {
-        res.send(model.toJSON());
+        return Promise.all(files.map(function(f) {
+          var fileName = f.fileName, buf = f.buffer, mimeType = f.mimeType,
+              s3Path = env.id + '/inbox/' + model.id + '/' + fileName.replace(/[^\x00-\x7F]/g, '');
+          debug('mailgun: will put to s3 with key %s', s3Path);
+          return s3.putObjectAsync({
+            Bucket: process.env.AWS_S3_BUCKET,
+            Key: s3Path,
+            Body: buf,
+            ContentLength: buf.length,
+            ContentType: mimeType
+          }).then(function() {
+            return model.attachments().create({
+              s3path: s3Path,
+              filename: fileName,
+              environment_id: env.id,
+              inbox_item_id: model.id,
+              mime_type: mimeType
+            });
+          });
+        })).then(function(atts) {
+          res.send(model.toJSON());
+        });
       }).catch(next);
     });
     req.pipe(req.busboy);

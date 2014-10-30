@@ -6,7 +6,9 @@ var request = require('supertest'),
     Bookshelf = require('../../src/backend/db/bookshelf'),
     envId = null,
     to = null,
-    fs = require('fs');
+    fs = require('fs'),
+    sinon = require('sinon'),
+    Promise = require('bluebird');
 
 require('should');
 
@@ -81,5 +83,32 @@ describe('/callbacks/mailgun', function() {
         }).catch(done);
       });
   });
+  it('should save attachments to s3 and add to db', function(done) {
+    var s3Mock = sinon.mock(app.get('s3'));
+    s3Mock.expects('putObjectAsync').once().returns(Promise.resolve());
+    request(app)
+      .post('/callbacks/mailgun?envId=' + to)
+      .field('attachment-count', '1')
+      .field('subject', 'TestMail')
+      .field('from', 'Test%20Sender%20<test@test.com>')
+      .field('sender', 'test@test.com')
+      .field('recipient', 'in+' + to + '@melli.fi')
+      .field('body-plain', 'Asdfsadfa')
+      .field('body-html', '<div>Asdfsadfa</div>')
+      .attach('attachment-1', 'test/assets/example.pdf')
+      .end(function(err, res) {
+        if (err) return done(err);
+        res.status.should.equal(200, res.text);
+        app.get('bookshelf').models.InboxItem.forge({id: JSON.parse(res.text).id}).fetch({withRelated: ['attachments']}).then(function(model) {
+          s3Mock.verify();
+          model.related('attachments').length.should.equal(1);
+          var att = model.related('attachments').first();
+          att.get('filename').should.equal('example.pdf');
+          att.get('mime_type').should.equal('application/pdf');
+          done();
+        }).catch(done);
+      });
+  });
+    
 
 });

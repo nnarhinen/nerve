@@ -74,6 +74,7 @@
   "devDependencies": {
     "express-repl": "0.0.1",
     "jsxgettext": "~0.4.10",
+    "sinon": "^1.11.1",
     "sqlite3": "~2.2.7",
     "supertest": "^0.14.0",
     "supervisor": "~0.6.0"
