@@ -216,7 +216,9 @@ app.get('/app/*', function(req, res, next) {
   function render() {
     res.render('app.html', {
       accessToken: req.session.oauth2.access_token,
-      user: req.user && JSON.stringify(_.omit(req.user.toJSON(), 'password_hash'))
+      user: req.user && JSON.stringify(_.omit(req.user.toJSON(), 'password_hash')),
+      newRelicAppId: process.env.NEW_RELIC_BROWSER_APPLICATION_ID,
+      newRelicLicenseKey: process.env.NEW_RELIC_BROWSER_APPLICATION_LICENSE_KEY
     });
   }
 });
