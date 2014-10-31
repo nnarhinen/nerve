@@ -100,6 +100,7 @@ var App = React.createClass({
                     suppliers={this.getStore('suppliers')}
                     users={this.getStore('users')}
                     environments={this.getStore('environments')}
+                    invoices={this.getStore('invoices')}
                   />
                 </div>
                 <div className={menuClass}>
@@ -114,6 +115,7 @@ var App = React.createClass({
                   </div>
                   <ul className="nav navmenu-nav">
                     <MenuItem to="dashboard">{ i18n.gettext('Dashboard') }</MenuItem>
+                    <MenuItem to="invoices">{ i18n.gettext('Invoices') }</MenuItem>
                     <MenuItem to="expenses">{ i18n.gettext('Expenses') }</MenuItem>
                     <MenuItem to="customers">{ i18n.gettext('Customers') }</MenuItem>
                     <MenuItem to="settings">{ i18n.gettext('Settings') }</MenuItem>
@@ -145,6 +147,12 @@ var RouteApp = React.createClass({
       <Routes>
         <Route name="container" path="/" handler={App} user={this.props.user} bearerToken={this.props.bearerToken} dispatcher={this.props.dispatcher}>
           <DefaultRoute name="dashboard"  handler={Pages.Dashboard} />
+          <Route name="invoices" path="/invoices" handler={Pages.EmptyParent}>
+            <DefaultRoute name="invoice-list" handler={Pages.Invoices.List} />
+            <Route name="invoice" path=":id" handler={Pages.Invoices.Invoice}>
+              <DefaultRoute name="invoice-info" handler={Pages.Invoices.InvoiceInfo} />
+            </Route>
+          </Route>
           <Route name="expenses" handler={Pages.EmptyParent}>
             <Route name="expenses-history" path="/expenses/history" handler={Pages.Expenses} history={true} />
             <Route name="expenses-pending" path="/expenses" handler={Pages.Expenses} />

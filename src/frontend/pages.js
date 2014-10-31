@@ -13,5 +13,10 @@ module.exports = {
     Maventa: require('./pages/settings/maventa'),
     User: require('./pages/settings/user'),
     Company: require('./pages/settings/company')
+  },
+  Invoices: {
+    List: require('./pages/invoices/list'),
+    Invoice: require('./pages/invoices/invoice'),
+    InvoiceInfo: require('./pages/invoices/info')
   }
 };

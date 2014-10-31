@@ -97,6 +97,22 @@ Api.prototype.saveSupplier = function(supplier) {
   });
 };
 
+Api.prototype.invoices = function() {
+  return this.get('/api/invoices').then(function(resp) {
+    return resp.data;
+  });
+};
+
+Api.prototype.saveInvoice= function(inv) {
+  var prom;
+  if (inv.id) prom = this.put('/api/invoices/' + inv.id, inv);
+  else prom = this.post('/api/invoices', inv);
+  return prom.then(function(resp) {
+    return resp.data;
+  });
+};
+
+
 Api.prototype.me = function() {
   return this.get('/api/me').then(function(resp) {
     return resp.data;
