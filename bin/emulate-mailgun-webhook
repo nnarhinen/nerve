@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+
+var FormData = require('form-data'),
+    minimist = require('minimist'),
+    addrs = require('email-addresses'),
+    fs = require('fs');
+
+var argv = minimist(process.argv.slice(2)),
+    to = argv.to,
+    from = argv.from,
+    sender = argv.sender,
+    subject = argv.subject,
+    bodyHtml = argv['body-html'],
+    bodyPlain = argv['body-plain'],
+    attachments = argv._;
+
+if (!to || !from || !sender || !subject || !(bodyHtml || bodyPlain)) {
+  console.log('You did not provide all options');
+  process.exit(1);
+}
+
+if (!attachments.length) {
+  console.log('You did not provide any attachment files');
+  process.exit(1);
+}
+
+if (!bodyHtml && bodyPlain) {
+  bodyHtml = '<div dir="ltr">' + bodyPlain + '</div>';
+}
+
+var emailParts = addrs.parseOneAddress(to);
+var envId = /^in\+(.*)$/.exec(emailParts.local)[1];
+
+var form = new FormData();
+
+form.append('from', from);
+form.append('sender', sender);
+form.append('subject', subject);
+form.append('body-html', bodyHtml);
+form.append('body-plain', bodyPlain);
+form.append('attachment-count', attachments.length);
+attachments.forEach(function(att, i) {
+  form.append('attachment-' + (i + 1), fs.createReadStream(att));
+});
+form.submit({
+  host: 'localhost',
+  port: 3000,
+  path: '/callbacks/mailgun?envId=' + envId
+}, function(err, response) {
+  if (err) console.error('Error', err);
+  else console.log('Success', response.statusCode);
+  process.exit();
+});
