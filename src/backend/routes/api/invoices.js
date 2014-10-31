@@ -1,5 +1,5 @@
 var express = require('express'),
-    //invoiceSchema = require('shared/schemas/user'),
+    invoiceSchema = require('shared/schemas/invoice'),
     validator = require('shared/schemas/validator'),
     _ = require('underscore');
 
@@ -15,6 +15,22 @@ router.get('/', function(req, res, next) {
   }).fetchAll({withRelated: ['customer']}).then(function(col) {
     res.send(col.toJSON());
   });
+});
+
+router.post('/', function(req, res, next) {
+  var Invoice = req.app.get('bookshelf').models.Invoice;
+  var data = _.omit(req.body, 'environment_id', 'invoice_number', 'id');
+  var errorReport = validator.validate(data, invoiceSchema);
+  if (errorReport.errors.length) return res.status(400).send({error: 'Validation faled', details: errorReport});
+  req.getEnvironmentSettings().then(function(sett) {
+    return Invoice.create(_.extend(data, {environment_id: req.user.get('environment_id')}), {
+      invoice_number: sett.get('next_invoice_number') || 1000
+    }).then(function(inv) {
+      return inv.fetch({withRelated: ['customer']}).then(function(inv) {
+        res.status(201).send(inv);
+      });
+    });
+  }).catch(next);
 });
 /*
 router.put('/:id', function(req, res, next) {
