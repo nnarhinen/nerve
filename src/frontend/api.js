@@ -103,6 +103,12 @@ Api.prototype.invoices = function() {
   });
 };
 
+Api.prototype.invoice = function(id) {
+  return this.get('/api/invoices/' + id).then(function(resp) {
+    return resp.data;
+  });
+};
+
 Api.prototype.saveInvoice= function(inv) {
   var prom;
   if (inv.id) prom = this.put('/api/invoices/' + inv.id, inv);

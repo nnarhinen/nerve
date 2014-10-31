@@ -20,6 +20,7 @@ var InvoiceStore = module.exports = Flux.createStore({
     this.emitChange();
   },
   resetOne: function(invoice) {
+    this.loading = false;
     this.invoices = _.reject(this.invoices, function(one) { return one.id === invoice.id; }).concat(invoice);
     this.emitChange();
   }

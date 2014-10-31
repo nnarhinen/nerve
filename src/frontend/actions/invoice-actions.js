@@ -8,6 +8,12 @@ var InvoiceActions = module.exports = {
       AppDispatcher.resetInvoices(invoices);
     });
   },
+  refreshOne: function(id) {
+    var bearerToken = AppDispatcher.bearerToken;
+    api(bearerToken).invoice(id).then(function(invoice) {
+      AppDispatcher.resetOneInvoice(invoice);
+    });
+  },
   createNew: function(newInvoice) {
     var bearerToken = AppDispatcher.bearerToken;
     return api(bearerToken).saveInvoice(newInvoice).then(function(invoice) {
