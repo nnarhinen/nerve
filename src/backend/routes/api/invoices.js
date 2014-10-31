@@ -27,7 +27,7 @@ router.post('/', function(req, res, next) {
       invoice_number: sett.get('next_invoice_number') || 1000
     }).then(function(inv) {
       return inv.fetch({withRelated: ['customer']}).then(function(inv) {
-        res.status(201).send(inv);
+        res.status(201).send(inv.toJSON());
       });
     });
   }).catch(next);
