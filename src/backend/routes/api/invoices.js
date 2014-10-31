@@ -32,6 +32,14 @@ router.post('/', function(req, res, next) {
     });
   }).catch(next);
 });
+
+router.get('/:id', function(req, res, next) {
+  var Invoice = req.app.get('bookshelf').models.Invoice;
+  Invoice.where('id', req.params.id).fetch({withRelated: ['customer']}).then(function(inv) {
+    if (!inv) return next();
+    res.send(inv.toJSON());
+  }).catch(next);
+});
 /*
 router.put('/:id', function(req, res, next) {
   var User = req.app.get('bookshelf').models.User;
