@@ -4,16 +4,37 @@
 
 var React = require('react'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
+    ReactRouter = require('react-router'),
+    Navigation = ReactRouter.Navigation,
     OverlayTrigger = require('react-bootstrap/OverlayTrigger'),
     Tooltip = require('react-bootstrap/Tooltip'),
     InvoiceActions = require('frontend/actions/invoice-actions'),
-    common = require('frontend/common');
+    Link = ReactRouter.Link,
+    common = require('frontend/common'),
+    _ = require('underscore'),
+    moment = require('moment');
 module.exports = React.createClass({
   getInitialState: function() {
     return {};
   },
+  mixins: [Navigation],
   componentDidMount: function() {
     InvoiceActions.fetch();
+  },
+  createNewInvoice: function(ev) {
+    ev.preventDefault();
+    var newInvoice = {
+      due_date: moment().add('2', 'weeks').format('YYYY-MM-DD'),
+      invoice_date: moment().format('YYYY-MM-DD'),
+      sum: 0
+    };
+    var self = this;
+    InvoiceActions.createNew(newInvoice).then(function(inv) {
+      debugger;
+      self.transitionTo('invoice', {id: inv.id});
+    }).catch(function() {
+      alert('Unable to create invoice');
+    });
   },
   render: function() {
     var iconClass = 'fa fa-plus';
@@ -61,10 +82,11 @@ module.exports = React.createClass({
           </tr>
         </thead>
         <tbody>
-          {this.props.invoices.pending.map(function(inv) {
+          {this.props.invoices.invoices.map(function(inv) {
             return (
-              <tr key={inv.id} className={trClass(inv)}>
-                <td><Link to="invoice" params={inv}>{ inv.customer ? inv.customer.name : i18n.gettext('(No customer)') }</Link></td>
+              <tr key={inv.id}>
+                <td><Link to="invoice" params={inv}>{ inv.invoice_number }</Link></td>
+                <td>{ !_.isEmpty(inv.customer) ? inv.customer.name : '(' + i18n.gettext('No customer') + ')' }</td>
                 <td>{ inv.sum }</td>
                 <td>{ moment(inv.due_date).format('DD.MM.YYYY') }</td>
               </tr>

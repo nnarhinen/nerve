@@ -12,7 +12,7 @@ var InvoiceActions = module.exports = {
     var bearerToken = AppDispatcher.bearerToken;
     return api(bearerToken).saveInvoice(newInvoice).then(function(invoice) {
       AppDispatcher.resetOneInvoice(invoice);
-     invoice;
+      return invoice;
     });
   }
 };
