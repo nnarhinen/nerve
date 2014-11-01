@@ -140,6 +140,7 @@ var App = React.createClass({
 });
 
 var bearerToken = oauthAccessToken;
+require('frontend/api').setBearerToken(bearerToken);
 
 var RouteApp = React.createClass({
   render: function() {

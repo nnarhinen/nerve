@@ -64,6 +64,12 @@ var AppDispatcher = module.exports = Flux.createDispatcher({
   resetOneInvoice: function(invoice) {
     this.dispatch('invoices:reset:one', invoice);
   },
+  resetCustomers: function(customers) {
+    this.dispatch('customers:reset', customers);
+  },
+  resetOneCustomer: function(customer) {
+    this.dispatch('customers:reset:one', customer);
+  },
   resetMyUser: function(user) {
     this.dispatch('users:reset:me', user);
   },

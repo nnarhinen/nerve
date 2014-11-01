@@ -1,6 +1,7 @@
 var axios = require('axios'),
     Promise = require('bluebird'),
-    _ = require('underscore');
+    _ = require('underscore'),
+    qs = require('qs');
 
 function Api(bearerToken) {
   this.bearerToken = bearerToken;
@@ -118,6 +119,20 @@ Api.prototype.saveInvoice= function(inv) {
   });
 };
 
+Api.prototype.searchCustomers = function(search) {
+  return this.get('/api/customers?' + qs.stringify(search)).then(function(resp) {
+    return resp.data;
+  });
+};
+
+Api.prototype.saveCustomer = function(cust) {
+  var prom;
+  if (cust.id) prom = this.put('/api/customers/' + cust.id, cust);
+  else prom = this.post('/api/customers', cust);
+  return prom.then(function(resp) {
+    return resp.data;
+  });
+};
 
 Api.prototype.me = function() {
   return this.get('/api/me').then(function(resp) {
@@ -152,6 +167,12 @@ Api.prototype.fileDownloadUrl = function(obj) {
   });
 };
 
-module.exports = function(bearerToken) {
-  return new Api(bearerToken);
+var bearerToken;
+
+module.exports = function(bt) {
+  return new Api(bt || bearerToken);
+};
+
+module.exports.setBearerToken = function(bt) {
+  bearerToken = bt;
 };
