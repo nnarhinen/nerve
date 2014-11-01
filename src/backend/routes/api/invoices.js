@@ -1,3 +1,4 @@
+'use strict';
 var express = require('express'),
     invoiceSchema = require('shared/schemas/invoice'),
     validator = require('shared/schemas/validator'),
@@ -35,21 +36,27 @@ router.post('/', function(req, res, next) {
 
 router.get('/:id', function(req, res, next) {
   var Invoice = req.app.get('bookshelf').models.Invoice;
-  Invoice.where('id', req.params.id).fetch({withRelated: ['customer']}).then(function(inv) {
+  Invoice.where({
+    id: req.params.id,
+    environment_id: req.user.get('environment_id')
+  }).fetch({withRelated: ['customer']}).then(function(inv) {
     if (!inv) return next();
     res.send(inv.decorate());
   }).catch(next);
 });
-/*
+
 router.put('/:id', function(req, res, next) {
-  var User = req.app.get('bookshelf').models.User;
-  User.where({id: req.params.id, environment_id: req.user.get('environment_id')}).fetch().then(function(user) {
-    if (!user) return res.status(404).send({error: 'Not found'});
-    var data = _.omit(req.body, 'environment_id', 'id', 'environment', 'password_hash', 'environment');
-    var errorReport = validator.validate(data, userSchema);
-    if (errorReport.errors.length) return res.status(400).send({error: 'Validation failed', details: errorReport});
-    return user.save(data).then(function(user) {
-      return res.send(user.decorate());
+  var Invoice = req.app.get('bookshelf').models.Invoice;
+  Invoice.where({
+    id: req.params.id,
+    environment_id: req.user.get('environment_id')
+  }).fetch({withRelated: ['customer']}).then(function(inv) {
+    if (!inv) return next();
+    var data = _.omit(req.body, 'environment_id', 'invoice_number', 'id', 'customer');
+    var errorReport = validator.validate(data, invoiceSchema);
+    if (errorReport.errors.length) return res.status(400).send({error: 'Validation faled', details: errorReport});
+    return inv.save(data).then(function(inv) {
+      res.send(inv.decorate());
     });
   }).catch(next);
-});*/
+});
