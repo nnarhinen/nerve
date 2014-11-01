@@ -1,7 +1,7 @@
 /**
  * @jsx React.DOM
  */
-
+'use strict';
 var React = require('react'),
     FormMixin = require('frontend/mixins/form-mixin'),
     invoiceSchema = require('shared/schemas/invoice'),
@@ -9,7 +9,8 @@ var React = require('react'),
     DatePickerInput = require('frontend/components/date-picker-input'),
     CustomerInput = require('frontend/components/customer-input'),
     _ = require('underscore'),
-    i18n = requirePo('locale/%s/LC_MESSAGES/messages.po');
+    i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
+    InvoiceActions = require('frontend/actions/invoice-actions');
 
 module.exports = React.createClass({
   mixins: [FormMixin],

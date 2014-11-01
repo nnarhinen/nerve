@@ -1,3 +1,4 @@
+'use strict';
 var AppDispatcher = require('../dispatchers/app-dispatcher'),
     api = require('../api');
 
@@ -20,6 +21,9 @@ var InvoiceActions = module.exports = {
       AppDispatcher.resetOneInvoice(invoice);
       return invoice;
     });
+  },
+  updateOne: function(one) {
+    AppDispatcher.updateOneInvoice(one);
   }
 };
 

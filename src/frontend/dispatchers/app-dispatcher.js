@@ -1,3 +1,4 @@
+'use strict';
 var Flux = require('delorean.js').Flux,
     SettingsStore = require('../stores/settings-store'),
     settingsStore = new SettingsStore(),
@@ -63,6 +64,9 @@ var AppDispatcher = module.exports = Flux.createDispatcher({
   },
   resetOneInvoice: function(invoice) {
     this.dispatch('invoices:reset:one', invoice);
+  },
+  updateOneInvoice: function(invoice) {
+    this.dispatch('invoices:update:one', {invoice: invoice, bearerToken: this.bearerToken});
   },
   resetCustomers: function(customers) {
     this.dispatch('customers:reset', customers);
