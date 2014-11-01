@@ -23,6 +23,10 @@ module.exports = function(Bookshelf) {
     customer: function() {
       return this.belongsTo(Bookshelf.models.Customer)
     },
+    decorate: function() {
+      return _.extend(this.toJSON(), {due_date: moment(this.get('due_date')).format('YYYY-MM-DD'), invoice_date: moment(this.get('invoice_date')).format('YYYY-MM-DD')});
+    },
+
     hasTimestamps: ['created_at', 'updated_at']
   }, {
     create: function(data, defaults) {

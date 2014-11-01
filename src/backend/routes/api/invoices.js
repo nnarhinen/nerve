@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
     });
     qb.orderBy('invoice_number');
   }).fetchAll({withRelated: ['customer']}).then(function(col) {
-    res.send(col.toJSON());
+    res.send(col.map(function(one) { return one.decorate(); }));
   });
 });
 
@@ -27,7 +27,7 @@ router.post('/', function(req, res, next) {
       invoice_number: sett.get('next_invoice_number') || 1000
     }).then(function(inv) {
       return inv.fetch({withRelated: ['customer']}).then(function(inv) {
-        res.status(201).send(inv.toJSON());
+        res.status(201).send(inv.decorate());
       });
     });
   }).catch(next);
@@ -37,7 +37,7 @@ router.get('/:id', function(req, res, next) {
   var Invoice = req.app.get('bookshelf').models.Invoice;
   Invoice.where('id', req.params.id).fetch({withRelated: ['customer']}).then(function(inv) {
     if (!inv) return next();
-    res.send(inv.toJSON());
+    res.send(inv.decorate());
   }).catch(next);
 });
 /*
