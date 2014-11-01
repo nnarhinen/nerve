@@ -105,7 +105,7 @@ var App = React.createClass({
                 </div>
                 <div className={menuClass}>
                   <div className="top-wrap">
-                    <a className="navmenu-brand col-md-7 visible-md visible-lg" href="#">Nerve</a>
+                    <a className="navmenu-brand col-md-7 visible-md visible-lg" href="#">Melli</a>
                     <div className="col-md-5">
                       <DropdownButton bsStyle="link" title={<img className="img-rounded" title={ i18n.gettext('Change your profile image at gravatar.com') } src={ gravatarUrl }/>}>
                         <BsMenuItem key="asdf" href="/logout">Logout</BsMenuItem>
@@ -127,7 +127,7 @@ var App = React.createClass({
                     <span className="icon-bar"></span>
                     <span className="icon-bar"></span>
                   </button>
-                  <a className="navbar-brand" href="#">Nerve</a>
+                  <a className="navbar-brand" href="#">Melli</a>
                 </div>
                 <div className="notification-area">
                   {this.getStore('notifications').notifications.map(function(notification) {

@@ -77,7 +77,7 @@ a:focus {
 }
 .navbar-default .navbar-brand {
   color: #3b5323;
-  font-family: 'Rock Salt', cursive;
+  font-family: 'Dancing Script', cursive;
 }
 .navbar-default .navbar-toggle {
   border-color: #e2753a;
@@ -107,7 +107,8 @@ a:focus {
 }
 .navmenu-default .top-wrap .navmenu-brand {
   color: #fff;
-  font-family: 'Rock Salt', cursive;
+  font-family: 'Dancing Script', cursive;
+  font-size: 2.5em;
 }
 .navmenu-default .navmenu-nav > li > a {
   color: #fff;
