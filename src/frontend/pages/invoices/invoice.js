@@ -21,7 +21,7 @@ module.exports = React.createClass({
     return (
       <div>
         <h1>{i18n.gettext('Invoice')} <small>{ invoice.invoice_number }</small></h1>
-        { this.props.activeRouteHandler(this.props) }
+        { this.props.activeRouteHandler(_.extend({}, this.props, {invoice: invoice})) }
       </div>
     );
 
