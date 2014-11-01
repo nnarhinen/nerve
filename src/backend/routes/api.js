@@ -58,6 +58,7 @@ router.route('/environment')
 router.use(expenses);
 router.route('/settings').get(settings.fetch).put(settings.update);
 router.use(require('./api/suppliers'));
+router.use('/customers', require('./api/customers'));
 router.use('/invoices', require('./api/invoices'));
 router.use('/users', require('./api/users'));
 router.use('/files', require('./api/files'));
