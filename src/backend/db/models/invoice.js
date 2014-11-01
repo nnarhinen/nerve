@@ -1,6 +1,7 @@
 var _ = require('underscore'),
     Promise = require('bluebird'),
-    moment = require('moment');
+    moment = require('moment'),
+    utils = require('shared/utils');
 
 module.exports = function(Bookshelf) {
 
@@ -34,7 +35,7 @@ module.exports = function(Bookshelf) {
       var self = this;
       return Bookshelf.knex('invoices').where('environment_id', data.environment_id).max('invoice_number').then(function(nr) {
         nr = nr[0].max ? nr[0].max + 1 :  defaults.invoice_number;
-        return self.forge(_.extend(data, {invoice_number: nr})).save();
+        return self.forge(_.extend(data, {invoice_number: nr, reference_number: utils.referenceNumber(nr)})).save();
       });
     }
   });

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha test/**/*.js",
+    "test": "NODE_ENV=test mocha test/*.js test/**/*.js",
     "pot": "jsxgettext --join-existing=true -L jinja --output-dir=./locale/templates/LC_MESSAGES --from-code=utf-8 --output=messages.pot `find . -name '*.html' | grep -v node_modules | grep -v .git`",
     "po2json": "compile-json locale i18n",
     "syncpo": "PATH=\"$PATH:/usr/local/opt/gettext/bin\" merge-po locale",
