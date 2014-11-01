@@ -1,7 +1,7 @@
 /**
  * @jsx React.DOM
  */
-
+'use strict';
 var React = require('react'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
     SupplierInput = require('../../components/supplier-input'),
@@ -18,30 +18,9 @@ var React = require('react'),
     ButtonToolbar = require('react-bootstrap/ButtonToolbar'),
     Button = require('react-bootstrap/Button'),
     FormMixin = require('../../mixins/form-mixin'),
+    DatePickerInput = require('frontend/components/date-picker-input'),
     _ = require('underscore');
 
-
-var DatePickerInput = React.createClass({
-  getInitialState: function() {
-    return {
-      value: this.props.value && moment(this.props.value),
-      dateFormat: this.props.dateFormat || 'YYYY-MM-DD'
-    };
-  },
-  daySelected: function(m) {
-    this.setState({
-      value: m
-    });
-    this.props.onChange && this.props.onChange(m);
-  },
-  render: function() {
-    return (
-      <OverlayTrigger trigger="click" placement="bottom" overlay={<Popover><Calendar onDaySelected={this.daySelected} selectedDate={this.state.value} /></Popover>}>
-        <Input id={this.props.id} type="text" onChange={common.noop} name={this.props.name} value={this.state.value && this.state.value.format(this.state.dateFormat)} label={this.props.label} />
-      </OverlayTrigger>
-      );
-  }
-});
 
 module.exports = React.createClass({
   mixins: [FormMixin],
