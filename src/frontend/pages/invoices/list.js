@@ -1,7 +1,7 @@
 /**
  * @jsx React.DOM
  */
-
+'use strict';
 var React = require('react'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
     ReactRouter = require('react-router'),
@@ -25,12 +25,10 @@ module.exports = React.createClass({
     ev.preventDefault();
     var newInvoice = {
       due_date: moment().add('2', 'weeks').format('YYYY-MM-DD'),
-      invoice_date: moment().format('YYYY-MM-DD'),
-      sum: 0
+      invoice_date: moment().format('YYYY-MM-DD')
     };
     var self = this;
     InvoiceActions.createNew(newInvoice).then(function(inv) {
-      debugger;
       self.transitionTo('invoice', {id: inv.id});
     }).catch(function() {
       alert('Unable to create invoice');
