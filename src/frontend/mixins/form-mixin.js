@@ -1,3 +1,4 @@
+'use strict';
 var validator = require('shared/schemas/validator'),
     _ = require('underscore');
 

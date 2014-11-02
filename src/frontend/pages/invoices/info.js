@@ -8,6 +8,8 @@ var React = require('react'),
     Input = require('react-bootstrap/Input'),
     DatePickerInput = require('frontend/components/date-picker-input'),
     CustomerInput = require('frontend/components/customer-input'),
+    Tooltip = require('react-bootstrap/Tooltip'),
+    OverlayTrigger = require('react-bootstrap/OverlayTrigger'),
     _ = require('underscore'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
     InvoiceActions = require('frontend/actions/invoice-actions');
@@ -39,7 +41,39 @@ module.exports = React.createClass({
       customer_id: cust.id
     });
   },
+  newRow: function(ev) {
+    ev.preventDefault();
+    var rows = this.state.invoice.rows;
+    rows = rows.concat({});
+    this.setState({
+      invoice: _.extend(this.state.invoice, {rows: rows})
+    });
+  },
+  onInvoiceRowChange: function(i) {
+    var self = this;
+    return function(ev) {
+      var rows = JSON.parse(JSON.stringify(self.state.invoice.rows));
+      var row = rows[i];
+      row[ev.target.name] = ev.target.value;
+      console.log('row', row);
+      self.onPropertyChanged('rows', rows);
+    };
+  },
   render: function() {
+    var sumWithoutVat = this.state.invoice.rows.reduce(function(sum, row) {
+      return sum + (row.unit_price || 0) * (row.amount || 0);
+    }, 0);
+    var sumVat = this.state.invoice.rows.reduce(function(sum, row) {
+      return sum + (row.unit_price || 0) * (row.amount || 0) * (row.vat_percent || 0) / 100;
+    }, 0);
+    var sumWithVat = sumWithoutVat + sumVat;
+
+    var rowTotal = function(row) {
+      return ((row.unit_price || 0) * (row.amount || 0) * (1+ (row.vat_percent || 0) / 100)).toFixed(2);
+    };
+
+    var self = this;
+
     return (
       <form onSubmit={this.onFormSubmit}>
         <div className="row">
@@ -54,7 +88,7 @@ module.exports = React.createClass({
           </div>
         </div>
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-3">
             <Input
                 id="fe-invoice-reference-number"
                 name="reference_number"
@@ -64,16 +98,73 @@ module.exports = React.createClass({
                 onChange={this.onReferenceNumberChange}
                 label={i18n.gettext('Reference number')} />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <Input
                 id="fe-invoice-sum"
                 readOnly
-                label={i18n.gettext('Sum')} type="text" />
+                value={sumWithoutVat}
+                label={i18n.gettext('Sum (without VAT)')} type="text" />
+          </div>
+          <div className="col-md-2">
+            <Input
+                id="fe-invoice-vat"
+                readOnly
+                value={sumVat}
+                label={i18n.gettext('VAT')} type="text" />
+          </div>
+          <div className="col-md-2">
+            <Input
+                id="fe-invoice-sumvat"
+                readOnly
+                value={sumWithVat}
+                label={i18n.gettext('Total (with VAT)')} type="text" />
           </div>
           <div className="col-md-3">
             <DatePickerInput id="fe-invoice-due-date" onChange={this.dueDateChanged} label={ i18n.gettext('Due date') } value={this.state.invoice.due_date} type="text" />
           </div>
         </div>
+        <h2>{ i18n.gettext('Invoice rows') } <small>
+            <OverlayTrigger placement="right" overlay={<Tooltip>{i18n.gettext('Add new row')}</Tooltip>}>
+              <a href="#" onClick={this.newRow}><i className="fa fa-plus"></i></a>
+            </OverlayTrigger>
+          </small>
+        </h2>
+        { this.state.invoice.rows.length ? <div className="table-responsive"><table className="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{ i18n.gettext('Procuct number') }</th>
+              <th>{ i18n.gettext('Name') }</th>
+              <th>{ i18n.gettext('à') }</th>
+              <th>{ i18n.gettext('Vat %') }</th>
+              <th>{ i18n.gettext('Amount') }</th>
+              <th>{ i18n.gettext('Unit') }</th>
+              <th>{ i18n.gettext('Total') }</th>
+            </tr>
+          </thead>
+          <tbody>
+            { this.state.invoice.rows.map(function(row, i) {
+              var numCellStyle = {
+                minWidth: '80px'
+              };
+              var productNumberCellStyle = {
+                minWidth: '120px'
+              };
+              var changeHandler = self.onInvoiceRowChange(i);
+              return (
+                <tr key={i}>
+                  <td>{ i + 1 }</td>
+                  <td style={productNumberCellStyle}><input type="text" onChange={changeHandler} name="product_number" className="form-control input-sm" value={row.product_number} /></td>
+                  <td className="col-md-12"><input type="text" onChange={changeHandler} name="name" className="form-control input-sm" value={row.name} /></td>
+                  <td style={numCellStyle}><input type="text" onChange={changeHandler} name="unit_price" className="form-control input-sm" value={row.unit_price} /></td>
+                  <td style={numCellStyle}><input type="text" onChange={changeHandler} name="vat_percent" className="form-control input-sm" value={row.vat_percent} /></td>
+                  <td style={numCellStyle}><input type="text" onChange={changeHandler} name="amount" className="form-control input-sm" value={row.amount} /></td>
+                  <td style={numCellStyle}><input type="text" onChange={changeHandler} name="unit" className="form-control input-sm" value={row.unit} /></td>
+                  <td>{rowTotal(row)}</td>
+                </tr> );
+            }) }
+          </tbody>
+        </table></div> : ''}
       </form>
       );
   }
