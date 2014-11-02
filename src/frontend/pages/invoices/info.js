@@ -72,6 +72,12 @@ module.exports = React.createClass({
       InvoiceActions.resetOne(inv);
     });
   },
+  invoiceDateChanged: function(m) {
+    this.onPropertyChanged('invoice_date', m.format('YYYY-MM-DD'));
+  },
+  dueDateChanged: function(m) {
+    this.onPropertyChanged('due_date', m.format('YYYY-MM-DD'));
+  },
   render: function() {
     var sumWithoutVat = this.state.invoice.rows.reduce(function(sum, row) {
       return sum + (row.unit_price || 0) * (row.amount || 0);
