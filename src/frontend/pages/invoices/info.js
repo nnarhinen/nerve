@@ -9,9 +9,12 @@ var React = require('react'),
     DatePickerInput = require('frontend/components/date-picker-input'),
     CustomerInput = require('frontend/components/customer-input'),
     Tooltip = require('react-bootstrap/Tooltip'),
+    ButtonToolbar = require('react-bootstrap/ButtonToolbar'),
+    Button = require('react-bootstrap/Button'),
     OverlayTrigger = require('react-bootstrap/OverlayTrigger'),
     _ = require('underscore'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
+    api = require('frontend/api'),
     InvoiceActions = require('frontend/actions/invoice-actions');
 
 module.exports = React.createClass({
@@ -58,6 +61,16 @@ module.exports = React.createClass({
       console.log('row', row);
       self.onPropertyChanged('rows', rows);
     };
+  },
+  sendMaventa: function(ev) {
+    ev.preventDefault();
+    var self = this;
+    api().invoiceSendMaventa(this.state.invoice.id).then(function(inv) {
+      self.setState({
+        invoice: inv
+      });
+      InvoiceActions.resetOne(inv);
+    });
   },
   render: function() {
     var sumWithoutVat = this.state.invoice.rows.reduce(function(sum, row) {
@@ -154,19 +167,41 @@ module.exports = React.createClass({
               return (
                 <tr key={i}>
                   <td>{ i + 1 }</td>
-                  <td style={productNumberCellStyle}><input type="text" onChange={changeHandler} name="product_number" className="form-control input-sm" value={row.product_number} /></td>
-                  <td className="col-md-12"><input type="text" onChange={changeHandler} name="name" className="form-control input-sm" value={row.name} /></td>
-                  <td style={numCellStyle}><input type="text" onChange={changeHandler} name="unit_price" className="form-control input-sm" value={row.unit_price} /></td>
-                  <td style={numCellStyle}><input type="text" onChange={changeHandler} name="vat_percent" className="form-control input-sm" value={row.vat_percent} /></td>
-                  <td style={numCellStyle}><input type="text" onChange={changeHandler} name="amount" className="form-control input-sm" value={row.amount} /></td>
-                  <td style={numCellStyle}><input type="text" onChange={changeHandler} name="unit" className="form-control input-sm" value={row.unit} /></td>
+                  <td style={productNumberCellStyle}><Input type="text" onChange={changeHandler} name="product_number" className="input-sm" value={row.product_number} /></td>
+                  <td className="col-md-12"><Input type="text" onChange={changeHandler} name="name" className="input-sm" value={row.name} /></td>
+                  <td style={numCellStyle}><Input type="text" onChange={changeHandler} name="unit_price" className="input-sm" value={row.unit_price} /></td>
+                  <td style={numCellStyle}><Input type="text" onChange={changeHandler} name="vat_percent" className="input-sm" value={row.vat_percent} /></td>
+                  <td style={numCellStyle}><Input type="text" onChange={changeHandler} name="amount" className="input-sm" value={row.amount} /></td>
+                  <td style={numCellStyle}><Input type="text" onChange={changeHandler} name="unit" className="input-sm" value={row.unit} /></td>
                   <td>{rowTotal(row)}</td>
                 </tr> );
             }) }
           </tbody>
         </table></div> : ''}
+        { this.renderStatus() }
       </form>
       );
+  },
+  renderStatus: function() {
+    if (this.state.invoice.status === 'pending') {
+      return (
+        <div className="row">
+          <ButtonToolbar>
+            <Button disabled><i className="fa fa-print"></i> { i18n.gettext('Print') }</Button>
+            <Button disabled><i className="fa fa-envelope-o"></i> { i18n.gettext('Send as e-mail') }</Button>
+            <Button disabled={this.state.invoice.state === 'pending'} onClick={this.sendMaventa}><i className="fa fa-send-o"></i> { i18n.gettext('Send via Maventa') }</Button>
+          </ButtonToolbar>
+        </div>
+      );
+    }
+    if (this.state.invoice.status === 'sent' && this.state.invoice.maventa_id) {
+      return (
+        <div className="row">
+          Invoice sent via Maventa
+        </div>
+      );
+    }
+    return '';
   }
 });
 

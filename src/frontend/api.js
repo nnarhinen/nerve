@@ -1,3 +1,5 @@
+/*jshint -W079 */
+'use strict';
 var axios = require('axios'),
     Promise = require('bluebird'),
     _ = require('underscore'),
@@ -115,6 +117,12 @@ Api.prototype.saveInvoice= function(inv) {
   if (inv.id) prom = this.put('/api/invoices/' + inv.id, inv);
   else prom = this.post('/api/invoices', inv);
   return prom.then(function(resp) {
+    return resp.data;
+  });
+};
+
+Api.prototype.invoiceSendMaventa = function(id) {
+  return this.post('/api/invoices/' + id, {maventa: true}).then(function(resp) {
     return resp.data;
   });
 };

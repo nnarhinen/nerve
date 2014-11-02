@@ -24,6 +24,9 @@ var InvoiceActions = module.exports = {
   },
   updateOne: function(one) {
     AppDispatcher.updateOneInvoice(one);
+  },
+  resetOne: function(inv) {
+    AppDispatcher.resetOneInvoice(inv);
   }
 };
 

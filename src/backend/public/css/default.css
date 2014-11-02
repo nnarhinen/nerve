@@ -25,6 +25,9 @@ a:focus {
 .nav-pills > li.active a:focus {
   background-color: #e5834e;
 }
+.table .form-group {
+  margin-bottom: 0px;
+}
 .rbc-calendar td,
 .rbc-calendar th {
   text-align: center;
