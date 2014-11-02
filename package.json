@@ -52,6 +52,7 @@
     "node-oauth2-server": "~2.2.2",
     "node-uuid": "~1.4.1",
     "nunjucks": "~1.0.7",
+    "omit-empty": "^0.3.0",
     "passwordless": "^1.0.4",
     "passwordless-bookshelfstore": "0.0.1",
     "pg": "~3.4.3",

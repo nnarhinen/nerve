@@ -29,7 +29,7 @@ router.use(function(req, res, next) {
       return req.getEnvironmentSettings().then(function(sett) {
         if (!sett.get('maventa_api_key') || !sett.get('maventa_company_uuid')) return;
         //return new Maventa(process.env.MAVENTA_VENDOR_API_KEY, sett.get('maventa_api_key'), sett.get('maventa_company_uuid'), process.env.NODE_ENV !== 'production');
-        return new Maventa(process.env.MAVENTA_VENDOR_API_KEY, sett.get('maventa_api_key'), sett.get('maventa_company_uuid'));
+        return new Maventa(process.env.MAVENTA_VENDOR_API_KEY, sett.get('maventa_api_key'), sett.get('maventa_company_uuid'), process.env.NODE_ENV !== 'production');
       });
     };
     next();
