@@ -21,21 +21,19 @@ module.exports = function(Bookshelf) {
     }
   });
 
-  Bookshelf.models.InvoiceRow = Bookshelf.Model.extend({
-    tableName: 'invoice_rows',
-    hasTimestamps: ['created_at', 'updated_at']
-  });
-
   Bookshelf.models.Invoice = Bookshelf.Model.extend({
     tableName: 'invoices',
     customer: function() {
       return this.belongsTo(Bookshelf.models.Customer);
     },
-    rows: function() {
-      return this.hasMany(Bookshelf.models.InvoiceRow);
-    },
     decorate: function() {
       return _.extend(this.toJSON(), {due_date: moment(this.get('due_date')).format('YYYY-MM-DD'), invoice_date: moment(this.get('invoice_date')).format('YYYY-MM-DD')});
+    },
+    format: function(attrs) {
+      if (_.isArray(attrs.rows)) {
+        return _.extend({}, attrs, {rows: JSON.stringify(attrs.rows)});
+      }
+      return attrs;
     },
 
     hasTimestamps: ['created_at', 'updated_at']
