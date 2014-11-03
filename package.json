@@ -34,6 +34,7 @@
     "connect-busboy": "0.0.2",
     "debug": "^2.0.0",
     "delorean.js": "~0.8.5",
+    "email-addresses": "^2.0.1",
     "envify": "~3.0.0",
     "express": "~4.9.0",
     "express-session": "~1.8.2",
@@ -75,7 +76,6 @@
     "underscore": "~1.7.0"
   },
   "devDependencies": {
-    "email-addresses": "^2.0.0",
     "express-repl": "0.0.1",
     "form-data": "^0.1.4",
     "jsxgettext": "~0.4.10",
