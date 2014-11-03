@@ -92,7 +92,7 @@ router.get('/expenses/pending', function(req,res,next) {
       if (err.message === 'ERROR: NO INVOICES') {
         debug('No new maventa invoices');
         listAllExpenses();
-        return res.send([]);
+        return;
       }
       throw err;
     });
