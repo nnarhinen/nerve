@@ -1,7 +1,8 @@
 /**
  * @jsx React.DOM
  */
-
+/* global userInfo:true */
+'use strict';
 var React = require('react'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
     InboundInvoiceActions = require('../actions/inbound-invoice-actions'),
@@ -18,7 +19,7 @@ module.exports = React.createClass({
               <div className="container-fluid">
                 <h1>{ i18n.gettext('Dashboard') }</h1>
                 <div className="row">
-                  <div className="col-md-7">What</div>
+                  <div className="col-md-7">Something here</div>
                   <div className="col-md-5">
                     <div className="panel panel-default">
                       <div className="panel-heading">
