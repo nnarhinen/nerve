@@ -62,4 +62,5 @@ router.use('/customers', require('./api/customers'));
 router.use('/invoices', require('./api/invoices'));
 router.use('/users', require('./api/users'));
 router.use('/files', require('./api/files'));
+router.use('/inbox', require('./api/inbox'));
 router.use(oauth.errorHandler());
