@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [[ -n $(git diff --diff-filter=A heroku/master master | grep migrations) ]]; then
+  echo "Migrations present, put app to maintenance"
+  heroku maintenance:on
+  git push heroku master
+  echo "Running migrations"
+  heroku run npm run migrate
+  echo "Taking away maintenance mode"
+  heroku maintenance:off
+else
+  echo "No migrations needed, just push out"
+  git push heroku master
+fi
