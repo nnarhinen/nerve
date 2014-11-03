@@ -6,13 +6,16 @@
 var React = require('react'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
     InboundInvoiceActions = require('../actions/inbound-invoice-actions'),
+    InboxActions = require('../actions/inbox-actions'),
     moment = require('moment'),
     Link = require('react-router').Link,
-    bases = require('bases');
+    bases = require('bases'),
+    addrs = require('email-addresses');
 
 module.exports = React.createClass({
   componentWillMount: function() {
     InboundInvoiceActions.fetchPending();
+    InboxActions.fetchUnread();
   },
   render: function() {
             return (
@@ -53,9 +56,30 @@ module.exports = React.createClass({
                       <div className="panel-heading">
                         <h4 className="panel-title">{ i18n.gettext('E-Mail inbox') } <small>{ 'in+' + bases.toBase52(1000000-userInfo.environment.id) + '@melli.fi' }</small></h4>
                       </div>
+                      {this.props.inbox.loading ?
                       <div className="panel-body">
                         <i className="fa fa-spin fa-circle-o-notch"></i>
-                      </div>
+                      </div> :
+                      <table className="table">
+                        <thead>
+                          <tr>
+                            <th>{ i18n.gettext('From') }</th>
+                            <th>{ i18n.gettext('Subject') }</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {this.props.inbox.unread.map(function(itm) {
+                            var addr = addrs.parseOneAddress(itm.from);
+                            return (
+                              <tr key={itm.id}>
+                                <td><Link to="inbox-item" params={itm}>{ addr.name || addr.address }</Link></td>
+                                <td><Link to="inbox-item" params={itm}>{ itm.subject }</Link></td>
+                              </tr>
+                              );
+                          }) }
+                        </tbody>
+                      </table>
+                      }
                     </div>
                   </div>
                 </div>

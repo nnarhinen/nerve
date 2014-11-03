@@ -18,5 +18,8 @@ module.exports = {
     List: require('./pages/invoices/list'),
     Invoice: require('./pages/invoices/invoice'),
     InvoiceInfo: require('./pages/invoices/info')
+  },
+  Inbox: {
+    Item: require('./pages/inbox/item')
   }
 };

@@ -3,6 +3,7 @@
  */
 
 /*global oauthAccessToken*/
+/*jshint -W079 */
 
 'use strict';
 
@@ -101,6 +102,7 @@ var App = React.createClass({
                     users={this.getStore('users')}
                     environments={this.getStore('environments')}
                     invoices={this.getStore('invoices')}
+                    inbox={this.getStore('inbox')}
                   />
                 </div>
                 <div className={menuClass}>
@@ -148,6 +150,9 @@ var RouteApp = React.createClass({
       <Routes>
         <Route name="container" path="/" handler={App} user={this.props.user} bearerToken={this.props.bearerToken} dispatcher={this.props.dispatcher}>
           <DefaultRoute name="dashboard"  handler={Pages.Dashboard} />
+          <Route name="inbox" path="/inbox" handler={Pages.EmptyParent}>
+            <Route name="inbox-item" path=":id" handler={Pages.Inbox.Item} />
+          </Route>
           <Route name="invoices" path="/invoices" handler={Pages.EmptyParent}>
             <DefaultRoute name="invoice-list" handler={Pages.Invoices.List} />
             <Route name="invoice" path=":id" handler={Pages.Invoices.Invoice}>

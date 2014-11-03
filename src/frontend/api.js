@@ -175,6 +175,18 @@ Api.prototype.fileDownloadUrl = function(obj) {
   });
 };
 
+Api.prototype.inboxUnread = function() {
+  return this.get('/api/inbox').then(function(resp) {
+    return resp.data;
+  });
+};
+
+Api.prototype.inboxItem = function(id) {
+  return this.get('/api/inbox/' + id).then(function(resp) {
+    return resp.data;
+  });
+};
+
 var bearerToken;
 
 module.exports = function(bt) {
