@@ -5,7 +5,6 @@ var express = require('express'),
     app = express(),
     nunjucks = require('nunjucks'),
     i18n = require('i18n-abide'),
-    browserify = require('browserify-middleware'),
     nib = require('nib'),
     jedify = require('jedify'),
     bookshelf = require('./db/bookshelf'),
@@ -55,15 +54,6 @@ var jedifyWithLang = function(lang) {
 };
 
 app.use(compression());
-
-languages.forEach(function(lang) {
-  var transforms = ['reactify', jedifyWithLang(lang), 'envify'];
-  if (process.env.NODE_ENV === 'production') {
-    transforms.push('uglifyify');
-  }
-  app.get('/js/application.' + lang + '.js', browserify('./src/frontend/index.' + lang + '.js', {transform: transforms}));
-});
-app.get('/js/login.js', browserify('./src/frontend/login.js'));
 
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
