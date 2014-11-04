@@ -199,7 +199,8 @@ app.get('/app/*', function(req, res, next) {
       accessToken: req.session.oauth2.access_token,
       user: req.user && JSON.stringify(_.omit(req.user.toJSON(), 'password_hash')),
       newRelicAppId: process.env.NEW_RELIC_BROWSER_APPLICATION_ID,
-      newRelicLicenseKey: process.env.NEW_RELIC_BROWSER_APPLICATION_LICENSE_KEY
+      newRelicLicenseKey: process.env.NEW_RELIC_BROWSER_APPLICATION_LICENSE_KEY,
+      minOrNothing: process.env.NODE_ENV === 'production' ? '.min' : ''
     });
   }
 });
