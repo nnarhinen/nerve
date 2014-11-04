@@ -67,7 +67,7 @@
     "react-fileprompt": "0.0.1",
     "react-pdf": "0.0.3",
     "react-router": "~0.9.0",
-    "react-widgets": "^1.4.4",
+    "react-widgets": "jquense/react-widgets",
     "reactify": "~0.14.0",
     "repl-promised": "~0.1.0",
     "should": "^4.0.4",
@@ -78,9 +78,12 @@
     "underscore": "~1.7.0"
   },
   "devDependencies": {
+    "bootstrap": "^3.3.0",
+    "bootswatch": "^3.3.0",
     "express-repl": "0.0.1",
     "form-data": "^0.1.4",
     "jsxgettext": "~0.4.10",
+    "less": "^1.7.5",
     "minimist": "^1.1.0",
     "sinon": "^1.11.1",
     "sqlite3": "~2.2.7",
