@@ -1,7 +1,7 @@
 export PATH := ./node_modules/.bin/:$(PATH)
 export NODE_PATH := $(NODE_PATH):src/:.
 
-.PHONY: js, prod
+.PHONY: js, prod, cleanjs
 
 
 src/backend/public/css/default.css: src/backend/public/css/bootstrap.css src/backend/public/css/react-widgets.css src/styl/variables.styl src/styl/bootstrap-overrides.styl
@@ -16,17 +16,19 @@ src/backend/public/css/react-widgets.css: $(wildcard src/less/build-react-widget
 	lessc src/less/build-react-widgets.less > $@
 
 src/backend/public/js/application.fi.js: $(wildcard src/frontend/*.js node_modules/*.js)
-	browserify -t reactify -t [ jedify --lang fi ] --debug src/frontend/index.js > $@
+	browserify -t reactify -t [ jedify --lang fi ] --debug --full-paths src/frontend/index.js > $@
 
 src/backend/public/js/application.en.js: $(wildcard src/frontend/*.js node_modules/*.js)
-	browserify -t reactify -t [ jedify --lang en ] --debug src/frontend/index.js > $@
+	browserify -t reactify -t [ jedify --lang en ] --debug --full-paths src/frontend/index.js > $@
 
 src/backend/public/js/application.fi.min.js: $(wildcard src/frontend/*.js node_modules/*.js)
-	NODE_ENV=production browserify -t reactify -t [ jedify --lang fi ] -t uglifyify src/frontend/index.js | uglifyjs > $@
+	NODE_ENV=production browserify -t reactify -t [ jedify --lang fi ] -t uglifyify src/frontend/index.js | uglifyjs -c -m > $@
 
 src/backend/public/js/application.en.min.js: $(wildcard src/frontend/*.js node_modules/*.js)
-	NODE_ENV=production browserify -t reactify -t [ jedify --lang en ] -t uglifyify src/frontend/index.js | uglifyjs > $@
+	NODE_ENV=production browserify -t reactify -t [ jedify --lang en ] -t uglifyify src/frontend/index.js | uglifyjs -c -m > $@
 
 
 js: src/backend/public/js/application.fi.js src/backend/public/js/application.en.js
 prod: src/backend/public/js/application.fi.min.js src/backend/public/js/application.en.min.js
+cleanjs: 
+	rm src/backend/public/js/application*
