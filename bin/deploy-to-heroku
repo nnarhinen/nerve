@@ -1,5 +1,12 @@
 #!/bin/bash
 
+make prod
+
+if [[ -n $(git diff --diff-filter=M | grep src/backend/public/js/application) ]]; then
+  echo "You have unmodified changes, commit first"
+  exit
+fi
+
 if [[ -n $(git diff --diff-filter=A heroku/master master | grep migrations) ]]; then
   echo "Migrations present, put app to maintenance"
   heroku maintenance:on
