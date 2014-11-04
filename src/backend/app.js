@@ -58,6 +58,7 @@ var jedifyWithLang = function(lang) {
 var compileStylus = function(str, path) {
   return stylus(str)
     .set('filename', path)
+    .set('include css', true)
     .use(nib())
     .import('nib');
 };

@@ -26,8 +26,10 @@ var React = require('react'),
     md5 = require('blueimp-md5').md5,
     DropdownButton = require('react-bootstrap/DropdownButton'),
     BsMenuItem = require('react-bootstrap/MenuItem'),
-    i18n = requirePo('locale/%s/LC_MESSAGES/messages.po');
+    i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
+    Globalize = require('globalize');
 
+Globalize.culture('fi');
 
 window.React = React; // For devtools
 
