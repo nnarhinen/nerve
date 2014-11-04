@@ -4,3 +4,5 @@ IFS=',' read -ra ADDR <<< "$POSTINSTALL_DEPENDENCIES"
 for i in "${ADDR[@]}"; do
   npm install $i
 done
+
+make js
