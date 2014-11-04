@@ -29,6 +29,8 @@ var React = require('react'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
     Globalize = require('globalize');
 
+require('globalize/lib/cultures/globalize.culture.fi');
+
 Globalize.culture('fi');
 
 window.React = React; // For devtools
