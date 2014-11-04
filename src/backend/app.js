@@ -6,7 +6,6 @@ var express = require('express'),
     nunjucks = require('nunjucks'),
     i18n = require('i18n-abide'),
     browserify = require('browserify-middleware'),
-    stylus = require('stylus'),
     nib = require('nib'),
     jedify = require('jedify'),
     bookshelf = require('./db/bookshelf'),
@@ -55,14 +54,6 @@ var jedifyWithLang = function(lang) {
   };
 };
 
-var compileStylus = function(str, path) {
-  return stylus(str)
-    .set('filename', path)
-    .set('include css', true)
-    .use(nib())
-    .import('nib');
-};
-
 app.use(compression());
 
 languages.forEach(function(lang) {
@@ -74,7 +65,6 @@ languages.forEach(function(lang) {
 });
 app.get('/js/login.js', browserify('./src/frontend/login.js'));
 
-app.use('/static', stylus.middleware({src: __dirname + '/public', compile: compileStylus}));
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 (process.env.PRE_MIDDLEWARE || '').split(',').forEach(function(moduleName) {

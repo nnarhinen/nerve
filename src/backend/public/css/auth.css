@@ -25,6 +25,9 @@ a:focus {
 .nav-pills > li.active a:focus {
   background-color: #e5834e;
 }
+.table .form-group {
+  margin-bottom: 0px;
+}
 body {
   background-color: #eee;
 }
