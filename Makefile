@@ -1,7 +1,7 @@
 export PATH := ./node_modules/.bin/:$(PATH)
 export NODE_PATH := $(NODE_PATH):src/:.
 
-.PHONY: js
+.PHONY: js, prod
 
 
 src/backend/public/css/default.css: src/backend/public/css/bootstrap.css src/backend/public/css/react-widgets.css src/styl/variables.styl src/styl/bootstrap-overrides.styl
@@ -21,4 +21,12 @@ src/backend/public/js/application.fi.js: $(wildcard src/frontend/*.js node_modul
 src/backend/public/js/application.en.js: $(wildcard src/frontend/*.js node_modules/*.js)
 	browserify -t reactify -t [ jedify --lang en ] --debug src/frontend/index.js > $@
 
+src/backend/public/js/application.fi.min.js: $(wildcard src/frontend/*.js node_modules/*.js)
+	NODE_ENV=production browserify -t reactify -t [ jedify --lang fi ] -t uglifyify src/frontend/index.js | uglifyjs > $@
+
+src/backend/public/js/application.en.min.js: $(wildcard src/frontend/*.js node_modules/*.js)
+	NODE_ENV=production browserify -t reactify -t [ jedify --lang en ] -t uglifyify src/frontend/index.js | uglifyjs > $@
+
+
 js: src/backend/public/js/application.fi.js src/backend/public/js/application.en.js
+prod: src/backend/public/js/application.fi.min.js src/backend/public/js/application.en.min.js
