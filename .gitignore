@@ -4,4 +4,3 @@ development.sqlite
 development.env
 npm-debug.log
 .env
-src/backend/public/js/application.*
