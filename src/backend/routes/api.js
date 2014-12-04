@@ -34,7 +34,7 @@ router.use(function(req, res, next) {
       });
     };
     req.banksonClient = function() {
-      var cl = new BanksonClient(process.env.BANKSON_OAUTH_CLIENT_ID, process.env.BANKSON_OAUTH_CLIENT_SECRET, process.env.BANKSON_OAUTH_REDIRECT_URI, process.env.NODE_ENV !== 'production' ? 'http://localhost:3001' : undefined);
+      var cl = new BanksonClient(process.env.BANKSON_OAUTH_CLIENT_ID, process.env.BANKSON_OAUTH_CLIENT_SECRET, process.env.BANKSON_OAUTH_REDIRECT_URI, process.env.BANKSON_ENDPOINT);
       cl.setTokens(
         req.user.get('bankson_auth_token'),
         req.user.get('bankson_refresh_token'),
