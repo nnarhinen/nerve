@@ -38,7 +38,10 @@ router.post('/banksontoken', function(req, res, next) {
     });
   }
   prom.then(function(at) {
-    res.send({bankson_auth_token: at});
+    res.send({
+      bankson_auth_token: at,
+      bankson_endpoint: process.env.BANKSON_ENDPOINT
+    });
   }).catch(next);
 });
 

@@ -44,7 +44,7 @@ Api.prototype.settings = function() {
 
 Api.prototype.banksonToken = function() {
   return this.post('/banksontoken').then(function(resp) {
-    return resp.data.bankson_auth_token;
+    return resp.data;
   });
 };
 

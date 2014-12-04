@@ -7,7 +7,10 @@ var axios = require('axios'),
 var a = {}, endPoint = process.env.BANKSON_ENDPOINT;
 
 a.getBearerToken = function() {
-  return api().banksonToken();
+  return api().banksonToken().then(function(data) {
+    endPoint = data.bankson_endpoint;
+    return data.bankson_auth_token;
+  });
 };
 
 a.get = function(url) {

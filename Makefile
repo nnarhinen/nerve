@@ -28,10 +28,10 @@ src/backend/public/js/application.en.js: $(frontend_js_files)
 	browserify -t reactify -t [ jedify --lang en ] --debug --full-paths src/frontend/index.js > $@
 
 src/backend/public/js/application.fi.min.js: $(frontend_js_files)
-	NODE_ENV=production browserify -t reactify -t [ jedify --lang fi ] -t uglifyify src/frontend/index.js | uglifyjs -c -m > $@
+	NODE_ENV=production browserify -t reactify -t [ jedify --lang fi ] -t envify -g uglifyify src/frontend/index.js | uglifyjs -c -m > $@
 
 src/backend/public/js/application.en.min.js: $(frontend_js_files)
-	NODE_ENV=production browserify -t reactify -t [ jedify --lang en ] -t uglifyify src/frontend/index.js | uglifyjs -c -m > $@
+	NODE_ENV=production browserify -t reactify -t [ jedify --lang en ] -t envify -g uglifyify src/frontend/index.js | uglifyjs -c -m > $@
 
 
 js: src/backend/public/js/application.fi.js src/backend/public/js/application.en.js
