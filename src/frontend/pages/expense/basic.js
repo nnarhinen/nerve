@@ -10,7 +10,6 @@ var React = require('react'),
     OverlayTrigger = require('react-bootstrap/OverlayTrigger'),
     Popover = require('react-bootstrap/Popover'),
     Label = require('react-bootstrap/Label'),
-    Calendar = require('react-bootstrap-calendar').Calendar,
     moment = require('moment'),
     common = require('../../common'),
     expenseSchema = require('shared/schemas/expense'),
@@ -37,7 +36,7 @@ module.exports = React.createClass({
     return {
       expense: this.props.expense,
       validationErrors: {}
-    }
+    };
   },
   componentWillReceiveProps: function(newProps) {
     if (this.props.confirmSave) return; //Don't be bothered by outside world this time

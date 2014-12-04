@@ -6,11 +6,13 @@ var React = require('react'),
     _ = require('underscore'),
     api = require('../../api'),
     PDF = require('react-pdf'),
-    Sizzle = require('sizzle');
+    Sizzle = require('sizzle'),
+    State = require('react-router').State;
 
 module.exports = React.createClass({
+  mixins: [State],mixins: [State],
   getInitialState: function() {
-    var attachmentId = Number(this.props.params.attachmentId);
+    var attachmentId = Number(this.getParams().attachmentId);
     var attachment = _.find(this.props.expense.attachments, function(att) {
       return att.id === attachmentId;
     });

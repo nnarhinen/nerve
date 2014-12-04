@@ -1,12 +1,10 @@
-/**
- * @jsx React.DOM
- */
-
-var React = require('react');
+'use strict';
+var React = require('react'),
+    RouteHandler = require('react-router').RouteHandler;
 
 module.exports = React.createClass({
   render: function() {
-    return this.transferPropsTo(<this.props.activeRouteHandler />);
+    return <RouteHandler {...this.props} />;
   }
 });
 

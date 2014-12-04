@@ -6,11 +6,13 @@
 var React = require('react'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
     _ = require('underscore'),
+    State = require('react-router').State,
     InboxActions = require('frontend/actions/inbox-actions');
 
 var InboxItem = React.createClass({
+  mixins: [State],
   componentDidMount: function() {
-    InboxActions.fetchOne(this.props.params.id);
+    InboxActions.fetchOne(this.getParams().id);
     this.setEmailBody();
   },
   getInitialState: function() {
@@ -21,7 +23,7 @@ var InboxItem = React.createClass({
   },
   getStateFromProps: function(props) {
     if (props.inbox.loading) return { loading: true };
-    var id = Number(props.params.id),
+    var id = Number(this.getParams().id),
         itm = _.find(props.inbox.items, function(one) { return one.id === id; }),
         html = (itm.body_html || itm.body_text).replace(/ class=/g, ' className=');
     return {

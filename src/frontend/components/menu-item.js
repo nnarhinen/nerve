@@ -1,18 +1,15 @@
-/**
- * @jsx React.DOM
- */
+'use strict';
 
 var React = require('react'),
     ReactRouter = require('react-router'),
-    ActiveState = ReactRouter.ActiveState,
+    ActiveState = ReactRouter.State,
     Link = ReactRouter.Link;
 
 var MenuItem = module.exports = React.createClass({
   mixins: [ActiveState],
   render: function() {
     var className = this.isActive(this.props.to, this.props.params, this.props.query) ? 'active' : '';
-    var link = Link(this.props);
-    return <li className={className}>{link}</li>;
+    return <li className={className}><Link {...this.props} /></li>;
   }
 });
 

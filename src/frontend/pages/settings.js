@@ -7,16 +7,19 @@ var React = require('react'),
     _ = require('underscore'),
     SettingsActions = require('../actions/settings-actions'),
     Router = require('react-router'),
+    RouteHandler = Router.RouteHandler,
     MenuItem = require('../components/menu-item');
 var Settings = module.exports = React.createClass({
-  mixins: [Router.ActiveState],
+  mixins: [Router.State],
   render: function() {
-    var title = _.last(this.getActiveRoutes()).props.title;
+    //TODO find out if this is still possible
+    var ar = _.last(this.getRoutes()),
+        title = ar && ar.props && ar.props.title;
     return (
         <div>
           <h1>{ i18n.gettext('Settings') } <small>{ title }</small></h1>
           <div className="row">
-            <div className="col-md-9">{ this.transferPropsTo(<this.props.activeRouteHandler />) }</div>
+            <div className="col-md-9"><RouteHandler {...this.props} /></div>
             <div className="col-md-3">
               <ul className="nav nav-pills nav-stacked">
                 <MenuItem to="settings/user">{ i18n.gettext('User information') }</MenuItem>

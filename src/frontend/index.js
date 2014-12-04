@@ -9,12 +9,12 @@
 
 var React = require('react'),
     ReactRouter = require('react-router'),
-    Routes = ReactRouter.Routes,
     Route = ReactRouter.Route,
     NotFound = ReactRouter.NotFoundRoute,
     Link = ReactRouter.Link,
     ActiveState = ReactRouter.ActiveState,
     DefaultRoute = ReactRouter.DefaultRoute,
+    RouteHandler = ReactRouter.RouteHandler,
     Pages = require('./pages'),
     axios = require('axios'),
     Flux = require('delorean.js').Flux,
@@ -99,7 +99,7 @@ var App = React.createClass({
                 <div className="clearfix vertical-spacer hidden-md hidden-lg">
                 </div>
                 <div className="route-container">
-                  <this.props.activeRouteHandler
+                  <RouteHandler 
                     expenses={this.getStore('inboundInvoices')}
                     settings={this.getStore('settings')}
                     suppliers={this.getStore('suppliers')}
@@ -128,7 +128,7 @@ var App = React.createClass({
                   </ul>
                 </div>
                 <div className="navbar navbar-default navbar-fixed-top hidden-md hidden-lg">
-                  <button onClick={this.onNavButtonClick} type="button" className="pull-left navbar-toggle visible-sm visible-xs" style={ {'margin-left': '20px'} } data-toggle="offcanvas" data-target=".navmenu">
+                  <button onClick={this.onNavButtonClick} type="button" className="pull-left navbar-toggle visible-sm visible-xs" style={ {marginLeft: '20px'} } data-toggle="offcanvas" data-target=".navmenu">
                     <span className="icon-bar"></span>
                     <span className="icon-bar"></span>
                     <span className="icon-bar"></span>
@@ -148,46 +148,42 @@ var App = React.createClass({
 var bearerToken = oauthAccessToken;
 require('frontend/api').setBearerToken(bearerToken);
 
-var RouteApp = React.createClass({
-  render: function() {
-    return (
-      <Routes>
-        <Route name="container" path="/" handler={App} user={this.props.user} bearerToken={this.props.bearerToken} dispatcher={this.props.dispatcher}>
-          <DefaultRoute name="dashboard"  handler={Pages.Dashboard} />
-          <Route name="inbox" path="/inbox" handler={Pages.EmptyParent}>
-            <Route name="inbox-item" path=":id" handler={Pages.Inbox.Item} />
-          </Route>
-          <Route name="invoices" path="/invoices" handler={Pages.EmptyParent}>
-            <DefaultRoute name="invoice-list" handler={Pages.Invoices.List} />
-            <Route name="invoice" path=":id" handler={Pages.Invoices.Invoice}>
-              <DefaultRoute name="invoice-info" handler={Pages.Invoices.InvoiceInfo} />
-            </Route>
-          </Route>
-          <Route name="expenses" handler={Pages.EmptyParent}>
-            <Route name="expenses-history" path="/expenses/history" handler={Pages.Expenses} history={true} />
-            <Route name="expenses-pending" path="/expenses" handler={Pages.Expenses} />
-            <Route name="expense" path="/expenses/:id" handler={Pages.Expense}>
-              <DefaultRoute name="expense-info" handler={Pages.ExpenseInfo} />
-              <Route name="expense-attachments" path="attachments" handler={Pages.EmptyParent}>
-                <DefaultRoute handler={Pages.ExpenseAttachments} />
-                <Route name="expense-attachment" path=":attachmentId" handler={Pages.ExpenseAttachment} />
-              </Route>
-            </Route>
-          </Route>
-          <Route name="customers" path="/customers" handler={Pages.Customers}  />
-          <Route name="settings" path="/settings" handler={Pages.Settings.Index}>
-            <DefaultRoute handler={Pages.Settings.User} title={i18n.gettext('User information')} name="settings/user" />
-            <Route name="settings/environment" path="environment" handler={Pages.Settings.Company} title={i18n.gettext('Company information')} />
-            <Route name="settings/maventa" path="maventa" handler={Pages.Settings.Maventa} title="Maventa" />
-            <Route name="settings/bankson" path="bankson" handler={Pages.Settings.Bankson} title="Bankson" />
-          </Route>
-          <NotFound handler={Pages.NotFound} />
+var routes = (
+  <Route name="container" path="/" handler={App} >
+    <DefaultRoute name="dashboard"  handler={Pages.Dashboard} />
+    <Route name="inbox" path="/inbox" handler={Pages.EmptyParent}>
+      <Route name="inbox-item" path=":id" handler={Pages.Inbox.Item} />
+    </Route>
+    <Route name="invoices" path="/invoices" handler={Pages.EmptyParent}>
+      <DefaultRoute name="invoice-list" handler={Pages.Invoices.List} />
+      <Route name="invoice" path=":id" handler={Pages.Invoices.Invoice}>
+        <DefaultRoute name="invoice-info" handler={Pages.Invoices.InvoiceInfo} />
+      </Route>
+    </Route>
+    <Route name="expenses" handler={Pages.EmptyParent}>
+      <Route name="expenses-history" path="/expenses/history" handler={Pages.Expenses} history={true} />
+      <Route name="expenses-pending" path="/expenses" handler={Pages.Expenses} />
+      <Route name="expense" path="/expenses/:id" handler={Pages.Expense}>
+        <DefaultRoute name="expense-info" handler={Pages.ExpenseInfo} />
+        <Route name="expense-attachments" path="attachments" handler={Pages.EmptyParent}>
+          <DefaultRoute handler={Pages.ExpenseAttachments} />
+          <Route name="expense-attachment" path=":attachmentId" handler={Pages.ExpenseAttachment} />
         </Route>
-      </Routes>
-      );
-  }
-});
+      </Route>
+    </Route>
+    <Route name="customers" path="/customers" handler={Pages.Customers}  />
+    <Route name="settings" path="/settings" handler={Pages.Settings.Index}>
+      <DefaultRoute handler={Pages.Settings.User} title={i18n.gettext('User information')} name="settings/user"  />
+      <Route name="settings/environment" path="environment" handler={Pages.Settings.Company} title={i18n.gettext('Company information')} />
+      <Route name="settings/maventa" path="maventa" handler={Pages.Settings.Maventa} title="Maventa" />
+      <Route name="settings/bankson" path="bankson" handler={Pages.Settings.Bankson} title="Bankson" />
+    </Route>
+    <NotFound handler={Pages.NotFound} />
+  </Route>
+);
 
 require('domready')(function() {
-  React.renderComponent(<RouteApp bearerToken={bearerToken} user={window.userInfo} dispatcher={require('./dispatchers/app-dispatcher')} />, document.body);
+  ReactRouter.run(routes, function(Handler) {
+    React.render(<Handler bearerToken={bearerToken} user={window.userInfo} dispatcher={require('./dispatchers/app-dispatcher')} />, document.body);
+  });
 });

@@ -1,10 +1,10 @@
-/**
- * @jsx React.DOM
- */
+'use strict';
 
 var React = require('react'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
     InboundInvoiceActions = require('../actions/inbound-invoice-actions'),
+    RouteHandler = require('react-router').RouteHandler,
+    State = require('react-router').State,
     MenuItem = require('../components/menu-item'),
     Label = require('react-bootstrap/Label'),
     _ = require('underscore'),
@@ -17,8 +17,9 @@ var formatDt = function(dt) {
 };
 
 module.exports = React.createClass({
+  mixins: [State],
   componentDidMount: function() {
-    InboundInvoiceActions.refreshOne(this.props.params.id);
+    InboundInvoiceActions.refreshOne(this.getParams().id);
   },
   isOverdue: function(expense) {
     return moment(expense.due_date).isBefore(moment(), 'date');
@@ -34,7 +35,7 @@ module.exports = React.createClass({
     return <OverlayTrigger overlay={<Tooltip>{formatDt(expense.payment_date)}</Tooltip>}><Label bsStyle="success">{ i18n.gettext('Paid') }</Label></OverlayTrigger>;
   },
   render: function() {
-    var id = Number(this.props.params.id),
+    var id = Number(this.getParams().id),
         finder = function(one) { return one.id === id; },
         expense = _.find(this.props.expenses.pending, finder) || _.find(this.props.expenses.invoices, finder),
         routeParams = _.pick(expense, 'id');
@@ -45,7 +46,7 @@ module.exports = React.createClass({
           <MenuItem to="expense-info" params={routeParams}>Basic information</MenuItem>
           <MenuItem to="expense-attachments" params={routeParams}>Attachments <Label bsStyle="default">{expense.attachments.length}</Label></MenuItem>
         </ul>
-        <this.props.activeRouteHandler suppliers={this.props.suppliers} expense={expense} />
+        <RouteHandler suppliers={this.props.suppliers} expense={expense} />
       </div>
       ) : <i className="fa fa-spin fa-spinner"></i>;
   }
