@@ -10,7 +10,7 @@ var oauth2 = require('simple-oauth2')({
   tokenPath: '/oauth/token'
 });
 
-var authorizationUri = oauth2.AuthCode.authorizeURL({
+var authorizationUri = oauth2.authCode.authorizeURL({
   redirect_uri: process.env.BANKSON_OAUTH_REDIRECT_URI
 });
 
@@ -29,7 +29,7 @@ router.post('/banksontoken', function(req, res, next) {
     access_token: req.user.bankson_auth_token,
     refresh_token: req.user.bankson_refresh_token
   };
-  var token = Bluebird.promisifyAll(oauth2.AccessToken.create(tokenData));
+  var token = Bluebird.promisifyAll(oauth2.accessToken.create(tokenData));
   if (token.expired()) {
     prom = token.refreshAsync().then(function(token) {
       return saveBanksonAuth(req, token).then(function() {
@@ -44,12 +44,12 @@ router.post('/banksontoken', function(req, res, next) {
 
 router.get('/callbacks/bankson', function(req, res, next) {
   var code = req.query.code;
-  oauth2.AuthCode.getToken({
+  oauth2.authCode.getToken({
     code: code,
     redirect_uri: process.env.BANKSON_OAUTH_REDIRECT_URI
   }, function(err, result) {
     if (err) return next(err);
-    var token = oauth2.AccessToken.create(result);
+    var token = oauth2.accessToken.create(result);
     saveBanksonAuth(req, token).then(function() {
       res.redirect(req.session.banksonRedirect);
     }).catch(next);
