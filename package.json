@@ -19,6 +19,7 @@
   "dependencies": {
     "aws-sdk": "~2.0.22",
     "axios": "^0.3.1",
+    "bankson": "0.0.1",
     "bases": "^0.2.1",
     "bcrypt": "<0.8.0",
     "bean": "~1.0.14",
