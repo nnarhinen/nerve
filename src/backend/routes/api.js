@@ -8,7 +8,8 @@ var express = require('express'),
     Maventa = require('node-maventa'),
     _ = require('underscore'),
     envSchema = require('shared/schemas/environment'),
-    validator = require('shared/schemas/validator');
+    validator = require('shared/schemas/validator'),
+    BanksonClient = require('bankson').Client;
 
 router.use(oauth.authorise());
 router.use(bodyParser.json());
@@ -30,6 +31,23 @@ router.use(function(req, res, next) {
         if (!sett.get('maventa_api_key') || !sett.get('maventa_company_uuid')) return;
         //return new Maventa(process.env.MAVENTA_VENDOR_API_KEY, sett.get('maventa_api_key'), sett.get('maventa_company_uuid'), process.env.NODE_ENV !== 'production');
         return new Maventa(process.env.MAVENTA_VENDOR_API_KEY, sett.get('maventa_api_key'), sett.get('maventa_company_uuid'), process.env.NODE_ENV !== 'production');
+      });
+    };
+    req.banksonClient = function() {
+      var cl = new BanksonClient(process.env.BANKSON_OAUTH_CLIENT_ID, process.env.BANKSON_OAUTH_CLIENT_SECRET, process.env.BANKSON_OAUTH_REDIRECT_URI, process.env.NODE_ENV !== 'production' ? 'http://localhost:3001' : undefined);
+      cl.setTokens(
+        req.user.get('bankson_auth_token'),
+        req.user.get('bankson_refresh_token'),
+        req.user.get('bankson_token_expires_at')
+      );
+      return cl.refreshTokens().then(function(cl) {
+        return req.user.save({
+          bankson_auth_token: cl.tokens.accessToken,
+          bankson_refresh_token: cl.tokens.refreshToken,
+          bankson_token_expires_at: cl.tokens.expiresAt.format()
+        }).then(function() {
+          return cl;
+        });
       });
     };
     next();

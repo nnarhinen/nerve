@@ -1,6 +1,3 @@
-/**
- * @jsx React.DOM
- */
 'use strict';
 var React = require('react'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
@@ -10,6 +7,8 @@ var React = require('react'),
     OverlayTrigger = require('react-bootstrap/OverlayTrigger'),
     Popover = require('react-bootstrap/Popover'),
     Label = require('react-bootstrap/Label'),
+    MenuItem = require('react-bootstrap/MenuItem'),
+    DropdownButton = require('react-bootstrap/DropdownButton'),
     moment = require('moment'),
     common = require('../../common'),
     expenseSchema = require('shared/schemas/expense'),
@@ -18,6 +17,7 @@ var React = require('react'),
     Button = require('react-bootstrap/Button'),
     FormMixin = require('../../mixins/form-mixin'),
     DatePickerInput = require('frontend/components/date-picker-input'),
+    banksonApi = require('frontend/bankson'),
     _ = require('underscore');
 
 
@@ -35,8 +35,18 @@ module.exports = React.createClass({
   getInitialState: function() {
     return {
       expense: this.props.expense,
+      banksonBankAccounts: [],
       validationErrors: {}
     };
+  },
+  componentDidMount: function() {
+    if (!this.props.settings.bankson_enabled) return;
+    var self = this;
+    banksonApi().bankAccounts().then(function(col) {
+      self.setState({
+        banksonBankAccounts: col
+      });
+    });
   },
   componentWillReceiveProps: function(newProps) {
     if (this.props.confirmSave) return; //Don't be bothered by outside world this time
@@ -79,6 +89,12 @@ module.exports = React.createClass({
       payment_date: new Date()
     });
   },
+  bankAccountSelected: function(bankAccountId) {
+    var bankAccount = _.find(this.state.banksonBankAccounts, function(one) {
+      return one.id === bankAccountId;
+    });
+    InboundInvoiceActions.payWithBank(this.props.expense.id, bankAccount);
+  },
   render: function() {
     return (
       <form onSubmit={this.onFormSubmit}>
@@ -118,7 +134,11 @@ module.exports = React.createClass({
           <div className="col-md-12">
             <ButtonToolbar className="well">
               <Button bsStyle="primary" onClick={this.setPaid}>{ i18n.gettext('Mark as paid') }</Button>
-              <Button bsStyle="primary" disabled>{ i18n.gettext('Pay via bank') }</Button>
+              <DropdownButton bsStyle="primary" disabled={!this.state.banksonBankAccounts.length} title={ i18n.gettext('Pay via bank') } onSelect={this.bankAccountSelected}>
+                {this.state.banksonBankAccounts.map(function(ba) {
+                  return <MenuItem key={ba.id} eventKey={ba.id}>{ba.bic + ' / ' + ba.iban}</MenuItem>;
+                }) }
+              </DropdownButton>
             </ButtonToolbar>
           </div>
         </div> : null }

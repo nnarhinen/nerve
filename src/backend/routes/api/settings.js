@@ -1,3 +1,4 @@
+'use strict';
 var SettingsSchema = require('shared/schemas/settings'),
     Validator = require('jsonschema').Validator,
     v = new Validator(),
@@ -6,7 +7,9 @@ var SettingsSchema = require('shared/schemas/settings'),
 //GET /api/settings
 var fetch = function(req, res, next) {
   req.getEnvironmentSettings().then(function(sett) {
-    res.send(sett.toJSON());
+    res.send(_.extend({
+      bankson_enabled: !!req.user.get('bankson_auth_token')
+    }, sett.toJSON()));
   }).catch(next);
 };
 

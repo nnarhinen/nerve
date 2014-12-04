@@ -1,3 +1,5 @@
+'use strict';
+
 var moment = require('moment'),
     Promise = require('bluebird'),
     mmm = require('mmmagic'),
@@ -8,7 +10,8 @@ var moment = require('moment'),
     expenseSchema = require('shared/schemas/expense'),
     validator = require('shared/schemas/validator'),
     router = require('express').Router(),
-    busboy = require('connect-busboy');
+    busboy = require('connect-busboy'),
+    bankson = require('bankson');
 
 module.exports = router;
 
@@ -122,6 +125,28 @@ router.put('/expenses/:id', function(req, res, next) {
     });
   }).catch(next);
 });
+
+router.post('/expenses/:id/bank', function(req, res, next) {
+  var Expense = req.app.get('bookshelf').models.Expense;
+  Expense.where({
+    environment_id: req.user.get('environment_id'),
+    id: req.params.id
+  }).fetch({withRelated: ['supplier', 'attachments']}).then(function(m) {
+    return req.banksonClient().then(function(cl) {
+      return m.payWithBankson(cl, req.body).then(function() {
+        return m.save();
+      });
+    });
+  }).then(function(m) {
+    res.send(m.decorate());
+  }).catch(bankson.BanksonError, function(err) {
+    console.dir(err.response.data);
+    res.status(400).send({
+      message: 'Failed to send via bankson'
+    });
+  }).catch(next);
+});
+
 
 router.post('/expenses', function(req, res, next) {
   var Expense = req.app.get('bookshelf').models.Expense;

@@ -1,3 +1,4 @@
+'use strict';
 //Load env
 require('./env');
 

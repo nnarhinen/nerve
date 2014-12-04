@@ -75,6 +75,12 @@ Api.prototype.saveExpense = function(exp) {
   });
 };
 
+Api.prototype.payExpense = function(expId, data) {
+  return this.post('/api/expenses/' + expId + '/bank', data).then(function(resp) {
+    return resp.data;
+  });
+};
+
 Api.prototype.saveExpenseAttachment = function(expId, attData, fileBlobs) {
   var data = new FormData();
   _.pairs(attData).filter(function(p) { return typeof p[1] !== 'object'; }).forEach(function(p) {

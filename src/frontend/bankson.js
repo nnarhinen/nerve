@@ -26,6 +26,11 @@ a.me = function() {
   });
 };
 
+a.bankAccounts = function() {
+  return a.get('/api/bankaccounts').then(function(resp) {
+    return resp.data;
+  });
+};
 
 module.exports = function() {
   return a;

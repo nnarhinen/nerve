@@ -1,3 +1,4 @@
+'use strict';
 var _ = require('underscore'),
     Promise = require('bluebird'),
     moment = require('moment');
@@ -20,6 +21,25 @@ module.exports = function(Bookshelf) {
     },
     decorate: function() {
       return _.extend(this.toJSON(), {due_date: moment(this.get('due_date')).format('YYYY-MM-DD'), expense_date: moment(this.get('expense_date')).format('YYYY-MM-DD')});
+    },
+    payWithBankson: function(banksonClient, payload) {
+      var self = this;
+      return banksonClient.createPayment({
+        from: payload.bank_account,
+        recipient_iban: this.get('iban'),
+        recipient_bic: this.get('bic'),
+        amount: this.get('sum'),
+        recipient_name: this.related('supplier').get('name'),
+        payment_date: payload.payment_date,
+        reference_number: this.get('reference_number'),
+        vendor_reference: this.id.toString()
+      }).then(function(paym) {
+        return self.save({
+          bankson_id: paym.id,
+          status: 'paid',
+          payment_date: new Date()
+        });
+      });
     }
   }, {
     createWithSupplierAndAttachments: function(expenseData, supplierData, attachments) {

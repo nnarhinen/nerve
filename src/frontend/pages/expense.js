@@ -46,7 +46,7 @@ module.exports = React.createClass({
           <MenuItem to="expense-info" params={routeParams}>Basic information</MenuItem>
           <MenuItem to="expense-attachments" params={routeParams}>Attachments <Label bsStyle="default">{expense.attachments.length}</Label></MenuItem>
         </ul>
-        <RouteHandler suppliers={this.props.suppliers} expense={expense} />
+        <RouteHandler settings={this.props.settings} suppliers={this.props.suppliers} expense={expense} />
       </div>
       ) : <i className="fa fa-spin fa-spinner"></i>;
   }
