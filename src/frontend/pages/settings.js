@@ -1,7 +1,7 @@
 /**
  * @jsx React.DOM
  */
-
+'use strict';
 var React = require('react'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
     _ = require('underscore'),
@@ -22,6 +22,7 @@ var Settings = module.exports = React.createClass({
                 <MenuItem to="settings/user">{ i18n.gettext('User information') }</MenuItem>
                 <MenuItem to="settings/environment">{ i18n.gettext('Company information') }</MenuItem>
                 <MenuItem to="settings/maventa">Maventa</MenuItem>
+                <MenuItem to="settings/bankson">Bankson</MenuItem>
               </ul>
             </div>
           </div>

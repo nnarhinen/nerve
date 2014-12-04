@@ -168,6 +168,8 @@ app.get('/callbacks/nerve', function(req, res, next) {
   });
 });
 
+app.use(require('./bankson').router);
+
 app.use(function(req, res, next) {
   if (!req.session.passwordless) return next();
   app.get('bookshelf').models.User.forge({id: req.session.passwordless}).fetch({withRelated: ['environment']}).then(function(model) {
@@ -200,7 +202,8 @@ app.get('/app/*', function(req, res, next) {
       user: req.user && JSON.stringify(_.omit(req.user.toJSON(), 'password_hash')),
       newRelicAppId: process.env.NEW_RELIC_BROWSER_APPLICATION_ID,
       newRelicLicenseKey: process.env.NEW_RELIC_BROWSER_APPLICATION_LICENSE_KEY,
-      minOrNothing: process.env.NODE_ENV === 'production' ? '.min' : ''
+      minOrNothing: process.env.NODE_ENV === 'production' ? '.min' : '',
+      livereload: process.env.NODE_ENV !== 'production'
     });
   }
 });

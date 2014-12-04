@@ -42,6 +42,12 @@ Api.prototype.settings = function() {
   });
 };
 
+Api.prototype.banksonToken = function() {
+  return this.post('/banksontoken').then(function(resp) {
+    return resp.data.bankson_auth_token;
+  });
+};
+
 Api.prototype.updateSettings = function(data) {
   return this.put('/api/settings', data).then(function(resp) {
     return resp.data;

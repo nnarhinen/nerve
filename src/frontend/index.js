@@ -179,6 +179,7 @@ var RouteApp = React.createClass({
             <DefaultRoute handler={Pages.Settings.User} title={i18n.gettext('User information')} name="settings/user" />
             <Route name="settings/environment" path="environment" handler={Pages.Settings.Company} title={i18n.gettext('Company information')} />
             <Route name="settings/maventa" path="maventa" handler={Pages.Settings.Maventa} title="Maventa" />
+            <Route name="settings/bankson" path="bankson" handler={Pages.Settings.Bankson} title="Bankson" />
           </Route>
           <NotFound handler={Pages.NotFound} />
         </Route>
@@ -187,4 +188,6 @@ var RouteApp = React.createClass({
   }
 });
 
-React.renderComponent(<RouteApp bearerToken={bearerToken} user={window.userInfo} dispatcher={require('./dispatchers/app-dispatcher')} />, document.body);
+require('domready')(function() {
+  React.renderComponent(<RouteApp bearerToken={bearerToken} user={window.userInfo} dispatcher={require('./dispatchers/app-dispatcher')} />, document.body);
+});

@@ -1,6 +1,7 @@
 'use strict';
 require('yalr')({
   path: 'src/backend/public',
+  port: 35730,
   debounce: 1000,
   match: [
     '*.js',
@@ -24,6 +25,7 @@ bundler = watchify(browserify('./src/frontend/index.js', {
 }));
 
 bundler.transform('reactify');
+bundler.transform('envify');
 bundler.transform('jedify', {lang: 'fi'});
 
 bundler.on('update', function() {

@@ -12,7 +12,8 @@ module.exports = {
     Index: require('./pages/settings'),
     Maventa: require('./pages/settings/maventa'),
     User: require('./pages/settings/user'),
-    Company: require('./pages/settings/company')
+    Company: require('./pages/settings/company'),
+    Bankson: require('./pages/settings/bankson')
   },
   Invoices: {
     List: require('./pages/invoices/list'),

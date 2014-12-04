@@ -11,7 +11,9 @@ module.exports = function(Bookshelf) {
       return this.belongsTo(Bookshelf.models.Environment);
     },
     decorate: function() {
-      return _.omit(this.toJSON(), 'password_hash');
+      return _.extend(_.omit(this.toJSON(), 'password_hash', 'bankson_refresh_token', 'bankson_token_expires_at'), {
+        bankson_auth_token: !!this.get('bankson_auth_token')
+      });
     }
   }, {
     exists: function(params) {

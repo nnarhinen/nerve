@@ -1,3 +1,4 @@
+'use strict';
 var express = require('express'),
     bodyparser = require('body-parser'),
     oauthserver = require('node-oauth2-server'),
@@ -68,15 +69,14 @@ router.route('/login')
           });
         })
         .post(passwordless.requestToken(
-              function(user, delivery, callback) {
-                Bookshelf.models.User.where({email: user}).fetch().then(function(u) {
-                  if (u) return u;
-                  return Bookshelf.models.User.signupWithEnvironment({email: user, environment: {name: user + '\'s Company'}});
-                }).then(function(u) {
-                  callback(null, u && u.id);
-                }).catch(callback);
-              },
-              { originField: 'redirect' }),
+            function(user, delivery, callback) {
+              Bookshelf.models.User.where({email: user}).fetch().then(function(u) {
+                if (u) return u;
+                return Bookshelf.models.User.signupWithEnvironment({email: user, environment: {name: user + '\'s Company'}});
+              }).then(function(u) {
+                callback(null, u && u.id);
+              }).catch(callback);
+            }, { originField: 'redirect' }),
             function(req, res){
               res.redirect('/');
             });
