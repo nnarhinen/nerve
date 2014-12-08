@@ -74,7 +74,7 @@ module.exports = React.createClass({
     if (this.state.file) {
       return (
         <div>
-          <BasicExpense confirmSave saving={this.state.addingNew} onCancel={this.onNewExpenseCanceled} onSave={this.onNewExpenseSaved} expense={{expense_type: 'invoice', status: 'unpaid'}} suppliers={this.props.suppliers} />
+          <BasicExpense confirmSave settings={this.props.settings} saving={this.state.addingNew} onCancel={this.onNewExpenseCanceled} onSave={this.onNewExpenseSaved} expense={{expense_type: 'invoice', status: 'unpaid'}} suppliers={this.props.suppliers} />
           <PDF file={this.state.file} />
         </div>
         );
