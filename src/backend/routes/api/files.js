@@ -1,3 +1,4 @@
+'use strict';
 var express = require('express');
 
 var router = module.exports = express.Router();
@@ -7,6 +8,8 @@ router.post('/url', function(req, res, next) {
       model;
   if (data.type === 'expense_attachment') {
     model = req.app.get('bookshelf').models.ExpenseAttachment;
+  } else if (data.type === 'inbox_attachment') {
+    model = req.app.get('bookshelf').models.InboxItemAttachment;
   }
   if (!model) return res.status(400).send({error: 'Unknown file type'});
   model.forge({environment_id: req.user.get('environment_id'), id: data.id}).fetch().then(function(model) {
