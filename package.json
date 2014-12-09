@@ -45,7 +45,7 @@
     "express-session": "^1.8.2",
     "globalize": "^0.1.1",
     "i18n-abide": "0.0.22",
-    "jedify": "git://github.com/tellnes/jedify",
+    "jedify": "^0.2.0",
     "jsonschema": "~1.0.0",
     "knex": "^0.7.2",
     "less": "^1.7.5",
@@ -99,6 +99,8 @@
     "eqeqeq": true,
     "newcap": false,
     "strict": true,
+    "undef": true,
+    "esnext": true,
     "globals": {
       "requirePo": true
     }

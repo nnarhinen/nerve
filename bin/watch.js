@@ -24,11 +24,11 @@ bundler = watchify(browserify('./src/frontend/index.js', {
   fullPaths: true
 }));
 
-bundler.transform('reactify');
+bundler.transform('reactify', {es6: true});
 bundler.transform('envify');
 bundler.transform('jedify', {lang: 'fi'});
 
 bundler.on('update', function() {
-  bundler.bundle().pipe(fs.createWriteStream(__dirname + '/../src/backend/public/js/application.fi.js'));
+  bundler.bundle().on('error', function(err) { console.error(err.message); }).pipe(fs.createWriteStream(__dirname + '/../src/backend/public/js/application.fi.js'));
 });
-bundler.bundle().pipe(fs.createWriteStream(__dirname + '/../src/backend/public/js/application.fi.js'));
+bundler.bundle().on('error', function(err) { console.error(err.message); }).pipe(fs.createWriteStream(__dirname + '/../src/backend/public/js/application.fi.js'));
