@@ -7,13 +7,14 @@ var React = require('react'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
     _ = require('underscore'),
     State = require('react-router').State,
-    InboxActions = require('frontend/actions/inbox-actions');
+    InboxActions = require('frontend/actions/inbox-actions'),
+    RouteHandler = require('react-router').RouteHandler,
+    MenuItem = require('frontend/components/menu-item');
 
 var InboxItem = React.createClass({
   mixins: [State],
   componentDidMount: function() {
     InboxActions.fetchOne(this.getParams().id);
-    this.setEmailBody();
   },
   getInitialState: function() {
     return this.getStateFromProps(this.props);
@@ -32,14 +33,6 @@ var InboxItem = React.createClass({
       loading: false
     };
   },
-  setEmailBody: function() {
-    if (!this.refs.frame) return;
-    var elem = this.refs.frame.getDOMNode();
-    elem.contentDocument.body.innerHTML = this.state.html;
-  },
-  componentDidUpdate: function() {
-    this.setEmailBody();
-  },
   render: function() {
     if (this.state.loading) {
       return <i className="fa fa-spin fa-spinner"></i>;
@@ -49,27 +42,23 @@ var InboxItem = React.createClass({
       <div>
         <h1>{ i18n.gettext('Inbox') } <small>{itm.subject}</small></h1>
         <p>From <i>{itm.from}</i></p>
-        <div className="row">
-          <div className="col-md-12">
-            <iframe width="100%" frameBorder="0" sandbox="allow-same-origin" ref="frame"></iframe>
-          </div>
-        </div>
+        <RouteHandler item={itm} />
         <h2>Attachments</h2>
-        <div className="row">
+        <ul className="nav nav-pills">
         { itm.attachments.map(function(att) {
           var iconClass = 'fa fa-3x ';
           if (att.mime_type === 'application/pdf') iconClass += 'fa-file-pdf-o';
           else iconClass += 'fa-file-o';
           return (
-            <div className="col-md-3 text-center" key={att.id}>
-              <div className="well">
-                <i className={iconClass}></i>
-                <p>{ att.filename }</p>
-              </div>
-            </div>
+            <MenuItem to="inbox-attachment" params={{id: itm.id, attId: att.id}} key={att.id} className="text-center">
+              <span className="text-center">
+                <i className={iconClass}></i><br />
+                <span>{ att.filename }</span>
+              </span>
+            </MenuItem>
           );
         }) }
-        </div>
+        </ul>
       </div>
     );
   }

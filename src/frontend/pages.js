@@ -21,6 +21,8 @@ module.exports = {
     InvoiceInfo: require('./pages/invoices/info')
   },
   Inbox: {
-    Item: require('./pages/inbox/item')
+    Item: require('./pages/inbox/item'),
+    Body: require('./pages/inbox/body'),
+    Attachment: require('./pages/inbox/attachment')
   }
 };

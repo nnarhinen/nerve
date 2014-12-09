@@ -28,7 +28,6 @@ var React = require('react'),
     BsMenuItem = require('react-bootstrap/MenuItem'),
     i18n = requirePo('locale/%s/LC_MESSAGES/messages.po'),
     Globalize = require('globalize');
-
 require('globalize/lib/cultures/globalize.culture.fi');
 
 Globalize.culture('fi');
@@ -152,7 +151,10 @@ var routes = (
   <Route name="container" path="/" handler={App} >
     <DefaultRoute name="dashboard"  handler={Pages.Dashboard} />
     <Route name="inbox" path="/inbox" handler={Pages.EmptyParent}>
-      <Route name="inbox-item" path=":id" handler={Pages.Inbox.Item} />
+      <Route name="inbox-item" path=":id" handler={Pages.Inbox.Item}>
+        <DefaultRoute handler={Pages.Inbox.Body} />
+        <Route name="inbox-attachment" handler={Pages.Inbox.Attachment} path="attachments/:attId" />
+      </Route>
     </Route>
     <Route name="invoices" path="/invoices" handler={Pages.EmptyParent}>
       <DefaultRoute name="invoice-list" handler={Pages.Invoices.List} />
