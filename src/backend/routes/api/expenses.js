@@ -71,7 +71,7 @@ router.get('/expenses/pending', function(req,res,next) {
                 expense_date: moment(maventaInvoice.date, 'YYYYMMDD').toDate(),
                 due_date: moment(maventaInvoice.date_due, 'YYYYMMDD').toDate(),
                 expense_type: 'invoice',
-                sum: Number(maventaInvoice.sum),
+                sum: Number(maventaInvoice.sum_tax),
                 intermediator: 'maventa',
                 intermediator_info: _.omit(maventaInvoice, 'attachments'),
                 intermediator_id: maventaInvoice.id
